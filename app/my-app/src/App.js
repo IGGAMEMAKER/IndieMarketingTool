@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
-import { useState, Component } from 'react';
+import { useState } from 'react';
+
 
 function Audience({name, description, strategy, index, isFull = false, onToggleFullInfo = () => {}}) {
   var f = ''
@@ -32,6 +33,7 @@ function AudienceAdder({}) {
     </div>
   )
 }
+
 
 const getUrlWithoutPrefixes = link => link.replace('https://', '').replace('www.', '')
 const getDomain = link => {
