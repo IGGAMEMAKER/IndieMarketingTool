@@ -16,8 +16,10 @@ const createApp = port => {
   }
 
   const app = express();
-  console.log('APP.USE', __dirname)
-  app.use('/static', express.static(__dirname + '/build/static'));
+
+  var path = __dirname.replace('server', 'build')
+  console.log('APP.USE', path, __dirname)
+  app.use('/static', express.static(path + '/static'));
   app.use(cors(corsOptions))
   app.use(errorHandler)
 
