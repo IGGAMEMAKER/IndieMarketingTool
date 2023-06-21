@@ -4,11 +4,12 @@ const {app, host, db} = require('./expressGenerator')(3000);
 // -------- STRUCTURE --------
 
 app.get('/', (req, res) => {
-  console.log(__dirname)
-  res.json({
-    ok: 1,
-    text: 'you are on main page'
-  })
-  res.sendFile(__dirname + '/Index.html');
+  var appPath = __dirname + '/build/static/index.html'
+  console.log(__dirname, appPath)
+  // res.json({
+  //   ok: 1,
+  //   text: 'you are on main page'
+  // })
+  res.sendFile(appPath);
 })
 
