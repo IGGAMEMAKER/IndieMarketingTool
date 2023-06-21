@@ -4,7 +4,7 @@ const {app, host, db} = require('./expressGenerator')(3000);
 // -------- STRUCTURE --------
 
 app.get('/', (req, res) => {
-  var appPath = __dirname + '/../build/static/index.html'
+  var appPath = __dirname.replace('server', 'build/static') + '/index.html'
   console.log(__dirname, appPath)
   // res.json({
   //   ok: 1,
