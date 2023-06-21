@@ -5,41 +5,6 @@ const errorHandler = (err, req, res, next) => {
   res.json({ error: err });
 }
 
-const logParams = db => (title) => async (req, res, next) => {
-  db.print(`${title}: ` + JSON.stringify(req.params));
-
-  next();
-}
-
-const proxyToDB = db => async (req, res) => {
-  const isPost = req.method === "POST";
-  const isGet = !isPost; // req.method === "GET";
-
-  if (isPost) {
-    db.post(req.url, req.body)
-      .then(r => {
-        res.json(r)
-      })
-      .catch(err => {
-        res.json({
-          err
-        })
-      })
-  }
-
-  if (isGet) {
-    db.get(req.url)
-      .then(r => {
-        res.json(r)
-      })
-      .catch(err => {
-        res.json({
-          err
-        })
-      })
-  }
-}
-
 const createApp = port => {
   const express = require('express');
   const cors = require("cors");
@@ -50,14 +15,8 @@ const createApp = port => {
     optionSuccessStatus: 200,
   }
 
-  const {ip} = require("./Configs/myHost");
-
-  const host = ip + ':' + port;
-  const db = require("./db")(host);
-
-
   const app = express();
-  app.use('/static', express.static(__dirname + '/output'));
+  app.use('/static', express.static(__dirname + '/build/static'));
   app.use(cors(corsOptions))
   app.use(errorHandler)
 
@@ -79,13 +38,6 @@ const createApp = port => {
 
   return {
     app,
-    db,
-    host,
-
-    logParams: logParams(db),
-    proxyToDB: proxyToDB(db),
-
-    push: message => db.push(message),
   };
 }
 
