@@ -107,9 +107,14 @@ export function Audience({
   else
     strategyPicker = <div onClick={() => onEditStrategyStatus(true)}><i style={{color: 'green'}}>{strategy}</i></div>
 
+  const facePicker = (emoji, color, isChosen) => <span style={{color, fontSize: isChosen ? 32 : 20, fontWeight: isChosen ? 800 : 100}}>{emoji}</span>
+
+  // 🤪
   if (isFull) {
     f = <div>
       <br/>
+      <div>{facePicker('😅', 'green', true)}{facePicker('😐', 'orange', false)}</div>
+      {/*{facePicker('😡', 'red', false)}*/}
       {descriptionPicker}
       <br/>
       {strategyPicker}

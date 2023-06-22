@@ -5,7 +5,7 @@ import {
   MONETIZATION_AUDIENCE_ADD,
   MONETIZATION_AUDIENCE_REMOVE,
   MONETIZATION_EDIT_DESCRIPTION,
-  MONETIZATION_EDIT_NAME
+  MONETIZATION_EDIT_NAME, MONETIZATION_EDIT_PRICE, RISK_EDIT_NAME, RISK_ADD, RISK_ORDER_CHANGE
 } from './constants/actionConstants';
 
 
@@ -66,6 +66,14 @@ export function editMonetizationDescription(monetizationIndex, description) {
   })
 }
 
+export function editMonetizationPrice(monetizationIndex, price) {
+  Dispatcher.dispatch({
+    actionType: MONETIZATION_EDIT_PRICE,
+    monetizationIndex,
+    price: parseInt(price)
+  })
+}
+
 export function attachAudienceToMonetizationPlan(audienceIndex, monetizationIndex) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_AUDIENCE_ADD,
@@ -82,6 +90,29 @@ export function detachAudienceFromMonetizationPlan(audienceIndex, monetizationIn
   })
 }
 
+export function editRiskName(index, name) {
+  Dispatcher.dispatch({
+    actionType: RISK_EDIT_NAME,
+    riskIndex: index,
+    name
+  })
+}
+
+export function addRisk(name) {
+  Dispatcher.dispatch({
+    actionType: RISK_ADD,
+    name
+  })
+}
+
+export function changeRiskOrder(index1, index2) {
+  Dispatcher.dispatch({
+    actionType: RISK_ORDER_CHANGE,
+    index1,
+    index2
+  })
+}
+
 export default {
   addAudience,
   editAudienceName,
@@ -90,8 +121,13 @@ export default {
 
   addMonetizationPlan,
   editMonetizationName,
+  editMonetizationPrice,
   editMonetizationDescription,
   attachAudienceToMonetizationPlan,
-  detachAudienceFromMonetizationPlan
+  detachAudienceFromMonetizationPlan,
+
+  addRisk,
+  editRiskName,
+  changeRiskOrder
 }
 

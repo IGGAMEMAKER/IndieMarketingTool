@@ -5,6 +5,7 @@ import storage from './Storage'
 import actions from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
+import {FieldPicker} from "./FieldPicker";
 
 function AudienceAdder({}) {
   const [audienceName, onChangeName] = useState("");
@@ -63,13 +64,25 @@ function Channel({link, name, users}) {
 
 function RiskList({risks}) {
   return (
-    <ul>{risks.map(r => <RiskView risk={r} />)}</ul>
+    <ul>{risks.map((r, index) => <RiskView risk={r} index={index} />)}</ul>
   )
 }
-function RiskView({risk}) {
-  var subrisks = risk.subrisks || []
+function RiskView({risk, index}) {
+  var renderer = onChange => {
+    var up = <button onClick={() => actions.changeRiskOrder(index, index -1)}>Up</button>
+    var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
+    return <div><span onClick={() => onChange(true)}>{risk.name}</span></div> // {up} {down}
+  }
+
   return (
-    <li className="Risk-item">{risk.name}{subrisks ? <RiskList risks={subrisks} /> : ''}</li>
+    <li className="Risk-item">
+      <FieldPicker
+        value={risk.name}
+        normalValueRenderer={renderer}
+        placeholder={"Risk"}
+        onAction={val => actions.editRiskName(index, val)}
+      />
+    </li>
   )
 }
 
@@ -111,7 +124,7 @@ function AudienceSourcesPanel({channels}) {
 function RisksPanel({risks}) {
   return <div>
     <br />
-    What are your biggest risks?
+    What are your biggest risks? <RiskAdder />
     <br />
     <br />
     <div className="Container">
@@ -120,15 +133,33 @@ function RisksPanel({risks}) {
   </div>
 }
 
+function RiskAdder({}) {
+  const [name, onChangeName] = useState("");
+
+  return (
+    <div className="Risk-item">
+      <textarea
+        value={name}
+        onChange={event => {
+          var v = event.target.value
+          console.log({v})
+          onChangeName(v)
+        }}
+      />
+      <br />
+      <button onClick={() => {actions.addRisk(name); onChangeName("")}}>ADD</button>
+    </div>
+  )
+}
+
 function MonetizationPanel({plans, audiences}) {
   return <div>
     <br />
-    How will you make money?
+    How will you make money?       <MonetizationAdder />
     <br />
     <br />
     <div className="Audience-Container">
       {plans.map((p, i) => <MonetizationPlan plan={p} index={i} audiences={audiences} />)}
-      <MonetizationAdder />
     </div>
   </div>
 }
@@ -139,7 +170,7 @@ function AudiencesList({audiences}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
 
   return <div>
-    Who will use your app / play your game?
+    Who will use your app / play your game?       <AudienceAdder />
     <br />
     <br />
     <div className="Audience-Container">
@@ -154,7 +185,6 @@ function AudiencesList({audiences}) {
           index={i}
         />
       )}
-      <AudienceAdder />
     </div>
   </div>
 }
