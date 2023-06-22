@@ -1,35 +1,45 @@
 // import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
-
-
-function Audience({name, description, strategy, index, isFull = false, onToggleFullInfo = () => {}}) {
-  var f = ''
-
-  if (isFull) {
-    f = <div>
-      <br/>
-      {description}
-      <br/>
-      {strategy.map(s => <div><i style={{color: 'green'}}>{s}</i></div>)}
-      <br/>
-      {/*{pricing.map(p => <div><i style={{color: 'orange'}}>{p}</i></div>)}*/}
-      <input/>
-    </div>
-  }
-
-  return (
-    <div className="Audience-item">
-      <b onClick={onToggleFullInfo}>{name}</b>
-      {f}
-    </div>
-  );
-}
+import {Component, useState} from 'react';
+import storage from './Storage'
+import actions from './actions'
+import {Audience} from "./Audience";
+import {MonetizationPlan} from "./MonetizationPlan";
 
 function AudienceAdder({}) {
+  const [audienceName, onChangeName] = useState("");
+
   return (
     <div className="Audience-item">
-      <button>ADD</button>
+      <textarea
+        value={audienceName}
+        onChange={event => {
+          var v = event.target.value
+          console.log({v})
+          onChangeName(v)
+        }}
+      />
+      <br />
+      <button onClick={() => {actions.addAudience(audienceName); onChangeName("")}}>ADD</button>
+    </div>
+  )
+}
+
+function MonetizationAdder({}) {
+  const [monetizationName, onChangeName] = useState("");
+
+  return (
+    <div className="Audience-item">
+      <textarea
+        value={monetizationName}
+        onChange={event => {
+          var v = event.target.value
+          console.log({v})
+          onChangeName(v)
+        }}
+      />
+      <br />
+      <button onClick={() => {actions.addMonetizationPlan(monetizationName); onChangeName("")}}>ADD</button>
     </div>
   )
 }
@@ -61,14 +71,6 @@ function RiskView({risk}) {
   return (
     <li className="Risk-item">{risk.name}{subrisks ? <RiskList risks={subrisks} /> : ''}</li>
   )
-}
-
-function MonetizationPlan({plan, audiences}) {
-  return <div className="Risk-item">
-    <div>{plan.name}</div>
-    <div>{plan.description}</div>
-    <div>{plan?.audiences?.join()}</div>
-  </div>
 }
 
 function ChannelList({channels}) {
@@ -124,8 +126,9 @@ function MonetizationPanel({plans, audiences}) {
     How will you make money?
     <br />
     <br />
-    <div className="Container">
-      {plans.map(p => <MonetizationPlan plan={p} audiences={audiences} />)}
+    <div className="Audience-Container">
+      {plans.map((p, i) => <MonetizationPlan plan={p} index={i} audiences={audiences} />)}
+      <MonetizationAdder />
     </div>
   </div>
 }
@@ -151,96 +154,52 @@ function AudiencesList({audiences}) {
           index={i}
         />
       )}
-      {/*<AudienceAdder />*/}
+      <AudienceAdder />
     </div>
   </div>
 }
 
-function App() {
-  var audiences = [
-    {
-      name: "Veteran gamedevs",
-      description: "Already wasted years and dont want repetition",
-      strategy: ["DM low review game devs on Steam", "Postmortems"],
-      pricing: [
-        // '25$ / m'
-      ]
-    },
-    {
-      name: "Veteran devs",
-      description: "Already wasted years and dont want repetition",
-      strategy: ["Search by Postmortem posts"],
-      pricing: [
-        // '25$ / m'
-      ]
-    },
-    {
-      name: "Newbie gamedevs",
-      description: "Think their game will be an exception",
-      strategy: ["through influencers via marketing 101 tutorials"],
-      pricing: [
-        // '10$ / m'
-      ]
-    },
-    {
-      name: 'Newbie devs',
-      description: 'Think their game will be an exception',
-      strategy: ['through influencers via marketing 101 tutorials'],
-      pricing: [
-        // '10$ / m'
-      ]
-    },
-    {
-      name: 'Devs',
-      description: 'Sublime. Play with ideas and quit fast',
-      strategy: ['through blogs'],
-      pricing: ['FREE? Limit projects count']
-    },
-  ];
+class App extends Component {
+  state = {
+    audiences: [],
+    monetizationPlans: [],
+    channels: [],
+    risks: []
+  }
 
-  var monetizationPlans = [
-    {name: 'Demo',  description: '3 Free projects just for test', audiences: [4]},
-    {name: 'Basic', description: '10 Projects + additional features?', audiences: [2, 3]},
-    {name: 'Pro',   description: '100 Projects + even more features?', audiences: [0, 1]},
-    {name: 'Enterprise',   description: '100 Projects + even more features?'},
-  ]
+  copyState = () => {
+    this.setState({
+      audiences:          storage.getAudiences(),
+      monetizationPlans:  storage.getMonetizationPlans(),
+      channels:           storage.getChannels(),
+      risks:              storage.getRisks()
+    })
+  }
+  componentWillMount() {
+    storage.addChangeListener(() => {
+      console.log('store listener')
 
-  var channels = [
-    {name: 'SoloMyth', users: 2000,  link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
-    {name: 'Songs',    users: 100,   link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
-    {name: 'gamedev',  users: 10000, link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'},
-    {name: 'Similar product',  users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
-  ]
+      this.copyState()
+    })
 
-  var risks = [
-    {
-      name: "Won't be interested enough",
-      subrisks: [{
-        name: "Won't understand",
-      }]
-    },
-    {
-      name: "Won't buy it"
-    },
-    {
-      name: "Won't like it"
-    },
-    {
-      name: "Won't recommend it"
-    },
-  ]
+    this.copyState()
+  }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Stop wasting years on a game/app, that nobody needs</h1>
-        <AudiencesList audiences={audiences}/>
-        <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
-        <RisksPanel risks={risks} />
-        <AudienceSourcesPanel channels={channels} />
-      </header>
-    </div>
-  );
+  render() {
+    var {audiences, monetizationPlans, risks, channels} = this.state;
+
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>Stop wasting years on a game/app, that nobody needs</h1>
+          <AudiencesList audiences={audiences} />
+          <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
+          <RisksPanel risks={risks} />
+          <AudienceSourcesPanel channels={channels} />
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
