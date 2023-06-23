@@ -372,7 +372,19 @@ const sleep = async (seconds, ssh) => {
 const UpdateCodeOnServer = async (ip, updateNPMLibs = false) => {
   const ssh = await conn(ip);
 
-  gitPull(ssh, ip, updateNPMLibs, {});
+  await gitPull(ssh, ip, updateNPMLibs, {});
+  var check = {}
+  await ssh.exec('npm run build', [], crawlerOptions)
+    .then(r => {
+      check['pull'] = true;
+
+      console.log('BUILT')
+    })
+    .catch(err => {
+      check['pull'] = false;
+
+      logError(check, 'BUILD failed', err);
+    })
 }
 
 const UpdateCodeOnFrontend = async (updateNPMLibs = false) => {
