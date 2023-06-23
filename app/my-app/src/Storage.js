@@ -82,12 +82,7 @@ Dispatcher.register((p) => {
       .finally(() => console.log('FINALLY'))
   }
   const saveProjectChanges = () => {
-    update('/projects/' + projectId, data => {
-      console.log({body: data.body})
-      // var p = data.body.project;
-      //
-      // project = p
-    })
+    update('/projects/' + projectId, {project})
       .finally(() => {
         store.emitChange()
       })
