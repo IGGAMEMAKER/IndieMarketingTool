@@ -9,6 +9,6 @@ else
   rm -f ./.git/index.lock
   git commit -a -m "$cmt"
   git push
-  cd CD/
-#  node serverManager.js update "$libs"
+  cd CD/ || exit
+  node serverManager.js update "$libs"
 fi

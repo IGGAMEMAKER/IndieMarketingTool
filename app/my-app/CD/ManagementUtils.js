@@ -7,6 +7,9 @@ const {NodeSSH} = require('node-ssh')
 const open = require('open');
 const {isLogger} = require("./Configs/servers");
 
+const projectDir = '/usr/marketing/';
+const gitPath = `${projectDir}IndieMarketingTool`;
+
 const {gitUsername, gitToken} = require('./Configs/Passwords');
 
 const printStdOut = chunk => {
@@ -24,9 +27,6 @@ const idle = chunk => {};
 const silent = { onStdout: idle, onStderr: idle};
 const handlers = silent; //{onStdout, onStderr};
 const errOnly = {onStdout: idle, onStderr};
-
-const projectDir = '/home/marketing/';
-const gitPath = `${projectDir}IndieMarketingTool`;
 
 const conn = async ip => {
   const ssh = new NodeSSH()
