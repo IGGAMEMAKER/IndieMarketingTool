@@ -1,11 +1,20 @@
 import Dispatcher from './Dispatcher';
 import {
-  AUDIENCE_ADD, AUDIENCE_EDIT_STRATEGY, AUDIENCE_EDIT_DESCRIPTION, AUDIENCE_EDIT_NAME,
+  AUDIENCE_ADD,
+  AUDIENCE_EDIT_STRATEGY,
+  AUDIENCE_EDIT_DESCRIPTION,
+  AUDIENCE_EDIT_NAME,
   MONETIZATION_ADD,
   MONETIZATION_AUDIENCE_ADD,
   MONETIZATION_AUDIENCE_REMOVE,
   MONETIZATION_EDIT_DESCRIPTION,
-  MONETIZATION_EDIT_NAME, MONETIZATION_EDIT_PRICE, RISK_EDIT_NAME, RISK_ADD, RISK_ORDER_CHANGE
+  MONETIZATION_EDIT_NAME,
+  MONETIZATION_EDIT_PRICE,
+  RISK_EDIT_NAME,
+  RISK_ADD,
+  RISK_ORDER_CHANGE,
+  MONETIZATION_BENEFIT_ADD,
+  MONETIZATION_BENEFIT_REMOVE
 } from './constants/actionConstants';
 
 
@@ -58,11 +67,28 @@ export function editMonetizationName(monetizationIndex, name) {
   })
 }
 
-export function editMonetizationDescription(monetizationIndex, description) {
+export function editMonetizationDescription(monetizationIndex, benefitIndex, benefit) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_EDIT_DESCRIPTION,
     monetizationIndex,
-    description
+    benefitIndex,
+    benefit
+  })
+}
+
+export function removeBenefitFromMonetizationPlan(monetizationIndex, benefitIndex) {
+  Dispatcher.dispatch({
+    actionType: MONETIZATION_BENEFIT_REMOVE,
+    monetizationIndex,
+    benefitIndex
+  })
+}
+
+export function addBenefitToMonetizationPlan(monetizationIndex, benefit) {
+  Dispatcher.dispatch({
+    actionType: MONETIZATION_BENEFIT_ADD,
+    monetizationIndex,
+    benefit
   })
 }
 
@@ -122,12 +148,16 @@ export default {
   addMonetizationPlan,
   editMonetizationName,
   editMonetizationPrice,
+
   editMonetizationDescription,
+  addBenefitToMonetizationPlan,
+  removeBenefitFromMonetizationPlan,
+
   attachAudienceToMonetizationPlan,
   detachAudienceFromMonetizationPlan,
 
   addRisk,
   editRiskName,
-  changeRiskOrder
+  changeRiskOrder,
 }
 

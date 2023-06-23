@@ -1,15 +1,19 @@
-const {app, host, db} = require('./expressGenerator')(3000);
+const {app} = require('./expressGenerator')(3000);
 // const {ok, fail} = require('./DB/Response')
-
-// -------- STRUCTURE --------
 
 app.get('/', (req, res) => {
   var appPath = __dirname.replace('server', 'build') + '/index.html'
-  console.log(__dirname, appPath)
-  // res.json({
-  //   ok: 1,
-  //   text: 'you are on main page'
-  // })
   res.sendFile(appPath);
 })
 
+const createUser = async (req, res) => {}
+const createProject = async (req, res) => {}
+
+app.post('/user', createUser)
+app.post('/project', createProject)
+
+// app.get('/projects')
+
+// save changes
+// app.post('/')
+app.get('/test', (req, res) => res.json({tested: 1}))

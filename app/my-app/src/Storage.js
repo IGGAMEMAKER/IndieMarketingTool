@@ -10,74 +10,85 @@ import {
   MONETIZATION_ADD,
   MONETIZATION_EDIT_DESCRIPTION,
   MONETIZATION_EDIT_NAME,
-  MONETIZATION_AUDIENCE_REMOVE, MONETIZATION_EDIT_PRICE, RISK_EDIT_NAME, RISK_ADD, RISK_ORDER_CHANGE
+  MONETIZATION_AUDIENCE_REMOVE,
+  MONETIZATION_EDIT_PRICE,
+  RISK_EDIT_NAME,
+  RISK_ADD,
+  RISK_ORDER_CHANGE,
+  MONETIZATION_BENEFIT_ADD, MONETIZATION_BENEFIT_REMOVE
 } from "./constants/actionConstants";
+import {ping} from "./PingBrowser";
 // import {ping} from "./PingBrowser";
 // import actions from "./actions";
 
 const CE = 'CHANGE_EVENT';
 
-var audiences = [
-  {
-    name: "Veteran gamedevs",
-    description: "Already wasted years and dont want repetition",
-    strategy: "DM low review game devs on Steam \nPostmortems",
-  },
-  // {
-  //   name: "Veteran devs",
-  //   description: "Already wasted years and dont want repetition",
-  //   strategy: ["Search by Postmortem posts"],
-  //   price: 25
-  // },
-  {
-    name: "Newbie gamedevs",
-    description: "Think their game will be an exception",
-    strategy: "through influencers via marketing 101 tutorials",
-  },
-  // {
-  //   name: 'Newbie devs',
-  //   description: 'Think their game will be an exception',
-  //   strategy: ['through influencers via marketing 101 tutorials'],
-  //   price: 10
-  // },
-  {
-    name: 'Devs',
-    description: 'Sublime. Play with ideas and quit fast',
-    strategy: "through blogs",
-  },
-];
+var project = {
+  name: 'Indie Marketing Tool',
+  type: 1, // 1 - app, 2 - game
 
-var monetizationPlans = [
-  {name: 'Demo',  description: '3 Free projects just for test', audiences: [2], price: 0},
-  {name: 'Basic', description: '10 Projects + additional features?', audiences: [1], price: 10},
-  {name: 'Pro',   description: '100 Projects + even more features?', audiences: [0], price: 25},
-  // {name: 'Enterprise',   description: '100 Projects + even more features?', audiences: []},
-]
+  audiences: [
+    {
+      name: "Veteran gamedevs",
+      description: "Already wasted years and dont want repetition",
+      strategy: "DM low review game devs on Steam \nPostmortems",
+    },
+    // {
+    //   name: "Veteran devs",
+    //   description: "Already wasted years and dont want repetition",
+    //   strategy: ["Search by Postmortem posts"],
+    //   price: 25
+    // },
+    {
+      name: "Newbie gamedevs",
+      description: "Think their game will be an exception",
+      strategy: "through influencers via marketing 101 tutorials",
+    },
+    // {
+    //   name: 'Newbie devs',
+    //   description: 'Think their game will be an exception',
+    //   strategy: ['through influencers via marketing 101 tutorials'],
+    //   price: 10
+    // },
+    {
+      name: 'Devs',
+      description: 'Sublime. Play with ideas and quit fast',
+      strategy: "through blogs",
+    },
+  ],
 
-var channels = [
-  {name: 'SoloMyth', users: 2000,  link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
-  {name: 'Songs',    users: 100,   link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
-  {name: 'gamedev',  users: 10000, link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'},
-  {name: 'Similar product',  users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
-]
+  monetizationPlans: [
+    {name: 'Demo',  benefits: ['1 Full project?', "10 Free projects (basic functions)"], audiences: [2], price: 0},
+    {name: 'Basic', benefits: ['10 Projects', 'additional features?'], audiences: [1], price: 10},
+    {name: 'Pro',   benefits: ['∞ Projects', 'even more features?'], audiences: [0], price: 25},
+    // {name: 'Enterprise',   description: '100 Projects + even more features?', audiences: []},
+  ],
 
-var risks = [
-  {
-    name: "Won't be interested enough",
-  },
-  {
-    name: "Won't understand",
-  },
-  {
-    name: "Won't buy it"
-  },
-  {
-    name: "Won't like it"
-  },
-  {
-    name: "Won't recommend it"
-  },
-]
+  channels: [
+    {name: 'SoloMyth', users: 2000,  link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
+    {name: 'Songs',    users: 100,   link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
+    {name: 'gamedev',  users: 10000, link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'},
+    {name: 'Similar product',  users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
+  ],
+
+  risks: [
+    {
+      name: "Won't be interested enough",
+    },
+    {
+      name: "Won't understand",
+    },
+    {
+      name: "Won't buy it"
+    },
+    {
+      name: "Won't like it"
+    },
+    {
+      name: "Won't recommend it"
+    },
+  ],
+}
 
 class Storage extends EventEmitter {
   addChangeListener(c) {
@@ -88,11 +99,14 @@ class Storage extends EventEmitter {
     this.emit(CE);
   }
 
+  getProject = () => project;
+  getAudiences = () => this.getProject().audiences
+  getMonetizationPlans = () => this.getProject().monetizationPlans
+  getChannels = () => this.getProject().channels
+  getRisks = () => this.getProject().risks
 
-  getAudiences = () => audiences
-  getMonetizationPlans = () => monetizationPlans
-  getChannels = () => channels
-  getRisks = () => risks
+  isApp = () => this.getProject().type === 1
+  isGame = () => this.getProject().type === 2
 }
 
 const store = new Storage();
@@ -108,36 +122,44 @@ const swap = (i1, i2, array) => {
   return array
 }
 
+
 Dispatcher.register((p) => {
+  const sendToServer = () => {
+    store.emitChange()
+    ping('/test', r => {
+      console.log({r})
+    })
+      .finally(() => console.log('FINALLY'))
+  }
   switch (p.actionType) {
     case AUDIENCE_ADD:
-      console.log({audiences, p})
-      audiences.push({
+      project.audiences.push({
         name: p.name,
         description: "",
         strategy: [],
         price: 0
       })
-      store.emitChange()
+      // store.emitChange()
+      sendToServer()
       break;
 
     case AUDIENCE_EDIT_DESCRIPTION:
-      audiences[p.audienceIndex].description = p.description
+      project.audiences[p.audienceIndex].description = p.description
       store.emitChange();
       break;
 
     case AUDIENCE_EDIT_NAME:
-      audiences[p.audienceIndex].name = p.name
+      project.audiences[p.audienceIndex].name = p.name
       store.emitChange();
       break;
 
     case AUDIENCE_EDIT_STRATEGY:
-      audiences[p.audienceIndex].strategy = p.strategy
+      project.audiences[p.audienceIndex].strategy = p.strategy
       store.emitChange();
       break;
 
     case MONETIZATION_ADD:
-      monetizationPlans.push({name: p.name, description: "", audiences: [], price: 0, regularity: 0})
+      project.monetizationPlans.push({name: p.name, benefits: [], audiences: [], price: 0, regularity: 0})
       // 0 - fixed
       // 1 - day
       // 2 - week
@@ -147,37 +169,48 @@ Dispatcher.register((p) => {
       break
 
     case MONETIZATION_EDIT_DESCRIPTION:
-      monetizationPlans[p.monetizationIndex].description = p.description
+      project.monetizationPlans[p.monetizationIndex].benefits[p.benefitIndex] = p.benefit
+      store.emitChange()
+      break
+
+
+    case MONETIZATION_BENEFIT_ADD:
+      project.monetizationPlans[p.monetizationIndex].benefits.push(p.benefit)
+      store.emitChange()
+      break
+
+    case MONETIZATION_BENEFIT_REMOVE:
+      project.monetizationPlans[p.monetizationIndex].benefits.splice(p.benefitIndex, 1)
       store.emitChange()
       break
 
     case MONETIZATION_EDIT_NAME:
-      monetizationPlans[p.monetizationIndex].name = p.name
+      project.monetizationPlans[p.monetizationIndex].name = p.name
       store.emitChange()
       break
 
     case MONETIZATION_EDIT_PRICE:
-      monetizationPlans[p.monetizationIndex].price = p.price
+      project.monetizationPlans[p.monetizationIndex].price = p.price
       store.emitChange()
       break
 
     case MONETIZATION_AUDIENCE_ADD:
-      monetizationPlans[p.monetizationIndex].audiences.push(p.audienceIndex)
+      project.monetizationPlans[p.monetizationIndex].audiences.push(p.audienceIndex)
       store.emitChange()
       break
 
     case MONETIZATION_AUDIENCE_REMOVE:
-      monetizationPlans[p.monetizationIndex].audiences = monetizationPlans[p.monetizationIndex].audiences.filter(inc => inc!== p.audienceIndex)
+      project.monetizationPlans[p.monetizationIndex].audiences = project.monetizationPlans[p.monetizationIndex].audiences.filter(inc => inc!== p.audienceIndex)
       store.emitChange()
       break
 
     case RISK_ADD:
-      risks.push({name: p.name})
+      project.risks.push({name: p.name})
       store.emitChange()
       break;
 
     case RISK_EDIT_NAME:
-      risks[p.riskIndex].name = p.name;
+      project.risks[p.riskIndex].name = p.name;
       store.emitChange()
       break;
 
@@ -185,16 +218,7 @@ Dispatcher.register((p) => {
       var i1 = p.index1;
       var i2 = p.index2;
 
-      risks = swap(i1, i2, risks)
-
-      // if (i1 < risks.length && i2 < risks.length && i1 >= 0 && i2 >= 0) {
-      //   var r1 = risks[i1];
-      //   var r2 = risks[i2];
-      //
-      //   risks[i2] = r1
-      //   risks[i1] = r2
-      //   store.emitChange()
-      // }
+      project.risks = swap(i1, i2, project.risks)
       store.emitChange()
       break;
 

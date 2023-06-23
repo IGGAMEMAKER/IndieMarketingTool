@@ -1,5 +1,24 @@
 import actions from "./actions";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
+import {useState} from "react";
+
+function BenefitAdder({index}) {
+  var [benefit, onChange] = useState("");
+  var [needsToAdd, setNeedsToAdd] = useState(false)
+
+  if (!needsToAdd) {
+    return <button onClick={() => setNeedsToAdd(true)}>+</button>
+  }
+
+  return <div>
+    <input value={benefit} placeholder={"What will you offer?"} onChange={ev => onChange(ev.target.value) }/>
+    <button onClick={() => {
+      actions.addBenefitToMonetizationPlan(index, benefit)
+      onChange("")
+      setNeedsToAdd(false)
+    }}>Add</button>
+  </div>
+}
 
 export function MonetizationPlan({plan, index, audiences}) {
   var namePicker = <FieldPicker
@@ -9,12 +28,17 @@ export function MonetizationPlan({plan, index, audiences}) {
     normalValueRenderer={onChangeName => <b onClick={() => onChangeName(true)}>{plan.name}</b>}
   />
 
-  var descriptionPicker = <FieldPicker
-    value={plan.description}
+  var benefitPicker = plan.benefits.map((b, bIndex) => <FieldPicker
+    value={b}
     placeholder={"Describe monetization: which features / limits will you offer?"}
-    onAction={newValue => {actions.editMonetizationDescription(index, newValue)}}
-    normalValueRenderer={onChangeName => <div onClick={() => onChangeName(true)}>{plan.description}</div>}
-  />
+    onAction={newValue => {
+      if (newValue.length)
+        actions.editMonetizationDescription(index, bIndex, newValue)
+      else
+        actions.removeBenefitFromMonetizationPlan(index, bIndex)
+    }}
+    normalValueRenderer={onChangeName => <li style={{textAlign: 'left'}} onClick={() => onChangeName(true)}>{b}</li>}
+  />)
 
   var moneyPicker = <NumberPicker
     value={plan.price}
@@ -43,7 +67,8 @@ export function MonetizationPlan({plan, index, audiences}) {
 
   return <div className="Audience-item">
     <div>{namePicker}</div>
-    <div>{descriptionPicker}</div>
+    <div>{benefitPicker.length ? <ul>{benefitPicker}</ul> : ''}</div>
+    <div><BenefitAdder index={index} /></div>
 
     {!includedAudiences.length ? <div><label><br/>Who will use this plan?</label></div> : ''}
     <div><ul>{includedAudiences.map(i => <li><i style={{color: 'green'}} onClick={event => event.detail === 2 && actions.detachAudienceFromMonetizationPlan(i, index)}>{audiences[i].name}</i></li>)}</ul></div>
