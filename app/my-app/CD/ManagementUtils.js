@@ -373,6 +373,7 @@ const UpdateCodeOnServer = async (ip, updateNPMLibs = false) => {
   const ssh = await conn(ip);
 
   await gitPull(ssh, ip, updateNPMLibs, {});
+
   var check = {}
   // await ssh.exec('cd app/my-app/', [], crawlerOptions)
   //   .finally()
@@ -390,8 +391,7 @@ const UpdateCodeOnServer = async (ip, updateNPMLibs = false) => {
 }
 
 const UpdateCodeOnFrontend = async (updateNPMLibs = false) => {
-  var ip = servers.FRONTEND_IP;
-  await UpdateCodeOnServer(ip, updateNPMLibs);
+  await UpdateCodeOnServer(servers.FRONTEND_IP, updateNPMLibs);
 }
 
 const UpdateCode = async (updateNPMLibs = false) => {
