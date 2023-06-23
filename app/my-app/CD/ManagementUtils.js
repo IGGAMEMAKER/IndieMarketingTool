@@ -419,6 +419,14 @@ const StopSystem = async (forceLogStopping = false) => {
 }
 
 const RestartFrontend = async () => {
+  const ssh = new NodeSSH();
+
+  var ip = servers.FRONTEND_IP
+
+  console.log('RestartFrontend on ' + ip);
+
+  await ssh.connect(getSSHConfig(ip))
+
   var check = {}
   // await ssh.exec('cd app/my-app/', [], crawlerOptions)
   //   .finally()
