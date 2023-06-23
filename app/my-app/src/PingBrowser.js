@@ -1,12 +1,12 @@
 const request = require("superagent");
 
-const FRONTEND = 'http://indiemarketingtool.com/'
+const FRONTEND = 'http://indiemarketingtool.com'
 
 const ping = (url, picker) => {
   var t0 = new Date();
 
   return request
-    .get(FRONTEND + url)
+    .get((FRONTEND + url))
     .set('Access-Control-Allow-Origin', '*')
     .then(response => {
       var b = picker ? picker(response) : response.body;
