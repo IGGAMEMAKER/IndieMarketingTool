@@ -102,10 +102,13 @@ const getProject = async (req, res) => {
 }
 const updateProject = async (req, res) => {
   var objectId = req.params.objectId;
-  console.log({objectId}, req.body)
+  var p = req.body.project;
+  console.log({objectId}, p)
+
+  var result = await ProjectModel.updateById(objectId, p)
 
   res.json({
-    ok: '?'
+    result
   })
 }
 
