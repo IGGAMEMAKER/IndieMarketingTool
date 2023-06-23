@@ -19,6 +19,8 @@ var ProjectSchema = new Schema({
   data: mongoose.Mixed // risks, audiences, monetizationPlans, e.t.c
 })
 
+const ProjectModel = mongoose.mode("projects", ProjectSchema)
+
 // var CollectionSchema = new Schema({
 //   collectionId: String, // contractId
 //   contract_min: String, // contractId.toLowerCase()
@@ -160,7 +162,7 @@ main().catch(err => console.log(err));
 module.exports = {
   // CollectionModel,
   UserModel,
-  ProjectSchema,
+  ProjectModel,
 
   getServerConfigs,
   getCf

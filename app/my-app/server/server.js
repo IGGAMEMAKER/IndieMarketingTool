@@ -1,5 +1,10 @@
 const {app} = require('./expressGenerator')(3000);
 // const {ok, fail} = require('./DB/Response')
+const {UserModel, ProjectModel} = require('./Models')
+
+var u = new UserModel({email: '23i03g@mail.ru'})
+
+u.save().then(r => console.log({r})).catch(e => console.error({e}))
 
 app.get('/', (req, res) => {
   var appPath = __dirname.replace('server', 'build') + '/index.html'
