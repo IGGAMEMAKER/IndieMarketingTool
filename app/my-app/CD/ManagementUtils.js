@@ -4,7 +4,8 @@ const servers = require("./Configs/servers");
 const {getServerType, formatServerName} = require("./Configs/servers");
 const {NodeSSH} = require('node-ssh')
 
-const open = require('open');
+
+const open = require('open')
 const {isLogger} = require("./Configs/servers");
 
 const projectDir = '/usr/marketing/';
