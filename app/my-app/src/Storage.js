@@ -23,6 +23,9 @@ import {ping} from "./PingBrowser";
 
 const CE = 'CHANGE_EVENT';
 
+var userId = '6495f2aad151580c1f4b516a';
+var projectId = '6495f797115f0e146936e5ad'
+
 var project = {
   name: 'Indie Marketing Tool',
   type: 1, // 1 - app, 2 - game
@@ -93,6 +96,17 @@ var project = {
     },
   ]
 }
+var projectMock = {
+  name: 'NOT LOADED',
+  type: 1, // 1 - app, 2 - game
+
+  audiences: [],
+  monetizationPlans: [],
+  channels: [],
+  risks: []
+}
+
+project = projectMock
 
 class Storage extends EventEmitter {
   addChangeListener(c) {
@@ -114,6 +128,14 @@ class Storage extends EventEmitter {
   isApp = () => this.getProject().type === 1
   isGame = () => this.getProject().type === 2
 }
+
+ping('/projects/' + projectId, body => {
+  console.log({body})
+  var p = body.project;
+
+  project = p
+})
+  .finally()
 
 const store = new Storage();
 
