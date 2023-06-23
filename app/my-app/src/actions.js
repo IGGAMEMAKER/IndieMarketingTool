@@ -14,12 +14,19 @@ import {
   RISK_ADD,
   RISK_ORDER_CHANGE,
   MONETIZATION_BENEFIT_ADD,
-  MONETIZATION_BENEFIT_REMOVE, DATA_LOAD
+  MONETIZATION_BENEFIT_REMOVE, PROJECT_LOAD, PROJECT_SAVE
 } from './constants/actionConstants';
 
 export function loadProject() {
   Dispatcher.dispatch({
-    actionType: DATA_LOAD
+    actionType: PROJECT_LOAD
+  })
+}
+
+export function saveProject(project) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_SAVE,
+    project
   })
 }
 

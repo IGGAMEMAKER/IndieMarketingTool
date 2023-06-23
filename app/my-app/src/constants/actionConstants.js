@@ -1,4 +1,5 @@
-export const DATA_LOAD = 'DATA_LOAD'
+export const PROJECT_LOAD = 'PROJECT_LOAD'
+export const PROJECT_SAVE = 'PROJECT_SAVE'
 
 export const AUDIENCE_ADD = 'AUDIENCE_ADD'
 export const AUDIENCE_EDIT_NAME = 'AUDIENCE_EDIT_NAME'

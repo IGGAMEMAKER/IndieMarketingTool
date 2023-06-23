@@ -25,6 +25,29 @@ const ping = (url, picker) => {
     })
 }
 
+const update = (url, picker) => {
+  var t0 = new Date();
+
+  return request
+    .put((FRONTEND + url))
+    .set('Access-Control-Allow-Origin', '*')
+    .then(response => {
+      var b = picker ? picker(response) : response.body;
+
+      var t1 = new Date();
+      var diff_ms = t1.getTime() - t0.getTime();
+
+      // console.log('Data update took ' + diff_ms + 'ms');
+
+      return b;
+    })
+    .catch(err => {
+      //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
+
+      return [];
+    })
+}
+
 const post = (url, parameters = {}) => {
   return request
     .post(FRONTEND + url)
@@ -43,4 +66,5 @@ const post = (url, parameters = {}) => {
 module.exports = {
   ping,
   post,
+  update
 };

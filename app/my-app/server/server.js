@@ -100,9 +100,18 @@ const getProject = async (req, res) => {
     project: p,
   })
 }
+const updateProject = async (req, res) => {
+  var objectId = req.params.objectId;
+  console.log({objectId}, req.body)
+
+  res.json({
+    ok: '?'
+  })
+}
 
 app.post('/user', createUser)
 app.post('/project', createProject)
+app.put('/project/:objectId', updateProject)
 
 app.get('/projects/:objectId', getProject)
 

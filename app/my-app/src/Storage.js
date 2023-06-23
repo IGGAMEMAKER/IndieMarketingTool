@@ -15,9 +15,9 @@ import {
   RISK_EDIT_NAME,
   RISK_ADD,
   RISK_ORDER_CHANGE,
-  MONETIZATION_BENEFIT_ADD, MONETIZATION_BENEFIT_REMOVE, DATA_LOAD
+  MONETIZATION_BENEFIT_ADD, MONETIZATION_BENEFIT_REMOVE, PROJECT_LOAD, PROJECT_SAVE
 } from "./constants/actionConstants";
-import {ping} from "./PingBrowser";
+import {ping, update} from "./PingBrowser";
 // import {ping} from "./PingBrowser";
 // import actions from "./actions";
 
@@ -26,76 +26,6 @@ const CE = 'CHANGE_EVENT';
 var userId = '6495f2aad151580c1f4b516a';
 var projectId = '6495f797115f0e146936e5ad'
 
-var project = {
-  name: 'Indie Marketing Tool',
-  type: 1, // 1 - app, 2 - game
-
-  audiences: [
-    {
-      name: "Veteran gamedevs",
-      description: "Already wasted years and dont want repetition",
-      strategy: "DM low review game devs on Steam \nPostmortems",
-    },
-    // {
-    //   name: "Veteran devs",
-    //   description: "Already wasted years and dont want repetition",
-    //   strategy: ["Search by Postmortem posts"],
-    //   price: 25
-    // },
-    {
-      name: "Newbie gamedevs",
-      description: "Think their game will be an exception",
-      strategy: "through influencers via marketing 101 tutorials",
-    },
-    // {
-    //   name: 'Newbie devs',
-    //   description: 'Think their game will be an exception',
-    //   strategy: ['through influencers via marketing 101 tutorials'],
-    //   price: 10
-    // },
-    {
-      name: 'Devs',
-      description: 'Sublime. Play with ideas and quit fast',
-      strategy: "through blogs",
-    },
-  ],
-
-  monetizationPlans: [
-    {name: 'Demo', benefits: ['1 Full project?', "10 Free projects (basic functions)"], audiences: [2], price: 0},
-    {name: 'Basic', benefits: ['10 Projects', 'additional features?'], audiences: [1], price: 10},
-    {name: 'Pro', benefits: ['∞ Projects', 'even more features?'], audiences: [0], price: 25},
-    // {name: 'Enterprise',   description: '100 Projects + even more features?', audiences: []},
-  ],
-
-  channels: [
-    {name: 'SoloMyth', users: 2000, link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
-    {name: 'Songs', users: 100, link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
-    {
-      name: 'gamedev',
-      users: 10000,
-      link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'
-    },
-    {name: 'Similar product', users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
-  ],
-
-  risks: [
-    {
-      name: "Won't be interested enough",
-    },
-    {
-      name: "Won't understand",
-    },
-    {
-      name: "Won't buy it"
-    },
-    {
-      name: "Won't like it"
-    },
-    {
-      name: "Won't recommend it"
-    },
-  ]
-}
 var projectMock = {
   name: 'NOT LOADED',
   type: 1, // 1 - app, 2 - game
@@ -106,7 +36,7 @@ var projectMock = {
   risks: []
 }
 
-project = projectMock
+var project = projectMock
 
 class Storage extends EventEmitter {
   addChangeListener(c) {
@@ -151,8 +81,19 @@ Dispatcher.register((p) => {
     })
       .finally(() => console.log('FINALLY'))
   }
+  const saveProjectChanges = () => {
+    update('/projects/' + projectId, data => {
+      console.log({body: data.body})
+      // var p = data.body.project;
+      //
+      // project = p
+    })
+      .finally(() => {
+        store.emitChange()
+      })
+  }
   switch (p.actionType) {
-    case DATA_LOAD:
+    case PROJECT_LOAD:
       ping('/projects/' + projectId, data => {
         console.log({body: data.body})
         var p = data.body.project;
@@ -163,6 +104,10 @@ Dispatcher.register((p) => {
           store.emitChange()
         })
       break
+
+
+
+
     case AUDIENCE_ADD:
       project.audiences.push({
         name: p.name,
@@ -171,7 +116,8 @@ Dispatcher.register((p) => {
         price: 0
       })
       // store.emitChange()
-      sendToServer()
+      // sendToServer()
+      saveProjectChanges()
       break;
 
     case AUDIENCE_EDIT_DESCRIPTION:
