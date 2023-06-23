@@ -1,7 +1,10 @@
 const {app} = require('./expressGenerator')(3000);
 // const {ok, fail} = require('./DB/Response')
 const {UserModel, ProjectModel} = require('./Models')
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
+
+// var ObjectId = require('mongodb').ObjectId
+var ObjectId = require('mongoose').Types.ObjectId;
 
 var u = new UserModel({email: '23i03g@mail.ru'})
 
@@ -10,7 +13,7 @@ u.save().then(r => console.log({r})).catch(e => console.error({e}))
 var project = new ProjectModel({
   name: 'Indie Marketing Tool',
   type: 1, // 1 - app, 2 - game
-  ownerId: new mongoose.objectId("6495f2aad151580c1f4b516a"), // mongoose.objectId("6495f2aad151580c1f4b516a"),
+  ownerId: new ObjectId("6495f2aad151580c1f4b516a"), // mongoose.objectId("6495f2aad151580c1f4b516a"),
 
   audiences: [
     {
