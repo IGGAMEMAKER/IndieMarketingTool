@@ -19,6 +19,7 @@ var ProjectSchema = new Schema({
   data: mongoose.Mixed // risks, audiences, monetizationPlans, e.t.c
 })
 
+
 const ProjectModel = mongoose.model("projects", ProjectSchema)
 
 // var CollectionSchema = new Schema({
