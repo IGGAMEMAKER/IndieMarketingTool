@@ -39,7 +39,6 @@
     ]
   },
   "devDependencies": {
-    "node-ssh": "^13.1.0",
-    "open": "^9.1.0"
+    "node-ssh": "^13.1.0"
   }
 }
