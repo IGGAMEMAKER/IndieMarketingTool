@@ -374,9 +374,9 @@ const UpdateCodeOnServer = async (ip, updateNPMLibs = false) => {
 
   await gitPull(ssh, ip, updateNPMLibs, {});
   var check = {}
-  await ssh.exec('cd app/my-app', [], crawlerOptions)
-    .finally()
-  await ssh.exec('npm run build', [], crawlerOptions)
+  // await ssh.exec('cd app/my-app/', [], crawlerOptions)
+  //   .finally()
+  await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
     .then(r => {
       check['pull'] = true;
 
