@@ -107,6 +107,8 @@ const updateProject = async (req, res) => {
 
   var result = await ProjectModel.findByIdAndUpdate(objectId, p)
 
+  console.log({result})
+
   res.json({
     result
   })

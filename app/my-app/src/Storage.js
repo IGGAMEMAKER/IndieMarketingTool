@@ -117,17 +117,17 @@ Dispatcher.register((p) => {
 
     case AUDIENCE_EDIT_DESCRIPTION:
       project.audiences[p.audienceIndex].description = p.description
-      store.emitChange();
+      saveProjectChanges();
       break;
 
     case AUDIENCE_EDIT_NAME:
       project.audiences[p.audienceIndex].name = p.name
-      store.emitChange();
+      saveProjectChanges();
       break;
 
     case AUDIENCE_EDIT_STRATEGY:
       project.audiences[p.audienceIndex].strategy = p.strategy
-      store.emitChange();
+      saveProjectChanges();
       break;
 
     case MONETIZATION_ADD:
@@ -137,53 +137,53 @@ Dispatcher.register((p) => {
       // 2 - week
       // 3 - month
       // 4 - year
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case MONETIZATION_EDIT_DESCRIPTION:
       project.monetizationPlans[p.monetizationIndex].benefits[p.benefitIndex] = p.benefit
-      store.emitChange()
+      saveProjectChanges()
       break
 
 
     case MONETIZATION_BENEFIT_ADD:
       project.monetizationPlans[p.monetizationIndex].benefits.push(p.benefit)
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case MONETIZATION_BENEFIT_REMOVE:
       project.monetizationPlans[p.monetizationIndex].benefits.splice(p.benefitIndex, 1)
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case MONETIZATION_EDIT_NAME:
       project.monetizationPlans[p.monetizationIndex].name = p.name
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case MONETIZATION_EDIT_PRICE:
       project.monetizationPlans[p.monetizationIndex].price = p.price
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case MONETIZATION_AUDIENCE_ADD:
       project.monetizationPlans[p.monetizationIndex].audiences.push(p.audienceIndex)
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case MONETIZATION_AUDIENCE_REMOVE:
       project.monetizationPlans[p.monetizationIndex].audiences = project.monetizationPlans[p.monetizationIndex].audiences.filter(inc => inc!== p.audienceIndex)
-      store.emitChange()
+      saveProjectChanges()
       break
 
     case RISK_ADD:
       project.risks.push({name: p.name})
-      store.emitChange()
+      saveProjectChanges()
       break;
 
     case RISK_EDIT_NAME:
       project.risks[p.riskIndex].name = p.name;
-      store.emitChange()
+      saveProjectChanges()
       break;
 
     case RISK_ORDER_CHANGE:
@@ -191,7 +191,7 @@ Dispatcher.register((p) => {
       var i2 = p.index2;
 
       project.risks = swap(i1, i2, project.risks)
-      store.emitChange()
+      saveProjectChanges()
       break;
 
     default:
