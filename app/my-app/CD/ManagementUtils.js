@@ -434,8 +434,6 @@ const StopSystem = async (forceLogStopping = false) => {
 }
 
 const RestartFrontend = async () => {
-  // await RunService(servers.FRONTEND_IP, 'index', 'FR')
-
   const url = frontendURL
   console.log('Trying to open', url);
 
