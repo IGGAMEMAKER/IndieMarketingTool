@@ -465,7 +465,7 @@ const RunSystem = async () => {
   // await sleep(3)
 
   // DB
-  await RunService(servers.DB_IP, 'DB', 'DB');
+  await RunService(servers.DB_IP, 'server/server', 'DB');
   await sleep(60);
 
   // FRONTEND
