@@ -105,7 +105,7 @@ const updateProject = async (req, res) => {
   var p = req.body.project;
   console.log({objectId}, p)
 
-  var result = await ProjectModel.updateById(objectId, p)
+  var result = await ProjectModel.findOneAndUpdate(objectId, p)
 
   res.json({
     result
