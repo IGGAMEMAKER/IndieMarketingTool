@@ -11,7 +11,7 @@ const projectDir = '/usr/marketing/';
 const projectName = 'IndieMarketingTool'
 const gitPath = `${projectDir}${projectName}`;
 
-const frontendURL = 'indiemarketingtool.com'
+const frontendURL = 'http://indiemarketingtool.com'
 
 const {gitUsername, gitToken} = require('./Configs/Passwords');
 
