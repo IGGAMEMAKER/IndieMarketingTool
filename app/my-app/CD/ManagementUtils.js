@@ -11,6 +11,8 @@ const projectDir = '/usr/marketing/';
 const projectName = 'IndieMarketingTool'
 const gitPath = `${projectDir}${projectName}`;
 
+const frontendURL = 'indiemarketingtool.com'
+
 const {gitUsername, gitToken} = require('./Configs/Passwords');
 
 const printStdOut = chunk => {
@@ -434,13 +436,13 @@ const StopSystem = async (forceLogStopping = false) => {
 const RestartFrontend = async () => {
   // await RunService(servers.FRONTEND_IP, 'index', 'FR')
 
-  const url = 'http://' + servers.FRONTEND;
+  const url = frontendURL
   console.log('Trying to open', url);
 
   await countdown(2);
 
   console.log('You can start using website');
-  // await open(url);
+  await open(url);
 }
 
 const countdown = async seconds => {
@@ -478,7 +480,7 @@ const RunSystem = async () => {
 
   // DB
   await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
-  await sleep(10);
+  // await sleep(10);
 
   // FRONTEND
   await RestartFrontend();
