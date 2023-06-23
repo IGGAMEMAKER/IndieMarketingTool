@@ -375,21 +375,6 @@ const UpdateCodeOnServer = async (ip, updateNPMLibs = false) => {
   const ssh = await conn(ip);
 
   await gitPull(ssh, ip, updateNPMLibs, {});
-
-  var check = {}
-  // await ssh.exec('cd app/my-app/', [], crawlerOptions)
-  //   .finally()
-  await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
-    .then(r => {
-      check['pull'] = true;
-
-      console.log('BUILT')
-    })
-    .catch(err => {
-      check['pull'] = false;
-
-      logError(check, 'BUILD failed', err);
-    })
 }
 
 const UpdateCodeOnFrontend = async (updateNPMLibs = false) => {
@@ -434,6 +419,21 @@ const StopSystem = async (forceLogStopping = false) => {
 }
 
 const RestartFrontend = async () => {
+  var check = {}
+  // await ssh.exec('cd app/my-app/', [], crawlerOptions)
+  //   .finally()
+  await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
+    .then(r => {
+      check['pull'] = true;
+
+      console.log('BUILT')
+    })
+    .catch(err => {
+      check['pull'] = false;
+
+      logError(check, 'BUILD failed', err);
+    })
+
   const url = frontendURL
   console.log('Trying to open', url);
 
