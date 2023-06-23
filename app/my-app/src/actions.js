@@ -14,9 +14,14 @@ import {
   RISK_ADD,
   RISK_ORDER_CHANGE,
   MONETIZATION_BENEFIT_ADD,
-  MONETIZATION_BENEFIT_REMOVE
+  MONETIZATION_BENEFIT_REMOVE, DATA_LOAD
 } from './constants/actionConstants';
 
+export function loadProject() {
+  Dispatcher.dispatch({
+    actionType: DATA_LOAD
+  })
+}
 
 export function addAudience(name) {
   Dispatcher.dispatch({
@@ -140,6 +145,8 @@ export function changeRiskOrder(index1, index2) {
 }
 
 export default {
+  loadProject,
+
   addAudience,
   editAudienceName,
   editAudienceDescription,

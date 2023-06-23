@@ -15,7 +15,7 @@ import {
   RISK_EDIT_NAME,
   RISK_ADD,
   RISK_ORDER_CHANGE,
-  MONETIZATION_BENEFIT_ADD, MONETIZATION_BENEFIT_REMOVE
+  MONETIZATION_BENEFIT_ADD, MONETIZATION_BENEFIT_REMOVE, DATA_LOAD
 } from "./constants/actionConstants";
 import {ping} from "./PingBrowser";
 // import {ping} from "./PingBrowser";
@@ -129,14 +129,6 @@ class Storage extends EventEmitter {
   isGame = () => this.getProject().type === 2
 }
 
-ping('/projects/' + projectId, body => {
-  console.log({body})
-  var p = body.project;
-
-  project = p
-})
-  .finally()
-
 const store = new Storage();
 
 const swap = (i1, i2, array) => {
@@ -160,6 +152,17 @@ Dispatcher.register((p) => {
       .finally(() => console.log('FINALLY'))
   }
   switch (p.actionType) {
+    case DATA_LOAD:
+      ping('/projects/' + projectId, data => {
+        console.log({body: data.body})
+        var p = data.body.project;
+
+        project = p
+      })
+        .finally(() => {
+          store.emitChange()
+        })
+      break
     case AUDIENCE_ADD:
       project.audiences.push({
         name: p.name,

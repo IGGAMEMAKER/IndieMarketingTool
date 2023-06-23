@@ -2,7 +2,7 @@
 import './App.css';
 import {Component, useState} from 'react';
 import storage from './Storage'
-import actions from './actions'
+import actions, {loadProject} from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
@@ -213,6 +213,7 @@ class App extends Component {
     })
 
     this.copyState()
+    actions.loadProject()
   }
 
   render() {
