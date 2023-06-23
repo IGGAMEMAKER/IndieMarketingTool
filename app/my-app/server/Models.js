@@ -19,7 +19,7 @@ var ProjectSchema = new Schema({
   data: mongoose.Mixed // risks, audiences, monetizationPlans, e.t.c
 })
 
-const ProjectModel = mongoose.mode("projects", ProjectSchema)
+const ProjectModel = mongoose.model("projects", ProjectSchema)
 
 // var CollectionSchema = new Schema({
 //   collectionId: String, // contractId
