@@ -111,7 +111,7 @@ const updateProject = async (req, res) => {
 
 app.post('/user', createUser)
 app.post('/project', createProject)
-app.put('/project/:objectId', updateProject)
+app.put('/projects/:objectId', updateProject)
 
 app.get('/projects/:objectId', getProject)
 
