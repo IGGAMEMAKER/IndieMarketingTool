@@ -8,7 +8,8 @@ const {NodeSSH} = require('node-ssh')
 const {isLogger} = require("./Configs/servers");
 
 const projectDir = '/usr/marketing/';
-const gitPath = `${projectDir}IndieMarketingTool`;
+const projectName = 'IndieMarketingTool'
+const gitPath = `${projectDir}${projectName}`;
 
 const {gitUsername, gitToken} = require('./Configs/Passwords');
 
@@ -157,25 +158,22 @@ const uploadAndLog = async (ssh, local, remote, filename) => {
 }
 
 const uploadConfigs = async (ssh, ip, check = {}) => {
+  var pathToConfigs = gitPath + '/app/my-app/CD'
   // Main Configs
-  await uploadAndLog(ssh, './Configs/confs.json', gitPath + '/Configs/confs.json', 'confs.json')
-  // await ssh.exec(`rm ${projectDir}/Configs/Configs.js`, [], crawlerOptions)
-  //   .catch(err => err);
-
-  // await uploadAndLog(ssh, './Configs/Configs.js', gitPath + '/Configs/Configs.js', 'Configs.js')
+  await uploadAndLog(ssh, './Configs/confs.json', pathToConfigs + '/Configs/confs.json', 'confs.json')
 
   // Passwords.js
-  await uploadAndLog(ssh, './Configs/Passwords.js', gitPath + '/Configs/Passwords.js', 'Passwords.js')
+  await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js', 'Passwords.js')
 
   // hosts.json
-  await uploadAndLog(ssh, './Configs/hosts.json', gitPath + '/Configs/hosts.json', 'hosts.json')
+  await uploadAndLog(ssh, './Configs/hosts.json', pathToConfigs + '/Configs/hosts.json', 'hosts.json')
 
   // Server IP
   const myHost = `./Configs/myHost-${ip}.js`;
   const content = `module.exports = { ip: "${ip}" };` // module.exports = { ip: 'http://localhost' };
   fs.writeFileSync(myHost, content)
 
-  await uploadAndLog(ssh, myHost, gitPath + '/Configs/myHost.js', 'myHost.js')
+  await uploadAndLog(ssh, myHost, pathToConfigs + '/Configs/myHost.js', 'myHost.js')
 }
 
 const gitPull = async (ssh, ip, updateNPMLibs = false, check = {}) => {
@@ -326,7 +324,7 @@ const encodeToken = str => {
   return str;
 }
 const cloneRepo = async (ssh) => {
-  const clone = `git clone https://${encodeToken(gitToken)}@github.com/${gitUsername}/OpenseaCrawler.git`
+  const clone = `git clone https://${encodeToken(gitToken)}@github.com/${gitUsername}/${projectName}.git`
 
   console.log('trying to clone', clone);
 
@@ -516,12 +514,6 @@ const HealthCheck = () => {
       .then(async r => {
         console.log(formatServerName(ip));
         console.log(r)
-
-        /*const command = `cat ${gitPath}/Configs/IPs.js`;
-
-        await ssh.exec(command, [], { onStderr, onStdout: printStdOut })
-          .then(r => console.log)
-          .catch(err => console.error)*/
       })
   })
 }
