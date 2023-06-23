@@ -71,7 +71,7 @@ function RiskView({risk, index}) {
   var renderer = onChange => {
     var up = <button onClick={() => actions.changeRiskOrder(index, index -1)}>Up</button>
     var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
-    return <div><span onClick={() => onChange(true)}>{risk.name}</span></div> // {up} {down}
+    return <div><span onClick={() => onChange(true)}>{risk.name}</span>{up} {down}</div> // {up} {down}
   }
 
   return (
