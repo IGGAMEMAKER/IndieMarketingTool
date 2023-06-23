@@ -1,6 +1,7 @@
 const {app} = require('./expressGenerator')(3000);
 // const {ok, fail} = require('./DB/Response')
 const {UserModel, ProjectModel} = require('./Models')
+const mongoose = require('mongoose')
 
 var u = new UserModel({email: '23i03g@mail.ru'})
 
@@ -9,6 +10,7 @@ u.save().then(r => console.log({r})).catch(e => console.error({e}))
 var project = new ProjectModel({
   name: 'Indie Marketing Tool',
   type: 1, // 1 - app, 2 - game
+  ownerId: new mongoose.objectId("6495f2aad151580c1f4b516a"), // mongoose.objectId("6495f2aad151580c1f4b516a"),
 
   audiences: [
     {
@@ -41,17 +43,21 @@ var project = new ProjectModel({
   ],
 
   monetizationPlans: [
-    {name: 'Demo',  benefits: ['1 Full project?', "10 Free projects (basic functions)"], audiences: [2], price: 0},
+    {name: 'Demo', benefits: ['1 Full project?', "10 Free projects (basic functions)"], audiences: [2], price: 0},
     {name: 'Basic', benefits: ['10 Projects', 'additional features?'], audiences: [1], price: 10},
-    {name: 'Pro',   benefits: ['∞ Projects', 'even more features?'], audiences: [0], price: 25},
+    {name: 'Pro', benefits: ['∞ Projects', 'even more features?'], audiences: [0], price: 25},
     // {name: 'Enterprise',   description: '100 Projects + even more features?', audiences: []},
   ],
 
   channels: [
-    {name: 'SoloMyth', users: 2000,  link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
-    {name: 'Songs',    users: 100,   link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
-    {name: 'gamedev',  users: 10000, link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'},
-    {name: 'Similar product',  users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
+    {name: 'SoloMyth', users: 2000, link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
+    {name: 'Songs', users: 100, link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
+    {
+      name: 'gamedev',
+      users: 10000,
+      link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'
+    },
+    {name: 'Similar product', users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
   ],
 
   risks: [
@@ -70,7 +76,7 @@ var project = new ProjectModel({
     {
       name: "Won't recommend it"
     },
-  ],
+  ]
 })
 
 project.save().then(r => console.log({r})).catch(e => console.error({e}))

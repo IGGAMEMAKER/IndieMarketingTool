@@ -58,17 +58,21 @@ var project = {
   ],
 
   monetizationPlans: [
-    {name: 'Demo',  benefits: ['1 Full project?', "10 Free projects (basic functions)"], audiences: [2], price: 0},
+    {name: 'Demo', benefits: ['1 Full project?', "10 Free projects (basic functions)"], audiences: [2], price: 0},
     {name: 'Basic', benefits: ['10 Projects', 'additional features?'], audiences: [1], price: 10},
-    {name: 'Pro',   benefits: ['∞ Projects', 'even more features?'], audiences: [0], price: 25},
+    {name: 'Pro', benefits: ['∞ Projects', 'even more features?'], audiences: [0], price: 25},
     // {name: 'Enterprise',   description: '100 Projects + even more features?', audiences: []},
   ],
 
   channels: [
-    {name: 'SoloMyth', users: 2000,  link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
-    {name: 'Songs',    users: 100,   link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
-    {name: 'gamedev',  users: 10000, link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'},
-    {name: 'Similar product',  users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
+    {name: 'SoloMyth', users: 2000, link: 'https://www.youtube.com/watch?v=YaUdstkv1RE'},
+    {name: 'Songs', users: 100, link: 'https://www.youtube.com/watch?v=qErChNhYAN8'},
+    {
+      name: 'gamedev',
+      users: 10000,
+      link: 'https://www.reddit.com/r/gamedev/comments/n4nvfa/project_management_tool/'
+    },
+    {name: 'Similar product', users: 400, link: 'https://www.reddit.com/user/bohlenlabs/'}
   ],
 
   risks: [
@@ -87,7 +91,7 @@ var project = {
     {
       name: "Won't recommend it"
     },
-  ],
+  ]
 }
 
 class Storage extends EventEmitter {
@@ -100,10 +104,12 @@ class Storage extends EventEmitter {
   }
 
   getProject = () => project;
-  getAudiences = () => this.getProject().audiences
-  getMonetizationPlans = () => this.getProject().monetizationPlans
-  getChannels = () => this.getProject().channels
-  getRisks = () => this.getProject().risks
+  getData = () => this.getProject()
+
+  getAudiences          = () => this.getData().audiences
+  getMonetizationPlans  = () => this.getData().monetizationPlans
+  getChannels           = () => this.getData().channels
+  getRisks              = () => this.getData().risks
 
   isApp = () => this.getProject().type === 1
   isGame = () => this.getProject().type === 2
