@@ -65,10 +65,10 @@ export function MonetizationPlan({plan, index, audiences}) {
     </div>
   }
 
+  var adder = <BenefitAdder index={index} />
   return <div className="Audience-item">
     <div>{namePicker}</div>
-    <div>{benefitPicker.length ? <ul>{benefitPicker}</ul> : ''}</div>
-    <div><BenefitAdder index={index} /></div>
+    <div>{benefitPicker.length ? <ul>{benefitPicker}<li style={{textAlign: 'left'}}>{adder}</li></ul> : adder}</div>
 
     {!includedAudiences.length ? <div><label><br/>Who will use this plan?</label></div> : ''}
     <div><ul>{includedAudiences.map(i => <li><i style={{color: 'green'}} onClick={event => event.detail === 2 && actions.detachAudienceFromMonetizationPlan(i, index)}>{audiences[i].name}</i></li>)}</ul></div>

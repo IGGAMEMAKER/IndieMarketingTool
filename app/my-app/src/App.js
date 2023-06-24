@@ -6,6 +6,7 @@ import actions, {loadProject} from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
+import {FieldAdder} from "./FieldAdder";
 
 function AudienceAdder({}) {
   const [audienceName, onChangeName] = useState("");
@@ -64,14 +65,35 @@ function Channel({link, name, users}) {
 
 function RiskList({risks}) {
   return (
-    <ul>{risks.map((r, index) => <RiskView risk={r} index={index} />)}</ul>
+    <ul>
+      {risks.map((r, index) => <RiskView risk={r} index={index} />)}
+      <li><RiskAdder /></li>
+    </ul>
   )
 }
 function RiskView({risk, index}) {
+  var [willSolve, setSolved] = useState(false)
+
   var renderer = onChange => {
     var up = <button onClick={() => actions.changeRiskOrder(index, index -1)}>Up</button>
     var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
-    return <div><span onClick={() => onChange(true)}>{risk.name}</span></div> // {up} {down}
+
+    var solutions = risk.solutions || []
+
+    return <div>
+      <span onClick={() => onChange(true)}>{risk.name}</span>
+      <ul>
+        {solutions.map((s, solutionIndex) => <li>
+          <FieldPicker
+            value={s}
+            // normalValueRenderer={renderer}
+            placeholder={"Solution"}
+            onAction={val => actions.editRiskSolution(index, solutionIndex, val)}
+          />
+        </li>)}
+        <RiskSolutionAdder riskIndex={index} />
+      </ul>
+    </div> // {up} {down}
   }
 
   return (
@@ -124,7 +146,7 @@ function AudienceSourcesPanel({channels}) {
 function RisksPanel({risks}) {
   return <div>
     <br />
-    What are your biggest risks? <RiskAdder />
+    What are your biggest risks?
     <br />
     <br />
     <div className="Container">
@@ -150,6 +172,32 @@ function RiskAdder({}) {
       <button onClick={() => {actions.addRisk(name); onChangeName("")}}>ADD</button>
     </div>
   )
+}
+
+function RiskSolutionAdder({riskIndex}) {
+  return <li className="Risk-item">
+    <FieldAdder
+      onAdd={v => {actions.addRiskSolution(riskIndex, v)}}
+      defaultValue={""}
+      placeholder={"Solution"}
+    />
+  </li>
+
+  // const [name, onChangeName] = useState("");
+  //
+  // return (
+  //   <li className="Risk-item">
+  //     <textarea
+  //       value={name}
+  //       onChange={event => {
+  //         var v = event.target.value
+  //         console.log({v})
+  //         onChangeName(v)
+  //       }}
+  //     />
+  //     <button onClick={() => {actions.addRiskSolution(riskIndex, name); onChangeName("")}}>ADD</button>
+  //   </li>
+  // )
 }
 
 function MonetizationPanel({plans, audiences}) {

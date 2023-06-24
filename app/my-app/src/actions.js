@@ -14,7 +14,7 @@ import {
   RISK_ADD,
   RISK_ORDER_CHANGE,
   MONETIZATION_BENEFIT_ADD,
-  MONETIZATION_BENEFIT_REMOVE, PROJECT_LOAD, PROJECT_SAVE
+  MONETIZATION_BENEFIT_REMOVE, PROJECT_LOAD, PROJECT_SAVE, RISK_SOLUTION_ADD, RISK_SOLUTION_EDIT
 } from './constants/actionConstants';
 
 export function loadProject() {
@@ -143,6 +143,23 @@ export function addRisk(name) {
   })
 }
 
+export function addRiskSolution(riskIndex, solution) {
+  Dispatcher.dispatch({
+    actionType: RISK_SOLUTION_ADD,
+    riskIndex,
+    solution
+  })
+}
+
+export function editRiskSolution(riskIndex, solutionIndex, solution) {
+  Dispatcher.dispatch({
+    actionType: RISK_SOLUTION_EDIT,
+    riskIndex,
+    solutionIndex,
+    solution
+  })
+}
+
 export function changeRiskOrder(index1, index2) {
   Dispatcher.dispatch({
     actionType: RISK_ORDER_CHANGE,
@@ -162,7 +179,6 @@ export default {
   addMonetizationPlan,
   editMonetizationName,
   editMonetizationPrice,
-
   editMonetizationDescription,
   addBenefitToMonetizationPlan,
   removeBenefitFromMonetizationPlan,
@@ -171,6 +187,8 @@ export default {
   detachAudienceFromMonetizationPlan,
 
   addRisk,
+  addRiskSolution,
+  editRiskSolution,
   editRiskName,
   changeRiskOrder,
 }

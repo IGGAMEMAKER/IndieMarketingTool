@@ -15,7 +15,12 @@ import {
   RISK_EDIT_NAME,
   RISK_ADD,
   RISK_ORDER_CHANGE,
-  MONETIZATION_BENEFIT_ADD, MONETIZATION_BENEFIT_REMOVE, PROJECT_LOAD, PROJECT_SAVE
+  MONETIZATION_BENEFIT_ADD,
+  MONETIZATION_BENEFIT_REMOVE,
+  PROJECT_LOAD,
+  PROJECT_SAVE,
+  RISK_SOLUTION_EDIT,
+  RISK_SOLUTION_ADD
 } from "./constants/actionConstants";
 import {ping, update} from "./PingBrowser";
 // import {ping} from "./PingBrowser";
@@ -177,9 +182,29 @@ Dispatcher.register((p) => {
       break
 
     case RISK_ADD:
-      project.risks.push({name: p.name})
+      project.risks.push({name: p.name, solutions: []})
       saveProjectChanges()
       break;
+
+    case RISK_SOLUTION_ADD:
+      var r = project.risks[p.riskIndex]
+      if (!r.solutions)
+        r.solutions = []
+
+      r.solutions.push(p.solution)
+      saveProjectChanges()
+      break;
+
+    case RISK_SOLUTION_EDIT:
+      var r = project.risks[p.riskIndex]
+      if (!r.solutions)
+        r.solutions = []
+
+      r.solutions[p.solutionIndex] = p.solution
+      saveProjectChanges()
+      break;
+
+
 
     case RISK_EDIT_NAME:
       project.risks[p.riskIndex].name = p.name;

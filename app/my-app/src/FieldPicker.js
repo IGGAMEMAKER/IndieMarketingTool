@@ -4,8 +4,12 @@ export function FieldPicker({value, onAction, placeholder, normalValueRenderer})
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
 
-  if (value.length && !editName)
+  if (value.length && !editName) {
+    if (!normalValueRenderer)
+      return <span onClick={onChangeName}>{value}</span>
+
     return normalValueRenderer(onChangeName)
+  }
 
   var saveButton = ''
   if (newValue?.length || value?.length) {
