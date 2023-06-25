@@ -1,4 +1,5 @@
 export const PROJECT_LOAD = 'PROJECT_LOAD'
+export const PROFILE_LOAD = 'PROFILE_LOAD'
 export const PROJECT_SAVE = 'PROJECT_SAVE'
 
 export const AUDIENCE_ADD = 'AUDIENCE_ADD'

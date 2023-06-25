@@ -96,7 +96,7 @@ const getUserInfoMiddleware = (req, res, next) => {
 }
 
 const createUser = async (req, res) => {}
-const getUserProjects = async (req, res) => {
+const getProfile = async (req, res) => {
   ProjectModel.find({ownerId: new ObjectId(req.userId)})
     .then(projects => {
       res.json({
@@ -192,7 +192,7 @@ app.get('/pricing', renderSPA)
 // ---------------- API ------------------------
 app.post('/api/user', createUser)
 
-app.get ('/api/projects', getUserInfoMiddleware, getUserProjects)
+app.get ('/api/profile', getUserInfoMiddleware, getProfile)
 app.post('/api/projects', getUserInfoMiddleware, createProject)
 
 app.get('/api/projects/:objectId', getProject)

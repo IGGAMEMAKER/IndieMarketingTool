@@ -9,6 +9,7 @@ import {FieldPicker} from "./FieldPicker";
 import {FieldAdder} from "./FieldAdder";
 // import { BrowserRouter } from 'react-router-dom';
 import {Routes, Route, Link} from 'react-router-dom';
+import {ping} from "./PingBrowser";
 
 function AudienceAdder({}) {
   const [audienceName, onChangeName] = useState("");
@@ -357,10 +358,42 @@ class MainPage extends Component {
 }
 
 
+// class ProjectAdder extends Component {
+//
+// }
 class ProfilePage extends Component {
+  state = {
+    projectIDs: [],
+  }
+
+  // copyState = () => {
+  //   this.setState({
+  //     audiences:          storage.getAudiences(),
+  //   })
+  // }
+  componentWillMount() {
+    storage.addChangeListener(() => {
+      console.log('store listener')
+
+      // this.copyState()
+    })
+
+    ping('/api/profile', response => {
+      this.setState({
+        projectIDs: response.projectIDs
+      })
+    })
+      .finally(() => {
+        console.log('WENT TO SERVER FOR PROFILE PAGE')
+      })
+
+    // this.copyState()
+    // actions.loadProject()
+  }
   render() {
     var projectIDs = [{id: '6495f797115f0e146936e5ad', name: 'MY APP'}]
     return <div>
+
       <ProjectList projectIDs={projectIDs} />
     </div>
   }
