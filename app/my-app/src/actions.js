@@ -7,14 +7,20 @@ import {
   MONETIZATION_ADD,
   MONETIZATION_AUDIENCE_ADD,
   MONETIZATION_AUDIENCE_REMOVE,
-  MONETIZATION_EDIT_DESCRIPTION,
+  MONETIZATION_EDIT_BENEFIT,
   MONETIZATION_EDIT_NAME,
   MONETIZATION_EDIT_PRICE,
   RISK_EDIT_NAME,
   RISK_ADD,
   RISK_ORDER_CHANGE,
   MONETIZATION_BENEFIT_ADD,
-  MONETIZATION_BENEFIT_REMOVE, PROJECT_LOAD, PROJECT_SAVE, RISK_SOLUTION_ADD, RISK_SOLUTION_EDIT
+  MONETIZATION_BENEFIT_REMOVE,
+  PROJECT_LOAD,
+  PROJECT_SAVE,
+  RISK_SOLUTION_ADD,
+  RISK_SOLUTION_EDIT,
+  RISK_REMOVE,
+  RISK_SOLUTION_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE
 } from './constants/actionConstants';
 
 export function loadProject() {
@@ -70,6 +76,12 @@ export function addMonetizationPlan(name) {
     name,
   });
 }
+export function removeMonetizationPlan(monetizationIndex) {
+  Dispatcher.dispatch({
+    actionType: MONETIZATION_REMOVE,
+    monetizationIndex,
+  });
+}
 
 export function editMonetizationName(monetizationIndex, name) {
   Dispatcher.dispatch({
@@ -79,12 +91,20 @@ export function editMonetizationName(monetizationIndex, name) {
   })
 }
 
-export function editMonetizationDescription(monetizationIndex, benefitIndex, benefit) {
+export function editMonetizationBenefit(monetizationIndex, benefitIndex, benefit) {
   Dispatcher.dispatch({
-    actionType: MONETIZATION_EDIT_DESCRIPTION,
+    actionType: MONETIZATION_EDIT_BENEFIT,
     monetizationIndex,
     benefitIndex,
     benefit
+  })
+}
+
+export function editMonetizationDescription(monetizationIndex, description) {
+  Dispatcher.dispatch({
+    actionType: MONETIZATION_EDIT_DESCRIPTION,
+    monetizationIndex,
+    description
   })
 }
 
@@ -143,6 +163,21 @@ export function addRisk(name) {
   })
 }
 
+export function removeRisk(riskIndex) {
+  Dispatcher.dispatch({
+    actionType: RISK_REMOVE,
+    riskIndex
+  })
+}
+
+export function removeRiskSolution(riskIndex, solutionIndex) {
+  Dispatcher.dispatch({
+    actionType: RISK_SOLUTION_REMOVE,
+    riskIndex,
+    solutionIndex
+  })
+}
+
 export function addRiskSolution(riskIndex, solution) {
   Dispatcher.dispatch({
     actionType: RISK_SOLUTION_ADD,
@@ -177,8 +212,10 @@ export default {
   editAudienceStrategy,
 
   addMonetizationPlan,
+  removeMonetizationPlan,
   editMonetizationName,
   editMonetizationPrice,
+  editMonetizationBenefit,
   editMonetizationDescription,
   addBenefitToMonetizationPlan,
   removeBenefitFromMonetizationPlan,
@@ -187,7 +224,9 @@ export default {
   detachAudienceFromMonetizationPlan,
 
   addRisk,
+  removeRisk,
   addRiskSolution,
+  removeRiskSolution,
   editRiskSolution,
   editRiskName,
   changeRiskOrder,

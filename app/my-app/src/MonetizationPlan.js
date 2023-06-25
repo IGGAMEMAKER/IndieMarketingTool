@@ -24,8 +24,20 @@ export function MonetizationPlan({plan, index, audiences}) {
   var namePicker = <FieldPicker
     value={plan.name}
     placeholder={"Monetization type name"}
-    onAction={newValue => {actions.editMonetizationName(index, newValue)}}
+    onAction={newValue => {
+      if (newValue.length)
+        actions.editMonetizationName(index, newValue)
+      else
+        actions.removeMonetizationPlan(index)
+    }}
     normalValueRenderer={onChangeName => <b onClick={() => onChangeName(true)}>{plan.name}</b>}
+  />
+
+  var descriptionPicker = <FieldPicker
+    value={plan.description || ""}
+    placeholder={"Monetization type description"}
+    onAction={newValue => {actions.editMonetizationDescription(index, newValue)}}
+    normalValueRenderer={onChangeName => <div className={"Monetization-plan-description"} onClick={() => onChangeName(true)}>{plan.description || ""}</div>}
   />
 
   var benefitPicker = plan.benefits.map((b, bIndex) => <FieldPicker
@@ -33,7 +45,7 @@ export function MonetizationPlan({plan, index, audiences}) {
     placeholder={"Describe monetization: which features / limits will you offer?"}
     onAction={newValue => {
       if (newValue.length)
-        actions.editMonetizationDescription(index, bIndex, newValue)
+        actions.editMonetizationBenefit(index, bIndex, newValue)
       else
         actions.removeBenefitFromMonetizationPlan(index, bIndex)
     }}
@@ -52,7 +64,7 @@ export function MonetizationPlan({plan, index, audiences}) {
 
   var audienceSelect;
   if (allowedOptions.length) {
-    audienceSelect = <div>
+    audienceSelect = <li>
       <select value={-1} onChange={event => {
         var val = event.target.value
         // console.log(val)
@@ -62,19 +74,23 @@ export function MonetizationPlan({plan, index, audiences}) {
         <option disabled selected value={-1}> -- select an audience --</option>
         {allowedOptions.map((aa, i) => <option value={aa.index}>{aa.name}</option>)}
       </select>
-    </div>
+    </li>
   }
 
   var adder = <BenefitAdder index={index} />
   return <div className="Audience-item">
     <div>{namePicker}</div>
-    <div>{benefitPicker.length ? <ul>{benefitPicker}<li style={{textAlign: 'left'}}>{adder}</li></ul> : adder}</div>
+    <div>{moneyPicker}</div>
+    <br />
+    <div>{descriptionPicker}</div>
+    <div className={"Monetization-plan-benefits"}>{benefitPicker.length ? <ul>{benefitPicker}<li style={{textAlign: 'left'}}>{adder}</li></ul> : adder}</div>
 
     {!includedAudiences.length ? <div><label><br/>Who will use this plan?</label></div> : ''}
-    <div><ul>{includedAudiences.map(i => <li><i style={{color: 'green'}} onClick={event => event.detail === 2 && actions.detachAudienceFromMonetizationPlan(i, index)}>{audiences[i].name}</i></li>)}</ul></div>
-    {audienceSelect}
-
-    <br />
-    <div>{moneyPicker}</div>
+    <div>
+      <ul>
+        {includedAudiences.map(i => <li style={{color: 'green', textAlign: 'left'}}><i onClick={event => event.detail === 2 && actions.detachAudienceFromMonetizationPlan(i, index)}>{audiences[i].name}</i></li>)}
+        {audienceSelect}
+      </ul>
+    </div>
   </div>
 }

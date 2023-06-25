@@ -6,9 +6,9 @@ const {UserModel, ProjectModel} = require('./Models')
 // var ObjectId = require('mongodb').ObjectId
 var ObjectId = require('mongoose').Types.ObjectId;
 
-var u = new UserModel({email: '23i03g@mail.ru'})
-
-u.save().then(r => console.log({r})).catch(e => console.error({e}))
+// var u = new UserModel({email: '23i03g@mail.ru'})
+//
+// u.save().then(r => console.log({r})).catch(e => console.error({e}))
 
 // var project = new ProjectModel({
 //   name: 'Indie Marketing Tool',
@@ -84,14 +84,82 @@ u.save().then(r => console.log({r})).catch(e => console.error({e}))
 //
 // project.save().then(r => console.log({r})).catch(e => console.error({e}))
 
-
-app.get('/', (req, res) => {
+const renderSPA = (req, res) => {
   var appPath = __dirname.replace('server', 'build') + '/index.html'
   res.sendFile(appPath);
-})
+}
+
+const getUserInfoMiddleware = (req, res, next) => {
+  req.userId = '6495f2aad151580c1f4b516a'
+
+  next()
+}
 
 const createUser = async (req, res) => {}
-const createProject = async (req, res) => {}
+const getUserProjects = async (req, res) => {
+  ProjectModel.find({ownerId: new ObjectId(req.userId)})
+    .then(projects => {
+      res.json({
+        projects
+      })
+    })
+    .catch(err => {
+      console.error({err})
+      res.json({
+        projects: [],
+        fail: true
+      })
+    })
+}
+const createProject = async (req, res) => {
+  var {
+    appType,
+    name
+  } = req.body;
+
+  var isGame = appType === 2;
+  var risks = []
+  if (isGame) {
+    risks = [
+      {name: "Won't be interested"},
+      {name: "Won't understand"},
+      {name: "Won't get enough numbers (wishlists, community)"},
+      {name: "Dev will take too much time", solutions: ['MAKE SMALL GAME', 'SMALLER', 'TINY']},
+      {name: "Won't buy it"},
+      {name: "Won't like it"},
+      {name: "Won't recommend it"},
+    ]
+  } else {
+    risks = [
+      {name: "Won't be interested enough"},
+      {name: "Won't understand"},
+      {name: "Won't buy it"},
+      {name: "Won't like it"},
+      {name: "Won't recommend it"},
+    ]
+  }
+
+  var project = new ProjectModel({
+  name: name,
+  type: appType, // 1 - app, 2 - game
+  ownerId: new ObjectId("6495f2aad151580c1f4b516a"), // mongoose.objectId("6495f2aad151580c1f4b516a"),
+
+  audiences: [],
+  monetizationPlans: [],
+  channels: [],
+  risks
+})
+
+project.save()
+  .then(r => {
+    console.log({r})
+    res.json({objectId: '??'})
+  })
+  .catch(e => {
+    console.error({e})
+    res.json({fail: true})
+  })
+}
 const getProject = async (req, res) => {
   var objectId = req.params.objectId;
 
@@ -114,12 +182,18 @@ const updateProject = async (req, res) => {
   })
 }
 
-app.post('/user', createUser)
-app.post('/project', createProject)
-app.put('/projects/:objectId', updateProject)
+// ROUTES
+app.get('/', renderSPA)
+app.get('/projects/:objectId', renderSPA)
+app.get('/profile', renderSPA) // show user projects here
+app.get('/examples', renderSPA)
+app.get('/pricing', renderSPA)
 
-app.get('/projects/:objectId', getProject)
+// ---------------- API ------------------------
+app.post('/api/user', createUser)
 
-// save changes
-// app.post('/')
-app.get('/test', (req, res) => res.json({tested: 1}))
+app.get ('/api/projects', getUserInfoMiddleware, getUserProjects)
+app.post('/api/projects', getUserInfoMiddleware, createProject)
+
+app.get('/api/projects/:objectId', getProject)
+app.put('/api/projects/:objectId', updateProject) // save changes

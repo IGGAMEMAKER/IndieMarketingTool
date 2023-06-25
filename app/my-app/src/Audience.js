@@ -99,7 +99,7 @@ export function Audience({
   if (!name.length || editName)
     namePicker = <NamePicker index={index} name={name} onEditNameStatus={onEditNameStatus} />
   else
-    namePicker = <b onClick={() => onEditNameStatus(true)}>{name}</b>
+    namePicker = <div className={"audience-title"}><b onClick={() => onEditNameStatus(true)}>{name}</b></div>
 
   var strategyPicker;
   if (!strategy.length || editStrategy)
@@ -112,7 +112,7 @@ export function Audience({
   // 🤪
   if (isFull) {
     f = <div>
-      <br/>
+      {/*<br/>*/}
       <div>{facePicker('😅', 'green', true)}{facePicker('😐', 'orange', false)}</div>
       {/*{facePicker('😡', 'red', false)}*/}
       {descriptionPicker}

@@ -23,6 +23,7 @@ export function FieldPicker({value, onAction, placeholder, normalValueRenderer})
 
   return <div key={value}>
     <textarea
+      autoFocus
       value={newValue}
       placeholder={placeholder}
       onChange={event => onValueChange(event.target.value)}

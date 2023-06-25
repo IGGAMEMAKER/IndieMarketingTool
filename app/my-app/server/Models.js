@@ -26,7 +26,31 @@ var ProjectSchema = new Schema({
 
 const ProjectModel = mongoose.model("projects", ProjectSchema)
 
+const ScrappedGameSchema = new Schema({
+  name: String,
+  appId: Number,
+  store: Number, // 1 - Steam, 2 - AppStore, 3 - GooglePlay e.t.c. Gog
+  link: String, // gameLink
 
+  devContact: mongoose.Mixed,
+    // {
+    // email: String,
+    // steamId: String,
+    // twitter: String,
+    // discord: String,
+  // },
+  pubContact: mongoose.Mixed,
+  release_date: mongoose.Mixed, // steam
+  releaseDate: Date,
+  // {
+  //   coming_soon: Boolean,
+  //     date: String,
+  // }
+
+  downloads: Number, // Mobiles
+  reviews: Number
+})
+const ScrappedGameModel = mongoose.model("scrappedgames", ScrappedGameSchema)
 
 const defaultConfig = {
   WEB3: 0, // 1 - TRUE, 0 - FALSE // Allow or restrict WEB3 operations
@@ -89,6 +113,7 @@ main().catch(err => console.log(err));
 module.exports = {
   UserModel,
   ProjectModel,
+  ScrappedGameModel,
 
   getServerConfigs,
   getCf

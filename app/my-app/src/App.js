@@ -7,6 +7,8 @@ import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
 import {FieldAdder} from "./FieldAdder";
+// import { BrowserRouter } from 'react-router-dom';
+import {Routes, Route, Link} from 'react-router-dom';
 
 function AudienceAdder({}) {
   const [audienceName, onChangeName] = useState("");
@@ -28,6 +30,11 @@ function AudienceAdder({}) {
 }
 
 function MonetizationAdder({}) {
+  return <FieldAdder
+    onAdd={val => {actions.addMonetizationPlan(val)}}
+    defaultValue={""}
+    placeholder={"Monetization plan"}
+  />
   const [monetizationName, onChangeName] = useState("");
 
   return (
@@ -66,16 +73,15 @@ function Channel({link, name, users}) {
 function RiskList({risks}) {
   return (
     <ul>
+      <li><RiskAdder /></li>
       {risks.map((r, index) => <RiskView risk={r} index={index} />)}
       <li><RiskAdder /></li>
     </ul>
   )
 }
 function RiskView({risk, index}) {
-  var [willSolve, setSolved] = useState(false)
-
   var renderer = onChange => {
-    var up = <button onClick={() => actions.changeRiskOrder(index, index -1)}>Up</button>
+    var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>Up</button>
     var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
 
     var solutions = risk.solutions || []
@@ -88,7 +94,12 @@ function RiskView({risk, index}) {
             value={s}
             // normalValueRenderer={renderer}
             placeholder={"Solution"}
-            onAction={val => actions.editRiskSolution(index, solutionIndex, val)}
+            onAction={val => {
+              if (val.length)
+                actions.editRiskSolution(index, solutionIndex, val)
+              else
+                actions.removeRiskSolution(index, solutionIndex)
+            }}
           />
         </li>)}
         <RiskSolutionAdder riskIndex={index} />
@@ -102,7 +113,12 @@ function RiskView({risk, index}) {
         value={risk.name}
         normalValueRenderer={renderer}
         placeholder={"Risk"}
-        onAction={val => actions.editRiskName(index, val)}
+        onAction={val => {
+          if (val.length)
+            actions.editRiskName(index, val)
+          else
+            actions.removeRisk(index)
+        }}
       />
     </li>
   )
@@ -146,7 +162,7 @@ function AudienceSourcesPanel({channels}) {
 function RisksPanel({risks}) {
   return <div>
     <br />
-    What are your biggest risks?
+    What are your biggest risks / doubts?
     <br />
     <br />
     <div className="Container">
@@ -164,7 +180,7 @@ function RiskAdder({}) {
         value={name}
         onChange={event => {
           var v = event.target.value
-          console.log({v})
+
           onChangeName(v)
         }}
       />
@@ -203,7 +219,8 @@ function RiskSolutionAdder({riskIndex}) {
 function MonetizationPanel({plans, audiences}) {
   return <div>
     <br />
-    How will you make money?       <MonetizationAdder />
+    {/*How will you make money?*/}
+    How will you make money? <MonetizationAdder />
     <br />
     <br />
     <div className="Audience-Container">
@@ -237,7 +254,7 @@ function AudiencesList({audiences}) {
   </div>
 }
 
-class App extends Component {
+class ProjectPage extends Component {
   state = {
     audiences: [],
     monetizationPlans: [],
@@ -271,6 +288,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1>Stop wasting years on a game/app, that nobody needs</h1>
+          <a href={"/about"}>ABOUT</a>
           <AudiencesList audiences={audiences} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
           <RisksPanel risks={risks} />
@@ -278,6 +296,91 @@ class App extends Component {
         </header>
       </div>
     );
+  }
+}
+
+// function Link({href, text}) {
+//   return <a href={href}>{text}</a>
+// }
+
+function ProjectList({projectIDs}) {
+  return projectIDs.map(({id, name}) => <Link to={"/projects/" + id}>{name}</Link>)
+}
+
+class Examples extends Component {
+  render() {
+    var list = [
+      {id: '6495f797115f0e146936e5ad', name: 'Indie Marketing Tool'},
+      {id: '', name: 'EU4'},
+      // {id: '', name: 'Corporations'},
+      // {id: '', name: 'David IV'},
+    ]
+
+    return <div className="App">
+      <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
+        <h1>Stop wasting years on a game/app, that nobody needs</h1>
+        <br />
+        <h2>
+          Bring ur project to market faster
+        </h2>
+        <h2>
+          Innovate without destroying ur mental health
+        </h2>
+        <ProjectList projectIDs={list} />
+        <br />
+        <br />
+        <Link to={"/"}>Back</Link>
+        <Link to={"/pricing"}>Pricing</Link>
+      </header>
+    </div>
+  }
+}
+
+class MainPage extends Component {
+  render() {
+    return <div className="App">
+      <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
+        <h1>Stop wasting years on a game/app, that nobody needs</h1>
+        <br />
+        <h2>
+          Bring ur project to market faster
+        </h2>
+        <h2>
+          Innovate without destroying ur mental health
+        </h2>
+        <Link to={"/examples"}>Examples</Link>
+        <Link to={"/pricing"}>Pricing</Link>
+        <Link to={"/profile"}>Profile</Link>
+      </header>
+    </div>
+  }
+}
+
+class ProfilePage extends Component {
+  render() {
+    var projectIDs = [{id: '6495f797115f0e146936e5ad', name: 'MY APP'}]
+    return <div>
+      <ProjectList projectIDs={projectIDs} />
+    </div>
+  }
+}
+
+class App extends Component {
+  render() {
+    return <div>
+      <div className="App">
+        <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
+          <Routes>
+            <Route path='/' element={<MainPage/>}/>
+            <Route path='/examples' element={<Examples/>}/>
+            <Route path='/about' element={<div>ABOUT</div>}/>
+
+            <Route path='/profile' element={<ProfilePage/>}/>
+            <Route path='/projects/*' element={<ProjectPage/>}/>
+          </Routes>
+        </header>
+      </div>
+    </div>
   }
 }
 

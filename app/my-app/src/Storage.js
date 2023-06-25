@@ -8,7 +8,7 @@ import {
   AUDIENCE_REMOVE,
   MONETIZATION_AUDIENCE_ADD,
   MONETIZATION_ADD,
-  MONETIZATION_EDIT_DESCRIPTION,
+  MONETIZATION_EDIT_BENEFIT,
   MONETIZATION_EDIT_NAME,
   MONETIZATION_AUDIENCE_REMOVE,
   MONETIZATION_EDIT_PRICE,
@@ -20,11 +20,9 @@ import {
   PROJECT_LOAD,
   PROJECT_SAVE,
   RISK_SOLUTION_EDIT,
-  RISK_SOLUTION_ADD
+  RISK_SOLUTION_ADD, RISK_SOLUTION_REMOVE, RISK_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE
 } from "./constants/actionConstants";
 import {ping, update} from "./PingBrowser";
-// import {ping} from "./PingBrowser";
-// import actions from "./actions";
 
 const CE = 'CHANGE_EVENT';
 
@@ -79,22 +77,16 @@ const swap = (i1, i2, array) => {
 
 
 Dispatcher.register((p) => {
-  const sendToServer = () => {
-    store.emitChange()
-    ping('/test', r => {
-      console.log({r})
-    })
-      .finally(() => console.log('FINALLY'))
-  }
   const saveProjectChanges = () => {
-    update('/projects/' + projectId, {project})
+    update('/api/projects/' + projectId, {project})
       .finally(() => {
         store.emitChange()
       })
   }
+
   switch (p.actionType) {
     case PROJECT_LOAD:
-      ping('/projects/' + projectId, data => {
+      ping('/api/projects/' + projectId, data => {
         console.log({body: data.body})
         var p = data.body.project;
 
@@ -145,8 +137,18 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break
 
-    case MONETIZATION_EDIT_DESCRIPTION:
+    case MONETIZATION_REMOVE:
+      project.monetizationPlans.splice(p.monetizationIndex, 1)
+      saveProjectChanges()
+      break
+
+    case MONETIZATION_EDIT_BENEFIT:
       project.monetizationPlans[p.monetizationIndex].benefits[p.benefitIndex] = p.benefit
+      saveProjectChanges()
+      break
+
+    case MONETIZATION_EDIT_DESCRIPTION:
+      project.monetizationPlans[p.monetizationIndex].description = p.description
       saveProjectChanges()
       break
 
@@ -186,6 +188,11 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break;
 
+    case RISK_REMOVE:
+      project.risks.splice(p.riskIndex, 1)
+      saveProjectChanges()
+      break;
+
     case RISK_SOLUTION_ADD:
       var r = project.risks[p.riskIndex]
       if (!r.solutions)
@@ -201,6 +208,17 @@ Dispatcher.register((p) => {
         r.solutions = []
 
       r.solutions[p.solutionIndex] = p.solution
+      saveProjectChanges()
+      break;
+
+
+    case RISK_SOLUTION_REMOVE:
+      var r = project.risks[p.riskIndex]
+      if (r.solutions)
+        r.solutions.splice(p.solutionIndex, 1)
+      else
+        r.solutions = []
+
       saveProjectChanges()
       break;
 
