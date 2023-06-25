@@ -111,8 +111,19 @@ const getProfile = async (req, res) => {
       })
     })
 }
-const removeProject = async (req, res) => {
 
+const removeProject = async (req, res) => {
+  var projectId = req.params.objectId;
+  console.log('WILL TRY TO REMOVE', {projectId})
+
+  ProjectModel.deleteById(projectId).then(r => {
+    console.log('REMOVED', {r})
+    res.json({ok: 1})
+  })
+    .catch(err => {
+      console.error('FAILED TO REMOVE', {err})
+      res.json({fail: true})
+    })
 }
 const createProject = async (req, res) => {
   var {

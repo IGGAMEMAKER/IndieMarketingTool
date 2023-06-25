@@ -2,7 +2,7 @@
 import './App.css';
 import {Component, useState} from 'react';
 import storage from './Storage'
-import actions, {loadProject} from './actions'
+import actions, {loadProject, removeProject} from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
@@ -278,6 +278,16 @@ class ProjectPage extends Component {
       appType:               storage.getProjectType()
     })
   }
+
+  getProjectId = () => {
+    // var {projectId} = useParams()
+    var arr = window.location.href.split('/')
+    var projectId = arr[arr.length -1]
+
+    console.log({projectId, arr})
+
+    return projectId
+  }
   componentWillMount() {
     storage.addChangeListener(() => {
       console.log('store listener')
@@ -286,11 +296,8 @@ class ProjectPage extends Component {
     })
 
     this.copyState()
-    // var {projectId} = useParams()
-      var arr = window.location.href.split('/')
-    var projectId = arr[arr.length -1]
-    console.log({projectId, arr})
-    actions.loadProject(projectId)
+
+    actions.loadProject(this.getProjectId())
   }
 
   render() {
@@ -309,6 +316,8 @@ class ProjectPage extends Component {
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
           <RisksPanel risks={risks} />
           <AudienceSourcesPanel channels={channels} />
+
+          <a href="/profile" onClick={() => actions.removeProject(this.getProjectId())}>REMOVE PROJECT</a>
         </header>
       </div>
     );

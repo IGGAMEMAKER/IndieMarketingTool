@@ -20,12 +20,19 @@ import {
   RISK_SOLUTION_ADD,
   RISK_SOLUTION_EDIT,
   RISK_REMOVE,
-  RISK_SOLUTION_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE, PROFILE_LOAD, PROJECT_ADD
+  RISK_SOLUTION_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE, PROFILE_LOAD, PROJECT_ADD, PROJECT_REMOVE
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
   Dispatcher.dispatch({
     actionType: PROJECT_LOAD,
+    projectId
+  })
+}
+
+export function removeProject(projectId) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_REMOVE,
     projectId
   })
 }
@@ -223,6 +230,7 @@ export default {
   loadProfile,
 
   addProject,
+  removeProject,
 
   addAudience,
   editAudienceName,
