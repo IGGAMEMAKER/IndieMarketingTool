@@ -1,11 +1,11 @@
 import {useState} from "react";
 
-export function FieldAdder({onAdd, placeholder, defaultValue = ""}) {
+export function FieldAdder({onAdd, placeholder, defaultWord = "+", defaultValue = ""}) {
   var [value, onChange] = useState(defaultValue);
   var [needsToAdd, setNeedsToAdd] = useState(false)
 
   if (!needsToAdd) {
-    return <button onClick={() => setNeedsToAdd(true)}>+</button>
+    return <button onClick={() => setNeedsToAdd(true)}>{defaultWord}</button>
   }
 
   return <div>

@@ -8,8 +8,12 @@ import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
 import {FieldAdder} from "./FieldAdder";
 // import { BrowserRouter } from 'react-router-dom';
-import {Routes, Route, Link} from 'react-router-dom';
+import {Routes, Route, Link, useParams} from 'react-router-dom';
 import {ping} from "./PingBrowser";
+
+const APP_TYPE_GAME = 2;
+const APP_TYPE_APP = 1;
+
 
 function AudienceAdder({}) {
   const [audienceName, onChangeName] = useState("");
@@ -232,11 +236,12 @@ function MonetizationPanel({plans, audiences}) {
 
 
 
-function AudiencesList({audiences}) {
+function AudiencesList({audiences, isGame}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
 
+  var audiencePhrase = isGame ? 'Who will play your game?' : 'Who will use your app?'
   return <div>
-    Who will use your app / play your game?       <AudienceAdder />
+    {audiencePhrase}       <AudienceAdder />
     <br />
     <br />
     <div className="Audience-Container">
@@ -268,7 +273,9 @@ class ProjectPage extends Component {
       audiences:          storage.getAudiences(),
       monetizationPlans:  storage.getMonetizationPlans(),
       channels:           storage.getChannels(),
-      risks:              storage.getRisks()
+      risks:              storage.getRisks(),
+      name:               storage.getProjectName(),
+      appType:               storage.getProjectType()
     })
   }
   componentWillMount() {
@@ -279,18 +286,26 @@ class ProjectPage extends Component {
     })
 
     this.copyState()
-    actions.loadProject()
+    // var {projectId} = useParams()
+      var arr = window.location.href.split('/')
+    var projectId = arr[arr.length -1]
+    console.log({projectId, arr})
+    actions.loadProject(projectId)
   }
 
   render() {
-    var {audiences, monetizationPlans, risks, channels} = this.state;
+    var {audiences, monetizationPlans, risks, channels, name, appType} = this.state;
 
     return (
       <div className="App">
         <header className="App-header">
-          <h1>Stop wasting years on a game/app, that nobody needs</h1>
-          <a href={"/about"}>ABOUT</a>
-          <AudiencesList audiences={audiences} />
+          <FieldPicker
+            value={name}
+            placeholder={"name the project"}
+            onAction={() => {}} normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+          />
+          <a href={"/profile"}>Profile</a>
+          <AudiencesList audiences={audiences} isGame={appType===1} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
           <RisksPanel risks={risks} />
           <AudienceSourcesPanel channels={channels} />
@@ -300,12 +315,8 @@ class ProjectPage extends Component {
   }
 }
 
-// function Link({href, text}) {
-//   return <a href={href}>{text}</a>
-// }
-
 function ProjectList({projectIDs}) {
-  return projectIDs.map(({id, name}) => <Link to={"/projects/" + id}>{name}</Link>)
+  return projectIDs.map(({id, name}) => <div><Link to={"/projects/" + id}>{name}</Link></div>)
 }
 
 class Examples extends Component {
@@ -358,21 +369,27 @@ class MainPage extends Component {
 }
 
 
-// class ProjectAdder extends Component {
-//
-// }
+function ProjectAdder({appType}) {
+  var defaultWord;
+  if (appType === APP_TYPE_GAME)
+    defaultWord = "new Game"
+  else
+    defaultWord = "new App"
+
+  return <FieldAdder
+    onAdd={name => actions.addProject(name, appType)}
+    placeholder={"add?"}
+    defaultWord={defaultWord}
+    defaultValue={defaultWord}
+  />
+}
+
 class ProfilePage extends Component {
   state = {
     projectIDs: [],
   }
 
   componentWillMount() {
-    storage.addChangeListener(() => {
-      console.log('store listener')
-
-      // this.copyState()
-    })
-
     ping('/api/profile', response => {
       this.setState({
         projectIDs: response.body.projects
@@ -381,15 +398,21 @@ class ProfilePage extends Component {
       .finally(() => {
         console.log('WENT TO SERVER FOR PROFILE PAGE')
       })
-
-    // this.copyState()
-    // actions.loadProject()
   }
+
   render() {
     var projectIDs = this.state.projectIDs; // [{id: '6495f797115f0e146936e5ad', name: 'MY APP'}]
+
     return <div>
-      {JSON.stringify(projectIDs)}
+      <h1>PROFILE</h1>
+      <br />
+      <ProjectAdder appType={APP_TYPE_GAME}/>
+      <br />
+      <br />
       <ProjectList projectIDs={projectIDs} />
+      <br />
+      <br />
+      <ProjectAdder appType={APP_TYPE_GAME} />
     </div>
   }
 }
@@ -405,7 +428,7 @@ class App extends Component {
             <Route path='/about' element={<div>ABOUT</div>}/>
 
             <Route path='/profile' element={<ProfilePage/>}/>
-            <Route path='/projects/*' element={<ProjectPage/>}/>
+            <Route path='/projects/:projectId' element={<ProjectPage/>}/>
           </Routes>
         </header>
       </div>

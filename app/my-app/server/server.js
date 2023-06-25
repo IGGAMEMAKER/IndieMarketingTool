@@ -111,6 +111,9 @@ const getProfile = async (req, res) => {
       })
     })
 }
+const removeProject = async (req, res) => {
+
+}
 const createProject = async (req, res) => {
   var {
     appType,
@@ -119,6 +122,8 @@ const createProject = async (req, res) => {
 
   var isGame = appType === 2;
   var risks = []
+  var userId = req.userId; // "6495f2aad151580c1f4b516a"
+
   if (isGame) {
     risks = [
       {name: "Won't be interested"},
@@ -142,7 +147,7 @@ const createProject = async (req, res) => {
   var project = new ProjectModel({
   name: name,
   type: appType, // 1 - app, 2 - game
-  ownerId: new ObjectId("6495f2aad151580c1f4b516a"), // mongoose.objectId("6495f2aad151580c1f4b516a"),
+  ownerId: new ObjectId(userId), // mongoose.objectId("6495f2aad151580c1f4b516a"),
 
   audiences: [],
   monetizationPlans: [],
@@ -153,7 +158,7 @@ const createProject = async (req, res) => {
 project.save()
   .then(r => {
     console.log({r})
-    res.json({objectId: '??'})
+    res.json({objectId: '??', r})
   })
   .catch(e => {
     console.error({e})
@@ -189,6 +194,7 @@ app.get('/profile', renderSPA) // show user projects here
 app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
 
+
 // ---------------- API ------------------------
 app.post('/api/user', createUser)
 
@@ -196,4 +202,5 @@ app.get ('/api/profile', getUserInfoMiddleware, getProfile)
 app.post('/api/projects', getUserInfoMiddleware, createProject)
 
 app.get('/api/projects/:objectId', getProject)
-app.put('/api/projects/:objectId', updateProject) // save changes
+app.put('/api/projects/:objectId', getUserInfoMiddleware, updateProject) // save changes
+app.delete('/api/projects/:objectId', getUserInfoMiddleware, removeProject)

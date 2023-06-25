@@ -20,9 +20,15 @@ import {
   PROJECT_LOAD,
   PROJECT_SAVE,
   RISK_SOLUTION_EDIT,
-  RISK_SOLUTION_ADD, RISK_SOLUTION_REMOVE, RISK_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE
+  RISK_SOLUTION_ADD,
+  RISK_SOLUTION_REMOVE,
+  RISK_REMOVE,
+  MONETIZATION_EDIT_DESCRIPTION,
+  MONETIZATION_REMOVE,
+  PROJECT_ADD,
+  PROJECT_RENAME, PROJECT_REMOVE
 } from "./constants/actionConstants";
-import {ping, update} from "./PingBrowser";
+import {ping, post, remove, update} from "./PingBrowser";
 
 const CE = 'CHANGE_EVENT';
 
@@ -57,6 +63,8 @@ class Storage extends EventEmitter {
   getMonetizationPlans  = () => this.getData().monetizationPlans
   getChannels           = () => this.getData().channels
   getRisks              = () => this.getData().risks
+  getProjectName              = () => this.getData().name
+  getProjectType              = () => this.getData().appType
 
   isApp = () => this.getProject().type === 1
   isGame = () => this.getProject().type === 2
@@ -86,7 +94,7 @@ Dispatcher.register((p) => {
 
   switch (p.actionType) {
     case PROJECT_LOAD:
-      ping('/api/projects/' + projectId, data => {
+      ping('/api/projects/' + p.projectId, data => {
         console.log({body: data.body})
         var p = data.body.project;
 
@@ -97,7 +105,33 @@ Dispatcher.register((p) => {
         })
       break
 
+    case PROJECT_ADD:
+      post('/api/projects/',
+          {name: p.name, appType: p.appType},
+          data => {
+            console.log({body: data.body})
+            // var p = data.body.project;
+            //
+            // project = p
 
+            // TODO force refresh
+          })
+          .finally(() => {
+            store.emitChange()
+          })
+      break
+
+    case PROJECT_REMOVE:
+      remove('/api/projects/' + p.projectId, {})
+        .then(r => {
+          console.log({r})
+        })
+        .catch(err => {
+          console.error('failed to remove', {err})
+        })
+      saveProjectChanges()
+      break;
+    // PROJECT_RENAME
 
 
     case AUDIENCE_ADD:

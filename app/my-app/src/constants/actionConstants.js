@@ -1,4 +1,7 @@
 export const PROJECT_LOAD = 'PROJECT_LOAD'
+export const PROJECT_ADD = 'PROJECT_ADD'
+export const PROJECT_RENAME = 'PROJECT_RENAME'
+export const PROJECT_REMOVE = 'PROJECT_REMOVE'
 export const PROFILE_LOAD = 'PROFILE_LOAD'
 export const PROJECT_SAVE = 'PROJECT_SAVE'
 

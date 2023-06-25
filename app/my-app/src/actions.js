@@ -20,12 +20,21 @@ import {
   RISK_SOLUTION_ADD,
   RISK_SOLUTION_EDIT,
   RISK_REMOVE,
-  RISK_SOLUTION_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE, PROFILE_LOAD
+  RISK_SOLUTION_REMOVE, MONETIZATION_EDIT_DESCRIPTION, MONETIZATION_REMOVE, PROFILE_LOAD, PROJECT_ADD
 } from './constants/actionConstants';
 
-export function loadProject() {
+export function loadProject(projectId) {
   Dispatcher.dispatch({
-    actionType: PROJECT_LOAD
+    actionType: PROJECT_LOAD,
+    projectId
+  })
+}
+
+export function addProject(name, appType) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_ADD,
+    name,
+    appType
   })
 }
 
@@ -212,6 +221,8 @@ export function changeRiskOrder(index1, index2) {
 export default {
   loadProject,
   loadProfile,
+
+  addProject,
 
   addAudience,
   editAudienceName,

@@ -78,8 +78,24 @@ const post = (url, parameters = {}) => {
     })
 }
 
+const remove = (url, parameters = {}) => {
+  return request
+    .delete(FRONTEND + url)
+    .set('Access-Control-Allow-Origin', '*')
+    .send(parameters)
+    .then(response => {
+      return response.body;
+    })
+    .catch(err => {
+      //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
+
+      return [];
+    })
+}
+
 module.exports = {
   ping,
   post,
-  update
+  update,
+  remove
 };
