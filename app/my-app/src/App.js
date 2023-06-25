@@ -366,11 +366,6 @@ class ProfilePage extends Component {
     projectIDs: [],
   }
 
-  // copyState = () => {
-  //   this.setState({
-  //     audiences:          storage.getAudiences(),
-  //   })
-  // }
   componentWillMount() {
     storage.addChangeListener(() => {
       console.log('store listener')
@@ -380,7 +375,7 @@ class ProfilePage extends Component {
 
     ping('/api/profile', response => {
       this.setState({
-        projectIDs: response.projectIDs
+        projectIDs: response.body.projects
       })
     })
       .finally(() => {
@@ -391,9 +386,9 @@ class ProfilePage extends Component {
     // actions.loadProject()
   }
   render() {
-    var projectIDs = [{id: '6495f797115f0e146936e5ad', name: 'MY APP'}]
+    var projectIDs = this.state.projectIDs; // [{id: '6495f797115f0e146936e5ad', name: 'MY APP'}]
     return <div>
-
+      {JSON.stringify(projectIDs)}
       <ProjectList projectIDs={projectIDs} />
     </div>
   }
