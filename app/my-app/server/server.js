@@ -244,10 +244,11 @@ const getYoutubeChannelInfo = async channelId => {
   var channelUrl = snippet.customUrl;
 
   var statistics = item.statistics
-
+  console.log({statistics})
+  var users = statistics.hiddenSubscriberCount ? 0 : parseInt(statistics.subscriberCount)
 
   return Promise.resolve({
-    channelName, channelUrl, users: statistics.hiddenSubscriberCount ? 0 : parseInt(statistics.subscriberCount)
+    channelName, channelUrl, users
   })
 }
 
@@ -272,13 +273,14 @@ const getLinkName = async (req, res) => {
       // var channelId = snippet.channelId;
       //
       // console.log('getLinkName', title, channelId)
-      var {channelName, channelUrl} = await getYoutubeChannelInfo(channelId)
+      var {channelName, channelUrl, users} = await getYoutubeChannelInfo(channelId)
 
       res.json({
         channelId,
         name: title,
         channelName,
-        channelUrl
+        channelUrl,
+        users
       })
     } catch (e) {
       res.json({
