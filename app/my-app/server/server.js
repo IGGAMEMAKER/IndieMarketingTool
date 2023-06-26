@@ -161,26 +161,27 @@ const createProject = async (req, res) => {
   }
 
   var project = new ProjectModel({
-  name: name,
-  type: appType, // 1 - app, 2 - game
-  ownerId: new ObjectId(userId), // mongoose.objectId("6495f2aad151580c1f4b516a"),
+    name: name,
+    type: appType, // 1 - app, 2 - game
+    ownerId: new ObjectId(userId), // mongoose.objectId("6495f2aad151580c1f4b516a"),
 
-  audiences: [],
-  monetizationPlans: [],
-  channels: [],
-  audienceCounter: 0,
-  risks
-})
+    audiences: [],
+    monetizationPlans: [],
+    channels: [],
+    links: [],
+    audienceCounter: 0,
+    risks
+  })
 
-project.save()
-  .then(r => {
-    console.log({r})
-    res.json({objectId: '??', r})
-  })
-  .catch(e => {
-    console.error({e})
-    res.json({fail: true})
-  })
+  project.save()
+    .then(r => {
+      console.log({r})
+      res.json({objectId: '??', r})
+    })
+    .catch(e => {
+      console.error({e})
+      res.json({fail: true})
+    })
 }
 const getProject = async (req, res) => {
   var objectId = req.params.objectId;
@@ -206,13 +207,28 @@ const updateProject = async (req, res) => {
 
 const getRequest = (url) => request.get(url).set('Access-Control-Allow-Origin', '*')
 
-const isYoutubeRelated = link => link.includes('www.youtube')
-const isYoutubeVideo = link => isYoutubeRelated(link) && link.includes('watch?v')
-const getYoutubeVideoId = link => {
-  var arr = link.split('watch?v=')[1]
-  var videoId = arr.split('&')[0]
+const fullVideoSign = 'watch?v='
+const shortsVideoSign = '/shorts/'
 
-  return videoId
+const isYoutubeRelated = link => link.includes('www.youtube')
+const isYoutubeVideo = link => isYoutubeRelated(link) && (link.includes(fullVideoSign) || link.includes(shortsVideoSign))
+const isYoutubeChannel = link => isYoutubeRelated(link) && !isYoutubeVideo(link)
+const getYoutubeVideoId = link => {
+  if (link.includes(fullVideoSign)) {
+    var arr = link.split(fullVideoSign)[1]
+    var videoId = arr.split('&')[0]
+
+    return videoId
+  }
+
+  if (link.includes(shortsVideoSign)) {
+    arr = link.split(shortsVideoSign)[1]
+    videoId = arr.split('&')[0]
+
+    return videoId
+  }
+
+  return '11111'
 }
 
 const getYoutubeVideoInfo = async videoId => {
@@ -257,59 +273,32 @@ const getLinkName = async (req, res) => {
   var link = req.body.link;
 
   console.log({link})
-  if (isYoutubeRelated(link)) {
-    if (isYoutubeVideo(link)) {
+  try {
+    if (isYoutubeRelated(link)) {
+      if (isYoutubeVideo(link)) {
+        var videoId = getYoutubeVideoId(link)
 
+        var {channelId, title} = await getYoutubeVideoInfo(videoId)
+        var {channelName, channelUrl, users} = await getYoutubeChannelInfo(channelId)
+
+        res.json({
+          channelId,
+          name: title,
+          channelName,
+          channelUrl,
+          users
+        })
+        return
+      }
+
+      if (isYoutubeChannel(link)) {
+
+      }
     }
-    var videoId = getYoutubeVideoId(link)
-
-    try {
-      var {channelId, title} = await getYoutubeVideoInfo(videoId)
-
-      // var data = response.body
-      // console.log('getLinkName', {data})
-      // var snippet = data.items[0].snippet
-      // var title = snippet.title
-      // var channelId = snippet.channelId;
-      //
-      // console.log('getLinkName', title, channelId)
-      var {channelName, channelUrl, users} = await getYoutubeChannelInfo(channelId)
-
-      res.json({
-        channelId,
-        name: title,
-        channelName,
-        channelUrl,
-        users
-      })
-    } catch (e) {
-      res.json({
-        name: '',
-      })
-    }
-    // request
-    //   .get(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${configs.GOOGLE_YOUTUBE_KEY}`)
-    //   .set('Access-Control-Allow-Origin', '*')
-    //   .then(r => {
-    //     var data = r.body
-    //     console.log('getLinkName', {data})
-    //     var snippet = data.items[0].snippet
-    //     var title = snippet.title
-    //     var channelId = snippet.channelId;
-    //
-    //     console.log('getLinkName', title)
-    //     res.json({
-    //       name: title
-    //     })
-    //   })
-    //   .catch(err => {
-    //     //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
-    //
-    //     res.json({name: ''})
-    //   })
-  } else {
-    res.json({name: ''})
+  } catch (e) {
   }
+
+  res.json({name: ''})
 }
 
 // ROUTES

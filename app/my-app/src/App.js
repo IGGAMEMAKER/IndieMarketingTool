@@ -2,7 +2,7 @@
 import './App.css';
 import {Component, useState} from 'react';
 import storage from './Storage'
-import actions from './actions'
+import actions, {addLink, editLinkType, editNotes, removeLink} from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
@@ -10,6 +10,7 @@ import {FieldAdder} from "./FieldAdder";
 // import { BrowserRouter } from 'react-router-dom';
 import {Routes, Route, Link, useParams} from 'react-router-dom';
 import {ping} from "./PingBrowser";
+import {LINK_TYPE_DOCS, LINK_TYPE_SIMILAR} from "./constants/constants";
 
 const APP_TYPE_GAME = 2;
 const APP_TYPE_APP = 1;
@@ -80,9 +81,11 @@ const getDomain = link => {
   }
 }
 
-function Channel({link, channel, index, name, users}) {
+function Channel({channel, index}) {
   var [isDangerous, setDangerous] = useState(false)
+  var {link, name, users} = channel
   var l = name || getUrlWithoutPrefixes(link)
+
 
   // SOURCE TYPE
   // human
@@ -97,7 +100,14 @@ function Channel({link, channel, index, name, users}) {
       <td>{users}</td>
       <td>
         {/*<a href={link} target={"_blank"}>{l}</a> {users} <button onClick={() => {actions.removeChannel(index)}}>x</button>*/}
-        <a href={link} target={"_blank"}>{l}</a> <span><FieldPicker value={name} placeholder={"Add short name"} onAction={val => {actions.editChannelName(index, val)}} /></span>
+        <a href={link} target={"_blank"}>{l}</a>
+        <br />
+        <FieldPicker
+          // normalValueRenderer={onEdit => <label onClick={onEdit}>{channel.channelName || channel.name}</label>}
+          value={name}
+          placeholder={"Add short name"}
+          onAction={val => {actions.editChannelName(index, val)}}
+        />
       </td>
       <td><button onMouseLeave={() => setDangerous(false)} onMouseEnter={() => setDangerous(true)} onClick={() => {actions.removeChannel(index)}}>x</button></td>
       {/*{JSON.stringify(channel)}*/}
@@ -171,7 +181,10 @@ function ChannelList({channels}) {
     groupedChannels[domain].push({c, i})
   })
 
-  var mapped = channels.map((c, i) => <Channel channel={c} index={i} link={c.link} name={c.name} users={c.users} />)
+  var mapped = channels
+    .map((c, i) => Object.assign({}, {c}, {index: i}))
+    .sort((c1, c2) => c2.c.users - c1.c.users)
+    .map((cc, i) => <Channel channel={cc.c} index={cc.index} />)
   return <table>
     <thead>
       <th>Users</th>
@@ -203,7 +216,7 @@ function ChannelAdder({}) {
   return <FieldAdder
     placeholder={"audience source link"}
     onAdd={val => {
-      alert(val)
+      // alert(val)
       actions.addChannel(val)
     }}
   />
@@ -218,6 +231,44 @@ function AudienceSourcesPanel({channels}) {
     {/*<div className="Audience-Container">*/}
     <div className="Container">
       <ChannelList channels={channels} />
+    </div>
+  </div>
+}
+
+function UsefulLinks({links}) {
+  // addLink
+  // removeLink
+  // editNotes
+  // editLinkType
+  return <div>
+    <br />
+    <br />
+    Save useful links here
+    <div className="Container">
+      <table>
+        <thead></thead>
+        <tbody>
+          {links.map((l, i) => {
+            return <tr>
+              <td><a href={l.link}>{l.link}</a></td>
+              <td>
+                <FieldPicker
+                  value={l.note}
+                  onAction={val => actions.editNotes(i, val)}
+                />
+              </td>
+              <td>
+                <select value={l.linkType} onChange={ev => {actions.editLinkType(i, parseInt(ev.target.value))}}>
+                  <option value={LINK_TYPE_DOCS}>Docs</option>
+                  <option value={LINK_TYPE_SIMILAR}>Similar / Competing</option>
+                </select>
+              </td>
+              <td><button onClick={() => actions.removeLink(i)}>x</button></td>
+            </tr>
+          })}
+          <FieldAdder onAdd={val => actions.addLink(val)} placeholder="Add link" defaultState={false} />
+        </tbody>
+      </table>
     </div>
   </div>
 }
@@ -336,7 +387,8 @@ class ProjectPage extends Component {
     audiences: [],
     monetizationPlans: [],
     channels: [],
-    risks: []
+    risks: [],
+    links: [],
   }
 
   copyState = () => {
@@ -346,7 +398,8 @@ class ProjectPage extends Component {
       channels:           storage.getChannels(),
       risks:              storage.getRisks(),
       name:               storage.getProjectName(),
-      appType:               storage.getProjectType()
+      appType:               storage.getProjectType(),
+      links:              storage.getUsefulLinks()
     })
   }
 
@@ -372,7 +425,7 @@ class ProjectPage extends Component {
   }
 
   render() {
-    var {audiences, monetizationPlans, risks, channels, name, appType} = this.state;
+    var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
     var projectId = this.getProjectId()
 
     var audiencePhrase = appType===APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your app?'
@@ -396,6 +449,7 @@ class ProjectPage extends Component {
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
           <RisksPanel risks={risks} />
           <AudienceSourcesPanel channels={channels} />
+          <UsefulLinks links={this.state.links} />
 
           <a href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
         </header>

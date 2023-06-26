@@ -22,6 +22,7 @@ var ProjectSchema = new Schema({
   monetizationPlans: Array,
   risks: Array,
   channels: Array,
+  links: Array
 })
 
 

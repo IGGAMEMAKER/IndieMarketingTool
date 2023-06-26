@@ -26,7 +26,14 @@ import {
   PROFILE_LOAD,
   PROJECT_ADD,
   PROJECT_REMOVE,
-  PROJECT_RENAME, AUDIENCE_REMOVE, CHANNELS_ADD, CHANNELS_REMOVE, CHANNELS_NAME_EDIT
+  PROJECT_RENAME,
+  AUDIENCE_REMOVE,
+  CHANNELS_ADD,
+  CHANNELS_REMOVE,
+  CHANNELS_NAME_EDIT,
+  LINKS_ADD,
+  LINKS_REMOVE,
+  LINKS_NOTES_EDIT, LINKS_TYPE_EDIT
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -271,6 +278,36 @@ export function editChannelName(channelIndex, name) {
   })
 }
 
+export function addLink(link) {
+  Dispatcher.dispatch({
+    actionType: LINKS_ADD,
+    link
+  })
+}
+
+export function removeLink(linkIndex) {
+  Dispatcher.dispatch({
+    actionType: LINKS_REMOVE,
+    linkIndex
+  })
+}
+
+export function editNotes(linkIndex, note) {
+  Dispatcher.dispatch({
+    actionType: LINKS_NOTES_EDIT,
+    linkIndex,
+    note
+  })
+}
+
+export function editLinkType(linkIndex, linkType) {
+  Dispatcher.dispatch({
+    actionType: LINKS_TYPE_EDIT,
+    linkIndex,
+    linkType
+  })
+}
+
 export default {
   loadProject,
   loadProfile,
@@ -308,5 +345,10 @@ export default {
   addChannel,
   removeChannel,
   editChannelName,
+
+  addLink,
+  removeLink,
+  editNotes,
+  editLinkType,
 }
 

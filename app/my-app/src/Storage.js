@@ -26,9 +26,17 @@ import {
   MONETIZATION_EDIT_DESCRIPTION,
   MONETIZATION_REMOVE,
   PROJECT_ADD,
-  PROJECT_RENAME, PROJECT_REMOVE, CHANNELS_ADD, CHANNELS_REMOVE, CHANNELS_NAME_EDIT
+  PROJECT_RENAME,
+  PROJECT_REMOVE,
+  CHANNELS_ADD,
+  CHANNELS_REMOVE,
+  CHANNELS_NAME_EDIT,
+  LINKS_ADD,
+  LINKS_REMOVE,
+  LINKS_NOTES_EDIT, LINKS_TYPE_EDIT
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
+import {LINK_TYPE_DOCS} from "./constants/constants";
 
 const CE = 'CHANGE_EVENT';
 
@@ -66,6 +74,7 @@ class Storage extends EventEmitter {
   getRisks              = () => this.getData().risks
   getProjectName              = () => this.getData().name
   getProjectType              = () => this.getData().type
+  getUsefulLinks              = () => this.getData().links || []
 
   getAudienceCount      = () => this.getData().audienceCounter;
 
@@ -335,6 +344,32 @@ Dispatcher.register((p) => {
       break
     case CHANNELS_REMOVE:
       project.channels.splice(p.channelIndex, 1)
+      saveProjectChanges()
+      break;
+
+    case LINKS_ADD:
+      // if (project.links)
+      //   project.links = []
+      try {
+        project.links.push({link: p.link, note: '', linkType: LINK_TYPE_DOCS})
+      } catch (e) {
+        project.links = []
+        project.links.push({link: p.link, note: '', linkType: LINK_TYPE_DOCS})
+      }
+      saveProjectChanges()
+      break;
+
+    case LINKS_REMOVE:
+      project.links.splice(p.linkIndex, 1)
+      saveProjectChanges()
+      break;
+
+    case LINKS_NOTES_EDIT:
+      project.links[p.linkIndex].note = p.note
+      saveProjectChanges()
+      break
+    case LINKS_TYPE_EDIT:
+      project.links[p.linkIndex].linkType = p.linkType
       saveProjectChanges()
       break;
 
