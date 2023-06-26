@@ -319,8 +319,9 @@ Dispatcher.register((p) => {
       post('/links/name', {link: p.url})
         .then(response => {
           console.log({response})
+          var name = response.name;
           project.channels.push({
-            name: '',
+            name,
             users: 0,
             link: p.url,
           })
