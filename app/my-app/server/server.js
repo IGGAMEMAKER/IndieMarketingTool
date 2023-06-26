@@ -1,7 +1,8 @@
 const {ping} = require("../src/PingBrowser");
 const {app} = require('./expressGenerator')(3000);
 
-const {GOOGLE_YOUTUBE_KEY} = require('../CD/Configs')
+const configs = require('../CD/Configs')
+const request = require("superagent");
 
 // const {ok, fail} = require('./DB/Response')
 const {UserModel, ProjectModel} = require('./Models')
@@ -208,18 +209,36 @@ const getLinkName = (req, res) => {
 
   console.log({link})
 
-  if (link.includes('www.youtube')) {
-    ping('https://www.googleapis.com/youtube/v3/videos?part=snippet&id=umFnrwGy2dw&key=' + GOOGLE_YOUTUBE_KEY)
-      .then(r => {
-        console.log('getLinkName', {r})
-        console.log('getLinkName', r.items[0].snippet.title)
-      })
-      .finally(() => {
-        res.json({link})
-      })
-  } else {
-    res.json({link})
-  }
+  request
+    .get('https://www.googleapis.com/youtube/v3/videos?part=snippet&id=umFnrwGy2dw&key=' + configs.GOOGLE_YOUTUBE_KEY)
+    .set('Access-Control-Allow-Origin', '*')
+    .then(r => {
+      var data = r.body
+      console.log('getLinkName', {data})
+      console.log('getLinkName', data.items[0].snippet.title)
+    })
+    .then(response => {
+      var b = picker ? picker(response) : response.body;
+
+      var t1 = new Date();
+      var diff_ms = t1.getTime() - t0.getTime();
+
+      // console.log('Data update took ' + diff_ms + 'ms');
+
+      return b;
+    })
+    .catch(err => {
+      //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
+
+      return [];
+    })
+    .finally(() => {
+      res.json({link})
+    })
+  // if (link.includes('www.youtube')) {
+  // } else {
+  //   res.json({link})
+  // }
 }
 
 // ROUTES
