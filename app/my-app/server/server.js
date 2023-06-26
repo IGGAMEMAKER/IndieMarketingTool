@@ -1,4 +1,8 @@
+const {ping} = require("../src/PingBrowser");
 const {app} = require('./expressGenerator')(3000);
+
+const {GOOGLE_YOUTUBE_KEY} = require('../CD/Configs')
+
 // const {ok, fail} = require('./DB/Response')
 const {UserModel, ProjectModel} = require('./Models')
 // const mongoose = require('mongoose')
@@ -199,6 +203,23 @@ const updateProject = async (req, res) => {
   })
 }
 
+const getLinkName = (req, res) => {
+  var link = req.body.link;
+
+  if (link.contains('www.youtube')) {
+    ping('https://www.googleapis.com/youtube/v3/videos?part=snippet&id=umFnrwGy2dw&key=' + GOOGLE_YOUTUBE_KEY)
+      .then(r => {
+        console.log('getLinkName', {r})
+        console.log('getLinkName', r.items[0].snippet.title)
+      })
+      .finally(() => {
+        res.json({link})
+      })
+  } else {
+    res.json({link})
+  }
+}
+
 // ROUTES
 app.get('/', renderSPA)
 app.get('/projects/:objectId', renderSPA)
@@ -216,3 +237,5 @@ app.post('/api/projects', getUserInfoMiddleware, createProject)
 app.get('/api/projects/:objectId', getProject)
 app.put('/api/projects/:objectId', getUserInfoMiddleware, updateProject) // save changes
 app.delete('/api/projects/:objectId', getUserInfoMiddleware, removeProject)
+
+app.post('/links/name', getLinkName)

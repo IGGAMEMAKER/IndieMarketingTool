@@ -1,5 +1,6 @@
 import {useState} from "react";
 import actions from "./actions";
+import {FieldPicker} from "./FieldPicker";
 
 function DescriptionPicker({index, description, onEditDescriptionStatus}) {
   var [newDescription, onChangeDescription] = useState(description)
@@ -78,7 +79,7 @@ function NamePicker({index, name, onEditNameStatus}) {
 }
 
 export function Audience({
-                           name, description, strategy, index, isFull = false, onToggleFullInfo = () => {
+                           name, description, strategy, id, index, usages=[], isFull = false, onToggleFullInfo = () => {
   }
                          }) {
   var f = ''
@@ -101,6 +102,25 @@ export function Audience({
   else
     namePicker = <div className={"audience-title"}><b onClick={() => onEditNameStatus(true)}>{name}</b></div>
 
+  namePicker = <FieldPicker
+    value={name}
+    placeholder={"Audience name"}
+    normalValueRenderer={onEdit => <div className={"audience-title"}><b onClick={onEdit}>{name}</b></div>}
+    onAction={newName => {
+      if (newName.length)
+        actions.editAudienceName(newName, index)
+      else {
+        // if is used a lot, make an alert, which tells, where it is used
+        if (usages.length) {
+          alert('This segment is used in ' + usages.map(u => u.toUpperCase()).join(', ') + '. Remove it from there and try again')
+        } else {
+          actions.removeAudience(index)
+        }
+      }
+    }}
+  />
+
+
   var strategyPicker;
   if (!strategy.length || editStrategy)
     strategyPicker = <StrategyPicker strategy={strategy} index={index} onEditStrategyStatus={onEditStrategyStatus} />
@@ -116,6 +136,7 @@ export function Audience({
       <div>{facePicker('😅', 'green', true)}{facePicker('😐', 'orange', false)}</div>
       {/*{facePicker('😡', 'red', false)}*/}
       {descriptionPicker}
+      <h3>{id}</h3>
       {/*<br/>*/}
       {/*{strategyPicker}*/}
       {/*{strategy.map(s => <div><i style={{color: 'green'}}>{s}</i></div>)}*/}

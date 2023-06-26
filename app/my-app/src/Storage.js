@@ -2,9 +2,9 @@ import { EventEmitter } from 'events';
 import Dispatcher from './Dispatcher';
 import {
   AUDIENCE_ADD,
-  AUDIENCE_EDIT_NAME,
+  AUDIENCE_NAME_EDIT,
   AUDIENCE_EDIT_STRATEGY,
-  AUDIENCE_EDIT_DESCRIPTION,
+  AUDIENCE_DESCRIPTION_EDIT,
   AUDIENCE_REMOVE,
   MONETIZATION_AUDIENCE_ADD,
   MONETIZATION_ADD,
@@ -26,7 +26,7 @@ import {
   MONETIZATION_EDIT_DESCRIPTION,
   MONETIZATION_REMOVE,
   PROJECT_ADD,
-  PROJECT_RENAME, PROJECT_REMOVE
+  PROJECT_RENAME, PROJECT_REMOVE, CHANNELS_ADD, CHANNELS_REMOVE, CHANNELS_NAME_EDIT
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 
@@ -109,12 +109,17 @@ Dispatcher.register((p) => {
       })
         .finally(() => {
           var changesNeeded = 0
-          project.audiences.forEach((a, i) => {
-            if (!project.audiences[i].id) {
-              project.audiences[i].id = i
-              changesNeeded++
-            }
-          })
+
+          // reset IDs
+          // project.audiences.forEach((a, i) => {
+          //   project.audiences[i].id = -1;
+          // })
+          // project.audiences.forEach((a, i) => {
+          //   if (project.audiences[i].id) {
+          //     project.audiences[i].id = i
+          //     changesNeeded++
+          //   }
+          // })
 
           if (changesNeeded) {
             alert('CHANGES NEEDED: ' + changesNeeded)
@@ -153,29 +158,44 @@ Dispatcher.register((p) => {
         })
       saveProjectChanges()
       break;
-    // PROJECT_RENAME
 
 
     case AUDIENCE_ADD:
+      var ids = project.audiences.map(a => a?.id || 0)
+      // console.log({ids})
+      project.audienceCounter = 1 + Math.max(project.audienceCounter, ...ids)
       project.audiences.push({
         name: p.name,
         description: "",
         strategy: [],
         price: 0,
 
-        id: project.audienceCounter + 1
+        id: project.audienceCounter
       })
 
-      project.audienceCounter++
       saveProjectChanges()
       break;
 
-    case AUDIENCE_EDIT_DESCRIPTION:
+
+    case AUDIENCE_REMOVE:
+      var audienceIndex = p.audienceIndex
+      var id = project.audiences[audienceIndex].id
+      // var ind = project.audiences.findIndex(a => a.id === p.id)
+      project.audiences.splice(audienceIndex, 1)
+
+      // TODO REMOVE THIS IF THIS AUDIENCE IS USED ANYWHERE
+      // TODO F.E. IN MONETIZATION PLANS
+      // TODO REMOVE ATTACHEMENTS BY ID!!!!!
+
+      saveProjectChanges()
+      break;
+
+    case AUDIENCE_DESCRIPTION_EDIT:
       project.audiences[p.audienceIndex].description = p.description
       saveProjectChanges();
       break;
 
-    case AUDIENCE_EDIT_NAME:
+    case AUDIENCE_NAME_EDIT:
       project.audiences[p.audienceIndex].name = p.name
       saveProjectChanges();
       break;
@@ -237,7 +257,7 @@ Dispatcher.register((p) => {
       break
 
     case MONETIZATION_AUDIENCE_REMOVE:
-      project.monetizationPlans[p.monetizationIndex].audiences = project.monetizationPlans[p.monetizationIndex].audiences.filter(inc => inc!== p.audienceIndex)
+      project.monetizationPlans[p.monetizationIndex].audiences = project.monetizationPlans[p.monetizationIndex].audiences.filter(inc => inc!== p.audienceID)
       saveProjectChanges()
       break
 
@@ -292,6 +312,28 @@ Dispatcher.register((p) => {
       var i2 = p.index2;
 
       project.risks = swap(i1, i2, project.risks)
+      saveProjectChanges()
+      break;
+
+    case CHANNELS_ADD:
+      post('/links/name', {link: p.url})
+        .then(response => {
+          console.log({response})
+          project.channels.push({
+            name: '',
+            users: 0,
+            link: p.url,
+          })
+          // project.channels = project.channels.filter(c => c?.link?.length)
+          saveProjectChanges()
+        })
+      break;
+    case CHANNELS_NAME_EDIT:
+      project.channels[p.channelIndex].name = p.name;
+      saveProjectChanges()
+      break
+    case CHANNELS_REMOVE:
+      project.channels.splice(p.channelIndex, 1)
       saveProjectChanges()
       break;
 

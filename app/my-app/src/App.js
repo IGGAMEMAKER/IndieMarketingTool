@@ -2,7 +2,7 @@
 import './App.css';
 import {Component, useState} from 'react';
 import storage from './Storage'
-import actions, {loadProject, removeProject} from './actions'
+import actions from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldPicker} from "./FieldPicker";
@@ -59,19 +59,49 @@ function MonetizationAdder({}) {
 }
 
 
-const getUrlWithoutPrefixes = link => link.replace('https://', '').replace('www.', '')
-const getDomain = link => {
-  var w = getUrlWithoutPrefixes(link)
-  var index = w.indexOf('.') // w.findIndex('.')
+const getUrlWithoutPrefixes = link => {
+  try {
+    return link.replace('https://', '').replace('www.', '')
+  }
+  catch (e) {
 
-  return w.substr(0, index)
+  }
+
+  return link
+}
+const getDomain = link => {
+  try {
+    var w = getUrlWithoutPrefixes(link)
+    var index = w.indexOf('.') // w.findIndex('.')
+
+    return w.substr(0, index)
+  } catch (e) {
+    return link
+  }
 }
 
-function Channel({link, name, users}) {
-  var l = name ?? getUrlWithoutPrefixes(link)
+function Channel({link, channel, index, name, users}) {
+  var [isDangerous, setDangerous] = useState(false)
+  var l = name || getUrlWithoutPrefixes(link)
+
+  // SOURCE TYPE
+  // human
+  // publisher (games)
+  // press (journals)
+  // video channel
+  // text channels
 
   return (
-    <div className="Channel-item"><a href={link} target={"_blank"}>{l}</a> {users}</div>
+    // <div className="Channel-item">
+    <tr style={{textAlign: 'left', backgroundColor: isDangerous ? 'red': 'white'}}>
+      <td>{users}</td>
+      <td>
+        {/*<a href={link} target={"_blank"}>{l}</a> {users} <button onClick={() => {actions.removeChannel(index)}}>x</button>*/}
+        <a href={link} target={"_blank"}>{l}</a> <span><FieldPicker value={name} placeholder={"Add short name"} onAction={val => {actions.editChannelName(index, val)}} /></span>
+      </td>
+      <td><button onMouseLeave={() => setDangerous(false)} onMouseEnter={() => setDangerous(true)} onClick={() => {actions.removeChannel(index)}}>x</button></td>
+      {/*{JSON.stringify(channel)}*/}
+    </tr>
   )
 }
 
@@ -138,27 +168,55 @@ function ChannelList({channels}) {
     if (!groupedChannels[domain])
       groupedChannels[domain] = []
 
-    groupedChannels[domain].push(c)
+    groupedChannels[domain].push({c, i})
   })
+
+  var mapped = channels.map((c, i) => <Channel channel={c} index={i} link={c.link} name={c.name} users={c.users} />)
+  return <table>
+    <thead>
+      <th>Users</th>
+      <th>Name</th>
+      <th></th>
+    </thead>
+    <tbody>
+    {mapped}
+    <tr>
+      <th>
+        <ChannelAdder />
+      </th>
+    </tr>
+    </tbody>
+  </table>
 
   return Object.keys(groupedChannels)
     .map(domain => {
-      var g = groupedChannels[domain].sort((a1, a2) => a2.users - a1.users)
+      var g = groupedChannels[domain].sort((a1, a2) => a2.c.users - a1.c.users)
 
       return <div>
         <h2>{domain}</h2>
-        {g.map((a, i) => <Channel link={a.link} name={a.name} users={a.users} />)}
+        {g.map(a => <Channel channel={a.c} index={a.i} link={a.c.link} name={a.c.name} users={a.c.users} />)}
       </div>
     })
+}
+
+function ChannelAdder({}) {
+  return <FieldAdder
+    placeholder={"audience source link"}
+    onAdd={val => {
+      alert(val)
+      actions.addChannel(val)
+    }}
+  />
 }
 
 function AudienceSourcesPanel({channels}) {
   return <div>
     <br />
+    <br />
     Where will you find your audience?
-    <br />
-    <br />
-    <div className="Audience-Container">
+    <h6>User count will update in future releases</h6>
+    {/*<div className="Audience-Container">*/}
+    <div className="Container">
       <ChannelList channels={channels} />
     </div>
   </div>
@@ -236,25 +294,38 @@ function MonetizationPanel({plans, audiences}) {
 
 
 
-function AudiencesList({audiences, isGame}) {
+function AudiencesList({audiences, state}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
+  const {monetizationPlans, risks, channels, name, appType} = state;
 
-  var audiencePhrase = isGame ? 'Who will play your game?' : 'Who will use your app?'
   return <div>
-    {audiencePhrase}       <AudienceAdder />
-    <br />
-    <br />
     <div className="Audience-Container">
-      {audiences.map((a, i) =>
-        <Audience
-          onToggleFullInfo={() => {setIsFullInfo(!isFullAudienceInfo)}}
-          isFull={!isFullAudienceInfo}
+      {audiences.map((a, i) => {
+        var usages = [];
+        var isUsedInMonetizationPlans = false
+        monetizationPlans.forEach((m, i) => {
+          console.log({m})
+          if (m.audiences.includes(a.id))
+            isUsedInMonetizationPlans = true
+        })
 
-          name={a.name}
-          description={a.description}
-          strategy={a.strategy}
-          index={i}
-        />
+        if (isUsedInMonetizationPlans)
+          usages.push('monetization plans')
+        // if (project)
+          return <Audience
+            onToggleFullInfo={() => {
+              setIsFullInfo(!isFullAudienceInfo)
+            }}
+            isFull={!isFullAudienceInfo}
+
+            name={a.name}
+            description={a.description}
+            strategy={a.strategy}
+            id={a.id}
+            usages={usages}
+            index={i}
+          />
+        }
       )}
     </div>
   </div>
@@ -304,6 +375,8 @@ class ProjectPage extends Component {
     var {audiences, monetizationPlans, risks, channels, name, appType} = this.state;
     var projectId = this.getProjectId()
 
+    var audiencePhrase = appType===APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your app?'
+
     return (
       <div className="App">
         <header className="App-header">
@@ -314,7 +387,12 @@ class ProjectPage extends Component {
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
           <a href={"/profile"}>Profile</a>
-          <AudiencesList audiences={audiences} isGame={appType===APP_TYPE_GAME} />
+          <br />
+          <br />
+          {audiencePhrase}       <AudienceAdder />
+          <br />
+          <br />
+          <AudiencesList audiences={audiences} state={this.state} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
           <RisksPanel risks={risks} />
           <AudienceSourcesPanel channels={channels} />

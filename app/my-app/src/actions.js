@@ -2,8 +2,8 @@ import Dispatcher from './Dispatcher';
 import {
   AUDIENCE_ADD,
   AUDIENCE_EDIT_STRATEGY,
-  AUDIENCE_EDIT_DESCRIPTION,
-  AUDIENCE_EDIT_NAME,
+  AUDIENCE_DESCRIPTION_EDIT,
+  AUDIENCE_NAME_EDIT,
   MONETIZATION_ADD,
   MONETIZATION_AUDIENCE_ADD,
   MONETIZATION_AUDIENCE_REMOVE,
@@ -26,7 +26,7 @@ import {
   PROFILE_LOAD,
   PROJECT_ADD,
   PROJECT_REMOVE,
-  PROJECT_RENAME
+  PROJECT_RENAME, AUDIENCE_REMOVE, CHANNELS_ADD, CHANNELS_REMOVE, CHANNELS_NAME_EDIT
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -79,9 +79,16 @@ export function addAudience(name) {
   });
 }
 
+export function removeAudience(audienceIndex) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_REMOVE,
+    audienceIndex,
+  });
+}
+
 export function editAudienceName(name, audienceIndex) {
   Dispatcher.dispatch({
-    actionType: AUDIENCE_EDIT_NAME,
+    actionType: AUDIENCE_NAME_EDIT,
     name,
     audienceIndex
   });
@@ -89,7 +96,7 @@ export function editAudienceName(name, audienceIndex) {
 
 export function editAudienceDescription(description, audienceIndex) {
   Dispatcher.dispatch({
-    actionType: AUDIENCE_EDIT_DESCRIPTION,
+    actionType: AUDIENCE_DESCRIPTION_EDIT,
     description,
     audienceIndex
   })
@@ -176,10 +183,10 @@ export function attachAudienceToMonetizationPlan(audienceIndex, monetizationInde
   })
 }
 
-export function detachAudienceFromMonetizationPlan(audienceIndex, monetizationIndex) {
+export function detachAudienceFromMonetizationPlan(audienceID, monetizationIndex) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_AUDIENCE_REMOVE,
-    audienceIndex,
+    audienceID,
     monetizationIndex
   })
 }
@@ -239,6 +246,31 @@ export function changeRiskOrder(index1, index2) {
   })
 }
 
+
+export function addChannel(url) {
+  Dispatcher.dispatch({
+    actionType: CHANNELS_ADD,
+    url
+  })
+}
+
+
+export function removeChannel(channelIndex) {
+  Dispatcher.dispatch({
+    actionType: CHANNELS_REMOVE,
+    channelIndex
+  })
+}
+
+
+export function editChannelName(channelIndex, name) {
+  Dispatcher.dispatch({
+    actionType: CHANNELS_NAME_EDIT,
+    channelIndex,
+    name
+  })
+}
+
 export default {
   loadProject,
   loadProfile,
@@ -248,6 +280,7 @@ export default {
   removeProject,
 
   addAudience,
+  removeAudience,
   editAudienceName,
   editAudienceDescription,
   editAudienceStrategy,
@@ -271,5 +304,9 @@ export default {
   editRiskSolution,
   editRiskName,
   changeRiskOrder,
+
+  addChannel,
+  removeChannel,
+  editChannelName,
 }
 
