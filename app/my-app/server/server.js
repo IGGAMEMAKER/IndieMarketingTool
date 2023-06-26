@@ -206,7 +206,7 @@ const updateProject = async (req, res) => {
 const getLinkName = (req, res) => {
   var link = req.body.link;
 
-  if (link.contains('www.youtube')) {
+  if (link.includes('www.youtube')) {
     ping('https://www.googleapis.com/youtube/v3/videos?part=snippet&id=umFnrwGy2dw&key=' + GOOGLE_YOUTUBE_KEY)
       .then(r => {
         console.log('getLinkName', {r})
