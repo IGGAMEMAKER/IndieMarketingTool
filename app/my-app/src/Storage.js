@@ -320,11 +320,11 @@ Dispatcher.register((p) => {
         .then(response => {
           console.log({response})
           var name = response.name;
-          project.channels.push({
+          project.channels.push(Object.assign({
             name,
             users: 0,
             link: p.url,
-          })
+          }, response))
           // project.channels = project.channels.filter(c => c?.link?.length)
           saveProjectChanges()
         })

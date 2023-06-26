@@ -204,32 +204,107 @@ const updateProject = async (req, res) => {
   })
 }
 
-const getLinkName = (req, res) => {
+const getRequest = (url) => request.get(url).set('Access-Control-Allow-Origin', '*')
+
+const isYoutubeRelated = link => link.includes('www.youtube')
+const isYoutubeVideo = link => isYoutubeRelated(link) && link.includes('watch?v')
+const getYoutubeVideoId = link => {
+  var arr = link.split('watch?v=')[1]
+  var videoId = arr.split('&')[0]
+
+  return videoId
+}
+
+const getYoutubeVideoInfo = async videoId => {
+  var videoApiLink = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${configs.GOOGLE_YOUTUBE_KEY}`
+
+  var response = await getRequest(videoApiLink)
+
+  var data = response.body
+  console.log('getLinkName', {data})
+  var snippet = data.items[0].snippet
+  var title = snippet.title
+  var channelId = snippet.channelId;
+
+  return Promise.resolve({
+    title, channelId
+  })
+}
+const getYoutubeChannelInfo = async channelId => {
+  // var channelApiLink = `https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${configs.GOOGLE_YOUTUBE_KEY}`
+  var channelApiLink = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${channelId}&key=${configs.GOOGLE_YOUTUBE_KEY}`
+  var response = await getRequest(channelApiLink)
+
+  var data = response.body
+  console.log('getLinkName', {data})
+
+  var item = data.items[0];
+  var snippet = item.snippet
+  var channelName = snippet.title
+  var channelUrl = snippet.customUrl;
+
+  var statistics = item.statistics
+
+
+  return Promise.resolve({
+    channelName, channelUrl, users: statistics.hiddenSubscriberCount ? 0 : parseInt(statistics.subscriberCount)
+  })
+}
+
+
+const getLinkName = async (req, res) => {
   var link = req.body.link;
 
   console.log({link})
-  if (link.includes('www.youtube')) {
-    var arr = link.split('watch?v=')[1]
-    var videoId = arr.split('&')[0]
+  if (isYoutubeRelated(link)) {
+    if (isYoutubeVideo(link)) {
 
-    request
-      .get(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${configs.GOOGLE_YOUTUBE_KEY}`)
-      .set('Access-Control-Allow-Origin', '*')
-      .then(r => {
-        var data = r.body
-        console.log('getLinkName', {data})
-        var title = data.items[0].snippet.title
+    }
+    var videoId = getYoutubeVideoId(link)
 
-        console.log('getLinkName', title)
-        res.json({
-          name: title
-        })
+    try {
+      var {channelId, title} = await getYoutubeVideoInfo(videoId)
+
+      // var data = response.body
+      // console.log('getLinkName', {data})
+      // var snippet = data.items[0].snippet
+      // var title = snippet.title
+      // var channelId = snippet.channelId;
+      //
+      // console.log('getLinkName', title, channelId)
+      var {channelName, channelUrl} = await getYoutubeChannelInfo(channelId)
+
+      res.json({
+        channelId,
+        name: title,
+        channelName,
+        channelUrl
       })
-      .catch(err => {
-        //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
-
-        res.json({name: ''})
+    } catch (e) {
+      res.json({
+        name: '',
       })
+    }
+    // request
+    //   .get(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${configs.GOOGLE_YOUTUBE_KEY}`)
+    //   .set('Access-Control-Allow-Origin', '*')
+    //   .then(r => {
+    //     var data = r.body
+    //     console.log('getLinkName', {data})
+    //     var snippet = data.items[0].snippet
+    //     var title = snippet.title
+    //     var channelId = snippet.channelId;
+    //
+    //     console.log('getLinkName', title)
+    //     res.json({
+    //       name: title
+    //     })
+    //   })
+    //   .catch(err => {
+    //     //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
+    //
+    //     res.json({name: ''})
+    //   })
   } else {
     res.json({name: ''})
   }
