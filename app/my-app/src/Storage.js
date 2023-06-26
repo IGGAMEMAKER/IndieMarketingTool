@@ -33,7 +33,7 @@ import {ping, post, remove, update} from "./PingBrowser";
 const CE = 'CHANGE_EVENT';
 
 var userId = '6495f2aad151580c1f4b516a';
-var projectId = '6495f797115f0e146936e5ad'
+var projectId = '' // 6495f797115f0e146936e5ad
 
 var projectMock = {
   name: 'NOT LOADED',
@@ -42,7 +42,8 @@ var projectMock = {
   audiences: [],
   monetizationPlans: [],
   channels: [],
-  risks: []
+  risks: [],
+  audienceCounter: 0
 }
 
 var project = projectMock
@@ -64,10 +65,12 @@ class Storage extends EventEmitter {
   getChannels           = () => this.getData().channels
   getRisks              = () => this.getData().risks
   getProjectName              = () => this.getData().name
-  getProjectType              = () => this.getData().appType
+  getProjectType              = () => this.getData().type
 
-  isApp = () => this.getProject().type === 1
-  isGame = () => this.getProject().type === 2
+  getAudienceCount      = () => this.getData().audienceCounter;
+
+  // isApp = () => this.getProject().type === 1
+  // isGame = () => this.getProject().type === 2
 }
 
 const store = new Storage();
@@ -86,6 +89,7 @@ const swap = (i1, i2, array) => {
 
 Dispatcher.register((p) => {
   const saveProjectChanges = () => {
+    console.log('will update projectId', {projectId})
     update('/api/projects/' + projectId, {project})
       .finally(() => {
         store.emitChange()
@@ -94,14 +98,30 @@ Dispatcher.register((p) => {
 
   switch (p.actionType) {
     case PROJECT_LOAD:
+      console.log('loading project', p.projectId)
+      projectId = p.projectId
+
       ping('/api/projects/' + p.projectId, data => {
         console.log({body: data.body})
-        var p = data.body.project;
+        var proj = data.body.project;
 
-        project = p
+        project = proj
       })
         .finally(() => {
-          store.emitChange()
+          var changesNeeded = 0
+          project.audiences.forEach((a, i) => {
+            if (!project.audiences[i].id) {
+              project.audiences[i].id = i
+              changesNeeded++
+            }
+          })
+
+          if (changesNeeded) {
+            alert('CHANGES NEEDED: ' + changesNeeded)
+            saveProjectChanges()
+          }
+          else
+            store.emitChange()
         })
       break
 
@@ -110,15 +130,17 @@ Dispatcher.register((p) => {
           {name: p.name, appType: p.appType},
           data => {
             console.log({body: data.body})
-            // var p = data.body.project;
-            //
-            // project = p
 
             // TODO force refresh
           })
           .finally(() => {
             store.emitChange()
           })
+      break
+
+    case PROJECT_RENAME:
+      project.name = p.name;
+      saveProjectChanges()
       break
 
     case PROJECT_REMOVE:
@@ -139,10 +161,12 @@ Dispatcher.register((p) => {
         name: p.name,
         description: "",
         strategy: [],
-        price: 0
+        price: 0,
+
+        id: project.audienceCounter + 1
       })
-      // store.emitChange()
-      // sendToServer()
+
+      project.audienceCounter++
       saveProjectChanges()
       break;
 

@@ -78,7 +78,7 @@ function Channel({link, name, users}) {
 function RiskList({risks}) {
   return (
     <ul>
-      <li><RiskAdder /></li>
+      {/*<li><RiskAdder /></li>*/}
       {risks.map((r, index) => <RiskView risk={r} index={index} />)}
       <li><RiskAdder /></li>
     </ul>
@@ -302,6 +302,7 @@ class ProjectPage extends Component {
 
   render() {
     var {audiences, monetizationPlans, risks, channels, name, appType} = this.state;
+    var projectId = this.getProjectId()
 
     return (
       <div className="App">
@@ -309,15 +310,16 @@ class ProjectPage extends Component {
           <FieldPicker
             value={name}
             placeholder={"name the project"}
-            onAction={() => {}} normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+            onAction={val => {actions.editName(projectId, val)}}
+            normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
           <a href={"/profile"}>Profile</a>
-          <AudiencesList audiences={audiences} isGame={appType===1} />
+          <AudiencesList audiences={audiences} isGame={appType===APP_TYPE_GAME} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
           <RisksPanel risks={risks} />
           <AudienceSourcesPanel channels={channels} />
 
-          <a href="/profile" onClick={() => actions.removeProject(this.getProjectId())}>REMOVE PROJECT</a>
+          <a href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
         </header>
       </div>
     );
@@ -369,8 +371,8 @@ class MainPage extends Component {
         <h2>
           Innovate without destroying ur mental health
         </h2>
-        <Link to={"/examples"}>Examples</Link>
-        <Link to={"/pricing"}>Pricing</Link>
+        {/*<Link to={"/examples"}>Examples</Link>*/}
+        {/*<Link to={"/pricing"}>Pricing</Link>*/}
         <Link to={"/profile"}>Profile</Link>
       </header>
     </div>
@@ -378,7 +380,9 @@ class MainPage extends Component {
 }
 
 
-function ProjectAdder({appType}) {
+function ProjectAdder({appType, defaultState}) {
+  const refresh = () => window.location.reload(true)
+
   var defaultWord;
   if (appType === APP_TYPE_GAME)
     defaultWord = "new Game"
@@ -386,13 +390,36 @@ function ProjectAdder({appType}) {
     defaultWord = "new App"
 
   return <FieldAdder
-    onAdd={name => actions.addProject(name, appType)}
+    onAdd={name => {
+      actions.addProject(name, appType)
+
+      // TODO GO TO NEW PROJECT PAGE
+      setTimeout(refresh, 2500)
+    }}
     placeholder={"add?"}
     defaultWord={defaultWord}
     defaultValue={defaultWord}
+    defaultState={defaultState}
   />
 }
 
+function NewProjectAdder({}) {
+  var [appType, setAppType] = useState(0)
+  var isChosen = appType !== 0
+
+  var chooseTypeForm
+  if (!isChosen) {
+    chooseTypeForm = <div>
+      <button onClick={() => setAppType(APP_TYPE_GAME)}>NEW GAME</button><button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP</button>
+    </div>
+  } else {
+    chooseTypeForm = <ProjectAdder appType={appType} defaultState={true}/>
+  }
+
+  return <div>
+    {chooseTypeForm}
+  </div>
+}
 class ProfilePage extends Component {
   state = {
     projectIDs: [],
@@ -412,16 +439,17 @@ class ProfilePage extends Component {
   render() {
     var projectIDs = this.state.projectIDs; // [{id: '6495f797115f0e146936e5ad', name: 'MY APP'}]
 
+
     return <div>
       <h1>PROFILE</h1>
       <br />
-      <ProjectAdder appType={APP_TYPE_GAME}/>
-      <br />
+      {/*<NewProjectAdder />*/}
+      {/*<br />*/}
       <br />
       <ProjectList projectIDs={projectIDs} />
       <br />
       <br />
-      <ProjectAdder appType={APP_TYPE_GAME} />
+      <NewProjectAdder />
     </div>
   }
 }

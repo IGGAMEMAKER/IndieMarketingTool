@@ -116,8 +116,8 @@ export function Audience({
       <div>{facePicker('😅', 'green', true)}{facePicker('😐', 'orange', false)}</div>
       {/*{facePicker('😡', 'red', false)}*/}
       {descriptionPicker}
-      <br/>
-      {strategyPicker}
+      {/*<br/>*/}
+      {/*{strategyPicker}*/}
       {/*{strategy.map(s => <div><i style={{color: 'green'}}>{s}</i></div>)}*/}
     </div>
   }

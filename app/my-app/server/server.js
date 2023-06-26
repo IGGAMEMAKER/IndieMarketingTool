@@ -163,6 +163,7 @@ const createProject = async (req, res) => {
   audiences: [],
   monetizationPlans: [],
   channels: [],
+  audienceCounter: 0,
   risks
 })
 
