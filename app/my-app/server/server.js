@@ -208,37 +208,31 @@ const getLinkName = (req, res) => {
   var link = req.body.link;
 
   console.log({link})
+  if (link.includes('www.youtube')) {
+    var arr = link.split('watch?v=')[1]
+    var videoId = arr.split('&')[0]
 
-  request
-    .get('https://www.googleapis.com/youtube/v3/videos?part=snippet&id=umFnrwGy2dw&key=' + configs.GOOGLE_YOUTUBE_KEY)
-    .set('Access-Control-Allow-Origin', '*')
-    .then(r => {
-      var data = r.body
-      console.log('getLinkName', {data})
-      console.log('getLinkName', data.items[0].snippet.title)
-    })
-    // .then(response => {
-    //   var b = picker ? picker(response) : response.body;
-    //
-    //   var t1 = new Date();
-    //   var diff_ms = t1.getTime() - t0.getTime();
-    //
-    //   // console.log('Data update took ' + diff_ms + 'ms');
-    //
-    //   return b;
-    // })
-    .catch(err => {
-      //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
+    request
+      .get(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${configs.GOOGLE_YOUTUBE_KEY}`)
+      .set('Access-Control-Allow-Origin', '*')
+      .then(r => {
+        var data = r.body
+        console.log('getLinkName', {data})
+        var title = data.items[0].snippet.title
 
-      return [];
-    })
-    .finally(() => {
-      res.json({link})
-    })
-  // if (link.includes('www.youtube')) {
-  // } else {
-  //   res.json({link})
-  // }
+        console.log('getLinkName', title)
+        res.json({
+          name: title
+        })
+      })
+      .catch(err => {
+        //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
+
+        res.json({name: ''})
+      })
+  } else {
+    res.json({name: ''})
+  }
 }
 
 // ROUTES
