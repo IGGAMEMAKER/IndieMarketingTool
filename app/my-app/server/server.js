@@ -217,16 +217,16 @@ const getLinkName = (req, res) => {
       console.log('getLinkName', {data})
       console.log('getLinkName', data.items[0].snippet.title)
     })
-    .then(response => {
-      var b = picker ? picker(response) : response.body;
-
-      var t1 = new Date();
-      var diff_ms = t1.getTime() - t0.getTime();
-
-      // console.log('Data update took ' + diff_ms + 'ms');
-
-      return b;
-    })
+    // .then(response => {
+    //   var b = picker ? picker(response) : response.body;
+    //
+    //   var t1 = new Date();
+    //   var diff_ms = t1.getTime() - t0.getTime();
+    //
+    //   // console.log('Data update took ' + diff_ms + 'ms');
+    //
+    //   return b;
+    // })
     .catch(err => {
       //console.error('ERROR IN PING.BROWSER.JS', Object.keys(err), err.status, err);
 
