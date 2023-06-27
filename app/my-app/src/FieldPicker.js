@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export function FieldPicker({value, onAction, placeholder, normalValueRenderer}) {
+export function FieldPicker({value, onAction, onRemove, placeholder, normalValueRenderer}) {
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
 
@@ -14,7 +14,15 @@ export function FieldPicker({value, onAction, placeholder, normalValueRenderer})
   var saveButton = ''
   if (newValue?.length || value?.length) {
     const onSave = () => {
-      onAction(newValue);
+      if (onRemove) {
+        if (!newValue.length)
+          onRemove()
+        else
+          onAction(newValue)
+      } else {
+        onAction(newValue)
+      }
+
       onChangeName(false)
     }
 

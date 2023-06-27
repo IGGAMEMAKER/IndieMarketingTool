@@ -1,7 +1,7 @@
 import Dispatcher from './Dispatcher';
 import {
   AUDIENCE_ADD,
-  AUDIENCE_EDIT_STRATEGY,
+  AUDIENCE_STRATEGY_EDIT,
   AUDIENCE_DESCRIPTION_EDIT,
   AUDIENCE_NAME_EDIT,
   MONETIZATION_ADD,
@@ -33,7 +33,17 @@ import {
   CHANNELS_NAME_EDIT,
   LINKS_ADD,
   LINKS_REMOVE,
-  LINKS_NOTES_EDIT, LINKS_TYPE_EDIT
+  LINKS_NOTES_EDIT,
+  LINKS_TYPE_EDIT,
+  MONETIZATION_ORDER_CHANGE,
+  MARKETING_CAMPAIGN_ADD,
+  MARKETING_CAMPAIGN_AUDIENCE_EDIT,
+  AUDIENCE_STRATEGY_ADD,
+  AUDIENCE_STRATEGY_REMOVE,
+  AUDIENCE_ORDER_CHANGE,
+  AUDIENCE_MESSAGE_ADD,
+  AUDIENCE_MESSAGE_EDIT,
+  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES, PROJECT_EDIT_BURNOUT_TIME
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -109,13 +119,54 @@ export function editAudienceDescription(description, audienceIndex) {
   })
 }
 
+export function addAudienceMessage(message, audienceIndex) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_MESSAGE_ADD,
+    message,
+    audienceIndex,
+  })
+}
+
+export function editAudienceMessage(message, audienceIndex, messageIndex) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_MESSAGE_EDIT,
+    messageIndex,
+    audienceIndex,
+    message
+  })
+}
+
+export function addAudienceStrategy(strategy, audienceIndex) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_STRATEGY_ADD,
+    strategy,
+    audienceIndex,
+  })
+}
+
 export function editAudienceStrategy(strategy, audienceIndex, textIndex) {
   console.log({strategy, audienceIndex, textIndex})
   Dispatcher.dispatch({
-    actionType: AUDIENCE_EDIT_STRATEGY,
+    actionType: AUDIENCE_STRATEGY_EDIT,
     strategy,
     audienceIndex,
     textIndex
+  })
+}
+
+export function removeAudienceStrategy(audienceIndex, textIndex) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_STRATEGY_REMOVE,
+    audienceIndex,
+    textIndex
+  })
+}
+
+export function changeAudienceOrder(audienceIndex1, audienceIndex2) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_ORDER_CHANGE,
+    audienceIndex1,
+    audienceIndex2
   })
 }
 
@@ -195,6 +246,14 @@ export function detachAudienceFromMonetizationPlan(audienceID, monetizationIndex
     actionType: MONETIZATION_AUDIENCE_REMOVE,
     audienceID,
     monetizationIndex
+  })
+}
+
+export function changeMonetizationOrder(monetizationIndex1, monetizationIndex2) {
+  Dispatcher.dispatch({
+    actionType: MONETIZATION_ORDER_CHANGE,
+    monetizationIndex1,
+    monetizationIndex2
   })
 }
 
@@ -308,6 +367,52 @@ export function editLinkType(linkIndex, linkType) {
   })
 }
 
+export function addMarketingCampaign(audienceIndex, message, approach) {
+  Dispatcher.dispatch({
+    actionType: MARKETING_CAMPAIGN_ADD,
+    audienceIndex,
+    message,
+    approach
+  })
+}
+
+export function editMarketingCampaignAudience(campaignID, audienceIndex) {
+  Dispatcher.dispatch({
+    actionType: MARKETING_CAMPAIGN_AUDIENCE_EDIT,
+    audienceIndex,
+    campaignID
+  })
+}
+
+export function editMarketingCampaignMessage(campaignID, audienceIndex) {
+  Dispatcher.dispatch({
+    actionType: MARKETING_CAMPAIGN_AUDIENCE_EDIT,
+    audienceIndex,
+    campaignID
+  })
+}
+
+export function editProjectDesiredProfit(value) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_EDIT_DESIRED_PROFIT,
+    value
+  })
+}
+
+export function editProjectMonthlyExpenses(value) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_EDIT_EXPENSES,
+    value
+  })
+}
+
+export function editProjectTimeTillBurnout(value) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_EDIT_BURNOUT_TIME,
+    value
+  })
+}
+
 export default {
   loadProject,
   loadProfile,
@@ -321,6 +426,11 @@ export default {
   editAudienceName,
   editAudienceDescription,
   editAudienceStrategy,
+  removeAudienceStrategy,
+  addAudienceStrategy,
+  changeAudienceOrder,
+  addAudienceMessage,
+  editAudienceMessage,
 
   addMonetizationPlan,
   removeMonetizationPlan,
@@ -333,6 +443,7 @@ export default {
 
   attachAudienceToMonetizationPlan,
   detachAudienceFromMonetizationPlan,
+  changeMonetizationOrder,
 
   addRisk,
   removeRisk,
@@ -350,5 +461,11 @@ export default {
   removeLink,
   editNotes,
   editLinkType,
+
+  addMarketingCampaign,
+
+  editProjectDesiredProfit,
+  editProjectMonthlyExpenses,
+  editProjectTimeTillBurnout,
 }
 

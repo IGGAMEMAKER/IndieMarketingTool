@@ -3,7 +3,7 @@ import Dispatcher from './Dispatcher';
 import {
   AUDIENCE_ADD,
   AUDIENCE_NAME_EDIT,
-  AUDIENCE_EDIT_STRATEGY,
+  AUDIENCE_STRATEGY_EDIT,
   AUDIENCE_DESCRIPTION_EDIT,
   AUDIENCE_REMOVE,
   MONETIZATION_AUDIENCE_ADD,
@@ -33,7 +33,16 @@ import {
   CHANNELS_NAME_EDIT,
   LINKS_ADD,
   LINKS_REMOVE,
-  LINKS_NOTES_EDIT, LINKS_TYPE_EDIT
+  LINKS_NOTES_EDIT,
+  LINKS_TYPE_EDIT,
+  MONETIZATION_ORDER_CHANGE,
+  AUDIENCE_STRATEGY_ADD,
+  AUDIENCE_STRATEGY_REMOVE,
+  AUDIENCE_ORDER_CHANGE,
+  AUDIENCE_MESSAGE_ADD,
+  AUDIENCE_MESSAGE_EDIT,
+  PROJECT_EDIT_BURNOUT_TIME,
+  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 import {LINK_TYPE_DOCS} from "./constants/constants";
@@ -50,8 +59,7 @@ var projectMock = {
   audiences: [],
   monetizationPlans: [],
   channels: [],
-  risks: [],
-  audienceCounter: 0
+  risks: []
 }
 
 var project = projectMock
@@ -76,8 +84,6 @@ class Storage extends EventEmitter {
   getProjectType              = () => this.getData().type
   getUsefulLinks              = () => this.getData().links || []
 
-  getAudienceCount      = () => this.getData().audienceCounter;
-
   // isApp = () => this.getProject().type === 1
   // isGame = () => this.getProject().type === 2
 }
@@ -95,6 +101,21 @@ const swap = (i1, i2, array) => {
   return array
 }
 
+const getNextAudienceID = proj => {
+  var ids = proj.audiences.map(a => a.id || 0)
+  console.log({ids})
+
+  if (!ids.length)
+    ids.push(0)
+
+  return 1 + Math.max(...ids)
+}
+
+const refresh = (time = 800) => {
+  setTimeout(() => window.location.reload(true), time)
+}
+
+const getRealAudienceIndexFromAudienceID = audienceID => project.audiences.findIndex(a => a.id === audienceID);
 
 Dispatcher.register((p) => {
   const saveProjectChanges = () => {
@@ -103,6 +124,15 @@ Dispatcher.register((p) => {
       .finally(() => {
         store.emitChange()
       })
+  }
+
+  const fixStrategy = (p) => {
+    // TODO PATCH FOR OLDER PROJECTS
+    if (!Array.isArray(project.audiences[p.audienceIndex].strategy))
+      project.audiences[p.audienceIndex].strategy = [p.strategy]
+
+    if (!project.audiences[p.audienceIndex].messages)
+      project.audiences[p.audienceIndex].messages = []
   }
 
   switch (p.actionType) {
@@ -170,16 +200,14 @@ Dispatcher.register((p) => {
 
 
     case AUDIENCE_ADD:
-      var ids = project.audiences.map(a => a?.id || 0)
-      // console.log({ids})
-      project.audienceCounter = 1 + Math.max(project.audienceCounter, ...ids)
       project.audiences.push({
         name: p.name,
         description: "",
         strategy: [],
+        messages: [],
         price: 0,
 
-        id: project.audienceCounter
+        id: getNextAudienceID(project)
       })
 
       saveProjectChanges()
@@ -187,16 +215,12 @@ Dispatcher.register((p) => {
 
 
     case AUDIENCE_REMOVE:
-      var audienceIndex = p.audienceIndex
-      var id = project.audiences[audienceIndex].id
-      // var ind = project.audiences.findIndex(a => a.id === p.id)
-      project.audiences.splice(audienceIndex, 1)
-
       // TODO REMOVE THIS IF THIS AUDIENCE IS USED ANYWHERE
       // TODO F.E. IN MONETIZATION PLANS
-      // TODO REMOVE ATTACHEMENTS BY ID!!!!!
-
+      // TODO REMOVE ATTACHMENTS BY ID!!!!!
+      project.audiences.splice(p.audienceIndex, 1)
       saveProjectChanges()
+      refresh()
       break;
 
     case AUDIENCE_DESCRIPTION_EDIT:
@@ -209,10 +233,53 @@ Dispatcher.register((p) => {
       saveProjectChanges();
       break;
 
-    case AUDIENCE_EDIT_STRATEGY:
-      project.audiences[p.audienceIndex].strategy = p.strategy
+    case AUDIENCE_STRATEGY_EDIT:
+      console.log('EDIT STRATEGY', project.audiences[p.audienceIndex].strategy)
+      console.log(p.strategy)
+
+      fixStrategy(p)
+
+      console.log('made an array?')
+      project.audiences[p.audienceIndex].strategy[p.textIndex] = p.strategy
       saveProjectChanges();
       break;
+
+    case AUDIENCE_MESSAGE_ADD:
+      fixStrategy(p)
+
+      project.audiences[p.audienceIndex].messages.push(p.message)
+      saveProjectChanges();
+      break;
+
+    case AUDIENCE_MESSAGE_EDIT:
+      fixStrategy(p)
+
+      project.audiences[p.audienceIndex].messages[p.messageIndex] = p.message
+      saveProjectChanges();
+      break;
+
+
+    case AUDIENCE_STRATEGY_ADD:
+      fixStrategy(p)
+
+      project.audiences[p.audienceIndex].strategy.push(p.strategy)
+      saveProjectChanges();
+      break;
+
+    case AUDIENCE_STRATEGY_REMOVE:
+      fixStrategy(p)
+
+      project.audiences[p.audienceIndex].strategy.splice(p.textIndex, 1)
+      saveProjectChanges();
+      refresh()
+      break;
+
+    case AUDIENCE_ORDER_CHANGE:
+      project.audiences = swap(p.audienceIndex1, p.audienceIndex2, project.audiences)
+      saveProjectChanges();
+      refresh()
+      break;
+
 
     case MONETIZATION_ADD:
       project.monetizationPlans.push({name: p.name, benefits: [], audiences: [], price: 0, regularity: 0})
@@ -224,9 +291,16 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break
 
+    case MONETIZATION_ORDER_CHANGE:
+      project.monetizationPlans = swap(p.monetizationIndex1, p.monetizationIndex2, project.monetizationPlans)
+      saveProjectChanges()
+      refresh()
+      break;
+
     case MONETIZATION_REMOVE:
       project.monetizationPlans.splice(p.monetizationIndex, 1)
       saveProjectChanges()
+      refresh()
       break
 
     case MONETIZATION_EDIT_BENEFIT:
@@ -268,6 +342,7 @@ Dispatcher.register((p) => {
     case MONETIZATION_AUDIENCE_REMOVE:
       project.monetizationPlans[p.monetizationIndex].audiences = project.monetizationPlans[p.monetizationIndex].audiences.filter(inc => inc!== p.audienceID)
       saveProjectChanges()
+      refresh()
       break
 
     case RISK_ADD:
@@ -278,6 +353,7 @@ Dispatcher.register((p) => {
     case RISK_REMOVE:
       project.risks.splice(p.riskIndex, 1)
       saveProjectChanges()
+      refresh()
       break;
 
     case RISK_SOLUTION_ADD:
@@ -307,6 +383,7 @@ Dispatcher.register((p) => {
         r.solutions = []
 
       saveProjectChanges()
+      refresh()
       break;
 
 
@@ -322,6 +399,7 @@ Dispatcher.register((p) => {
 
       project.risks = swap(i1, i2, project.risks)
       saveProjectChanges()
+      refresh()
       break;
 
     case CHANNELS_ADD:
@@ -345,6 +423,7 @@ Dispatcher.register((p) => {
     case CHANNELS_REMOVE:
       project.channels.splice(p.channelIndex, 1)
       saveProjectChanges()
+      refresh()
       break;
 
     case LINKS_ADD:
@@ -362,6 +441,7 @@ Dispatcher.register((p) => {
     case LINKS_REMOVE:
       project.links.splice(p.linkIndex, 1)
       saveProjectChanges()
+      refresh()
       break;
 
     case LINKS_NOTES_EDIT:
@@ -370,6 +450,19 @@ Dispatcher.register((p) => {
       break
     case LINKS_TYPE_EDIT:
       project.links[p.linkIndex].linkType = p.linkType
+      saveProjectChanges()
+      break;
+
+    case PROJECT_EDIT_DESIRED_PROFIT:
+      project.desiredProfit = parseInt(p.value)
+      saveProjectChanges()
+      break;
+    case PROJECT_EDIT_EXPENSES:
+      project.monthlyExpenses = parseInt(p.value)
+      saveProjectChanges()
+      break;
+    case PROJECT_EDIT_BURNOUT_TIME:
+      project.timeTillBurnout = parseInt(p.value)
       saveProjectChanges()
       break;
 

@@ -102,20 +102,29 @@ export function Audience({
   else
     namePicker = <div className={"audience-title"}><b onClick={() => onEditNameStatus(true)}>{name}</b></div>
 
+  var left = <button onClick={() => {actions.changeAudienceOrder(index, index - 1)}}>←</button>
+  var right = <button onClick={() => {actions.changeAudienceOrder(index, index + 1)}}>→</button>
+
   namePicker = <FieldPicker
     value={name}
     placeholder={"Audience name"}
-    normalValueRenderer={onEdit => <div className={"audience-title"}><b onClick={onEdit}>{name}</b></div>}
+    normalValueRenderer={onEdit => <div className={"audience-title"}>
+      {left}{right}
+      <div><b onClick={onEdit}>{name}</b></div>
+    </div>}
     onAction={newName => {
-      if (newName.length)
+      // if (newName.length)
         actions.editAudienceName(newName, index)
-      else {
-        // if is used a lot, make an alert, which tells, where it is used
-        if (usages.length) {
-          alert('This segment is used in ' + usages.map(u => u.toUpperCase()).join(', ') + '. Remove it from there and try again')
-        } else {
-          actions.removeAudience(index)
-        }
+      // else {
+      //
+      // }
+    }}
+    onRemove={() => {
+      // if is used a lot, make an alert, which tells, where it is used
+      if (usages.length) {
+        alert('This segment is used in ' + usages.map(u => u.toUpperCase()).join(', ') + '. Remove it from there and try again')
+      } else {
+        actions.removeAudience(index)
       }
     }}
   />

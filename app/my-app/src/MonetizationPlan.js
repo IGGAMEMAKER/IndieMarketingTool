@@ -21,6 +21,9 @@ function BenefitAdder({index}) {
 }
 
 export function MonetizationPlan({plan, index, audiences}) {
+  const LEFT = <button onClick={() => {actions.changeMonetizationOrder(index, index -1)}}>←</button>
+  const RIGHT = <button onClick={() => {actions.changeMonetizationOrder(index, index +1)}}>→</button>
+
   var namePicker = <FieldPicker
     value={plan.name}
     placeholder={"Monetization type name"}
@@ -30,7 +33,7 @@ export function MonetizationPlan({plan, index, audiences}) {
       else
         actions.removeMonetizationPlan(index)
     }}
-    normalValueRenderer={onChangeName => <b onClick={() => onChangeName(true)}>{plan.name}</b>}
+    normalValueRenderer={onChangeName => <div>{LEFT}<b onClick={() => onChangeName(true)}>{plan.name}</b>{RIGHT}</div>}
   />
 
   var descriptionPicker = <FieldPicker
@@ -82,7 +85,9 @@ export function MonetizationPlan({plan, index, audiences}) {
   }
 
   var adder = <BenefitAdder index={index} />
+
   return <div className="Audience-item">
+    {/*<div>{LEFT}{namePicker}{RIGHT}</div>*/}
     <div>{namePicker}</div>
     <div>{moneyPicker}</div>
     <br />

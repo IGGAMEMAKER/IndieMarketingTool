@@ -133,6 +133,7 @@ function RiskView({risk, index}) {
 
     return <div>
       <span onClick={() => onChange(true)}>{risk.name}</span>
+      {up} {down}
       <ul>
         {solutions.map((s, solutionIndex) => <li>
           <FieldPicker
@@ -149,7 +150,7 @@ function RiskView({risk, index}) {
         </li>)}
         <RiskSolutionAdder riskIndex={index} />
       </ul>
-    </div> // {up} {down}
+    </div>
   }
 
   return (
@@ -235,11 +236,260 @@ function AudienceSourcesPanel({channels}) {
   </div>
 }
 
+function AudiencePicker({onPick, defaultAudience=-1, audiences=[], excluded=[]}) {
+  var excludedIDs = {}
+  excluded.forEach(i => excludedIDs[i] = 1)
+
+  var allowedOptions = audiences
+    // .filter(aa => !excluded.filter(inc => inc === aa.id).length)
+    .filter(aa => !excludedIDs[aa.id])
+
+  if (allowedOptions.length) {
+    return <select
+      value={defaultAudience}
+      onChange={event => {onPick(parseInt(event.target.value))}}
+    >
+      <option disabled selected value={-1}> -- select an audience --</option>
+      {allowedOptions.map((aa, i) => <option value={aa.id}>{aa?.name}</option>)}
+    </select>
+  }
+
+  return ''
+}
+
+function CampaignAdder({audiences}) {
+  var [chosenAudience, setAudience] = useState(-1)
+  var [message, setMessage] = useState("")
+  var [channels, setChannels] = useState([])
+
+  return (
+    <tr>
+      <td>
+        <AudiencePicker defaultAudience={chosenAudience} audiences={audiences} onPick={id => {
+          setAudience(id)
+        }} />
+      </td>
+      <td>
+        <FieldPicker
+          value={message}
+          onAction={val => setMessage(val)}
+          placeholder={"What will u tell them?"}
+        />
+      </td>
+      <td>
+
+      </td>
+      <td>
+        <button>Save</button>
+      </td>
+    </tr>
+  )
+}
+
+function BusinessPlanner({project}) {
+  // var [desiredProfit, setDesiredProfit] = useState(project.desiredProfit || 10000)
+  // var [monthlyExpenses, setMonthlyExpenses] = useState(project.monthlyExpenses || 500)
+  // var [timeTillBurnout, setTimeTillBurnout] = useState(project.timeTillBurnout || 1)
+  var {desiredProfit, monthlyExpenses, timeTillBurnout} = project
+
+  const getGoal = (goal, goalName) => {
+    if (!goalName)
+      goalName = <span>make <b>{goal}</b> monthly</span>
+
+    return <div>
+      To {goalName}, you need one of
+      <br/>
+      <br/>
+      <center>
+        <table>
+          <tr>
+            {project.monetizationPlans.filter(plan => plan.price).map(plan => {
+              var rounded = Math.ceil(goal / plan.price)
+              // var audienceName = project.audiences.find(a => a.id === plan.a)
+              return <td>
+                <b>{plan.name}'s</b>
+                <br/>
+                {rounded}
+              </td>
+            })}
+          </tr>
+        </table>
+      </center>
+    </div>
+  }
+
+  return <div>
+    Let's talk about business
+    <br/>
+    <div className={"Audience-Container"}>
+
+      <table>
+        <tbody>
+        <tr className={"Audience-item"}>
+          <td>How much do you want to earn?</td>
+          <td><FieldPicker
+            value={desiredProfit}
+            placeholder={"Type your desired profit"}
+            onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
+          />
+            <div>monthly</div>
+          </td>
+          <td>{getGoal(desiredProfit)}</td>
+        </tr>
+        <tr className={"Audience-item"}>
+          <td>Your monthly expenses?</td>
+          <td><FieldPicker
+            value={monthlyExpenses}
+            placeholder={"What are ur expenses"}
+            onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
+          />
+            {/*<div>monthly</div>*/}
+          </td>
+          <td>{getGoal(monthlyExpenses, 'become sustainable')}</td>
+        </tr>
+        <tr className={"Audience-item"}>
+          <td>How much time do you have until you run out of cash?</td>
+          <td><FieldPicker
+            value={timeTillBurnout}
+            placeholder={"How much months can you spend on that venture?"}
+            onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
+          />
+            <div>months</div>
+          </td>
+          <td>{getGoal(monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    {/*<div className={"Audience-Container"}>*/}
+
+
+    {/*  <br/>*/}
+    {/*  <br/>*/}
+
+    {/*</div>*/}
+
+    {/*<br/>*/}
+    {/*<div className={"Audience-Container"}>*/}
+    {/*  What are your monthly expenses?*/}
+    {/*  <FieldPicker*/}
+    {/*    value={monthlyExpenses}*/}
+    {/*    placeholder={"What are ur expenses"}*/}
+    {/*    onAction={val => setMonthlyExpenses(parseInt(val))}*/}
+    {/*  />*/}
+    {/*  <br/>*/}
+    {/*  <br/>*/}
+    {/*  {getGoal(monthlyExpenses)}*/}
+    {/*</div>*/}
+
+    {/*<br/>*/}
+    {/*<div className={"Audience-Container"}>*/}
+    {/*  How much time do you have until you run out of cash?*/}
+    {/*  <FieldPicker*/}
+    {/*    value={timeTillBurnout}*/}
+    {/*    placeholder={"How much months can you spend on that venture?"}*/}
+    {/*    onAction={val => setTimeTillBurnout(parseInt(val))}*/}
+    {/*  />*/}
+    {/*  <br/>*/}
+    {/*  <br/>*/}
+    {/*  {getGoal(monthlyExpenses / timeTillBurnout, 'become sustainable')}*/}
+    {/*</div>*/}
+
+    <br/>
+    <br/>
+    <h2>{"Can you get these numbers?".toUpperCase()}</h2>
+  </div>
+}
+
+// var strategyPicker;
+// if (!strategy.length || editStrategy)
+//   strategyPicker = <StrategyPicker strategy={strategy} index={index} onEditStrategyStatus={onEditStrategyStatus} />
+// else
+//   strategyPicker = <div onClick={() => onEditStrategyStatus(true)}><i style={{color: 'green'}}>{strategy}</i></div>
+function MarketingPlanner({project}) {
+  return <div>
+    <br/>
+    <br/>
+    How will you grow?
+    <br/>
+    <br/>
+    <div className="Container">
+      <table>
+        <thead>
+          {/*<th>#</th>*/}
+          <th>Audience</th>
+          <th>How to reach them</th>
+          {/*<th>Message</th>*/}
+        </thead>
+        <tbody>
+          {project.audiences.map((a, audienceIndex) => {
+            var {strategy, messages=[]} = a;
+
+            if (!Array.isArray(strategy))
+              strategy = [strategy]
+
+            var messagePicker = <ol>
+              {messages.map((m, i) =>
+                <li>
+                  <FieldPicker
+                    value={m}
+                    placeholder={"What will you tell them?"}
+                    onAction={val => actions.editAudienceMessage(val, audienceIndex, i)}
+                  />
+                </li>
+              )}
+              <li>
+                <FieldAdder
+                  onAdd={val => actions.addAudienceMessage(val, audienceIndex)}
+                  placeholder={"what will you tell them?"}
+                />
+              </li>
+            </ol>
+
+            var strategyPicker = <ol>
+              {strategy.map(
+                (s, i) => <li>
+                  <FieldPicker
+                    value={s}
+                    placeholder={"How will you reach them?"}
+                    onAction={newStrategy => actions.editAudienceStrategy(newStrategy, audienceIndex, i)}
+                    onRemove={() => actions.removeAudienceStrategy(audienceIndex, i)}
+                  />
+                </li>
+              )}
+              <li>
+                <FieldAdder onAdd={val => actions.addAudienceStrategy(val, audienceIndex)} placeholder={"add more ways"}/>
+              </li>
+            </ol>
+
+            return <tr style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
+              {/*<td>*/}
+              {/*  {a.name}*/}
+              {/*</td>*/}
+              <td>
+                <b>How to reach <span style={{color: 'green'}}>{a.name}</span>?</b>
+                <br />
+                <label style={{color: 'gray'}}>{a.description}</label>
+                <br />
+                {strategyPicker}
+              </td>
+              <td>
+                <b>What will you tell them?</b>
+                {messagePicker}
+              </td>
+              <td>SLOW</td>
+            </tr>
+          })}
+        {/*<tr>*/}
+        {/*<CampaignAdder audiences={project.audiences} />*/}
+        {/*</tr>*/}
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
 function UsefulLinks({links}) {
-  // addLink
-  // removeLink
-  // editNotes
-  // editLinkType
   return <div>
     <br />
     <br />
@@ -250,7 +500,7 @@ function UsefulLinks({links}) {
         <tbody>
           {links.map((l, i) => {
             return <tr>
-              <td><a href={l.link}>{l.link}</a></td>
+              <td><a target={"_blank"} href={l.link}>Link</a></td>
               <td>
                 <FieldPicker
                   value={l.note}
@@ -450,8 +700,20 @@ class ProjectPage extends Component {
           <RisksPanel risks={risks} />
           <AudienceSourcesPanel channels={channels} />
           <UsefulLinks links={this.state.links} />
+          <MarketingPlanner project={this.state} />
+          <br />
+          <br />
+          <BusinessPlanner project={this.state} />
 
-          <a href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
         </header>
       </div>
     );

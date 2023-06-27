@@ -169,8 +169,11 @@ const createProject = async (req, res) => {
     monetizationPlans: [],
     channels: [],
     links: [],
-    audienceCounter: 0,
-    risks
+    risks,
+
+    desiredProfit: 10000,
+    monthlyExpenses: 500,
+    timeTillBurnout: 1
   })
 
   project.save()

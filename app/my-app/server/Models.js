@@ -18,11 +18,16 @@ var ProjectSchema = new Schema({
 
   // data: mongoose.Mixed, // risks, audiences, monetizationPlans, e.t.c
   audiences: Array,
-  audienceCounter: Number,
   monetizationPlans: Array,
   risks: Array,
   channels: Array,
-  links: Array
+  links: Array,
+
+  marketingPlans: Array,
+
+  desiredProfit: Number,
+  monthlyExpenses: Number,
+  timeTillBurnout: Number,
 })
 
 
