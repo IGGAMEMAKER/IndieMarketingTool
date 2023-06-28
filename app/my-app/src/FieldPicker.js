@@ -44,8 +44,11 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer}
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
 
-  if (!editName)
-    return normalValueRenderer(onChangeName)
+  if (!editName) {
+    if (normalValueRenderer)
+      return normalValueRenderer(onChangeName)
+    return <label onClick={() => onChangeName(true)}>{value}</label>
+  }
 
   var saveButton = ''
   const onSave = () => {
@@ -61,7 +64,7 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer}
     <textarea
       value={newValue}
       placeholder={placeholder}
-      onChange={event => onValueChange(event.target.value)}
+      onChange={event => onValueChange(parseFloat(event.target.value))}
     />
     {saveButton}
   </div>

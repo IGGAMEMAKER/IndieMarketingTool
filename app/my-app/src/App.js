@@ -5,7 +5,7 @@ import storage from './Storage'
 import actions, {addLink, editLinkType, editNotes, removeLink} from './actions'
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
-import {FieldPicker} from "./FieldPicker";
+import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {FieldAdder} from "./FieldAdder";
 // import { BrowserRouter } from 'react-router-dom';
 import {Routes, Route, Link, useParams} from 'react-router-dom';
@@ -290,7 +290,10 @@ function BusinessPlanner({project}) {
   // var [desiredProfit, setDesiredProfit] = useState(project.desiredProfit || 10000)
   // var [monthlyExpenses, setMonthlyExpenses] = useState(project.monthlyExpenses || 500)
   // var [timeTillBurnout, setTimeTillBurnout] = useState(project.timeTillBurnout || 1)
-  var {desiredProfit, monthlyExpenses, timeTillBurnout} = project
+  var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
+  console.log({
+    project
+  })
 
   const getGoal = (goal, goalName) => {
     if (!goalName)
@@ -305,7 +308,6 @@ function BusinessPlanner({project}) {
           <tr>
             {project.monetizationPlans.filter(plan => plan.price).map(plan => {
               var rounded = Math.ceil(goal / plan.price)
-              // var audienceName = project.audiences.find(a => a.id === plan.a)
               return <td>
                 <b>{plan.name}'s</b>
                 <br/>
@@ -320,14 +322,17 @@ function BusinessPlanner({project}) {
 
   return <div>
     Let's talk about business
+    {/*{desiredProfit}*/}
+    {/*{monthlyExpenses}*/}
+    {/*{timeTillBurnout}*/}
+    <br/>
     <br/>
     <div className={"Audience-Container"}>
-
       <table>
         <tbody>
         <tr className={"Audience-item"}>
           <td>How much do you want to earn?</td>
-          <td><FieldPicker
+          <td><NumberPicker
             value={desiredProfit}
             placeholder={"Type your desired profit"}
             onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
@@ -338,7 +343,7 @@ function BusinessPlanner({project}) {
         </tr>
         <tr className={"Audience-item"}>
           <td>Your monthly expenses?</td>
-          <td><FieldPicker
+          <td><NumberPicker
             value={monthlyExpenses}
             placeholder={"What are ur expenses"}
             onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
@@ -349,7 +354,7 @@ function BusinessPlanner({project}) {
         </tr>
         <tr className={"Audience-item"}>
           <td>How much time do you have until you run out of cash?</td>
-          <td><FieldPicker
+          <td><NumberPicker
             value={timeTillBurnout}
             placeholder={"How much months can you spend on that venture?"}
             onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
@@ -605,7 +610,7 @@ function AudiencesList({audiences, state}) {
         var usages = [];
         var isUsedInMonetizationPlans = false
         monetizationPlans.forEach((m, i) => {
-          console.log({m})
+          // console.log({m})
           if (m.audiences.includes(a.id))
             isUsedInMonetizationPlans = true
         })
@@ -649,7 +654,9 @@ class ProjectPage extends Component {
       risks:              storage.getRisks(),
       name:               storage.getProjectName(),
       appType:               storage.getProjectType(),
-      links:              storage.getUsefulLinks()
+      links:              storage.getUsefulLinks(),
+
+      project:            storage.getProject()
     })
   }
 
@@ -703,7 +710,7 @@ class ProjectPage extends Component {
           <MarketingPlanner project={this.state} />
           <br />
           <br />
-          <BusinessPlanner project={this.state} />
+          <BusinessPlanner project={this.state.project} />
 
           <br />
           <br />
