@@ -621,7 +621,7 @@ function AudiencesList({audiences, state}) {
         if (isUsedInMonetizationPlans)
           usages.push('monetization plans')
 
-        if (a.messages.length)
+        if (a?.messages?.length)
           usages.push('unique messaging')
 
           return <Audience
