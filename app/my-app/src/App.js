@@ -425,8 +425,8 @@ function MarketingPlanner({project}) {
       <table>
         <thead>
           {/*<th>#</th>*/}
-          <th>Audience</th>
           <th>How to reach them</th>
+          <th>Your message</th>
           {/*<th>Message</th>*/}
         </thead>
         <tbody>
@@ -482,7 +482,7 @@ function MarketingPlanner({project}) {
                 {strategyPicker}
               </td>
               <td>
-                <b>What will you tell them?</b>
+                <b>What will you tell <span style={{color: 'green'}}>{a.name}</span>??</b>
                 {messagePicker}
               </td>
               <td>SLOW</td>
