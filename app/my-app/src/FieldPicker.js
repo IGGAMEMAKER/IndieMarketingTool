@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export function FieldPicker({value, onAction, onRemove, placeholder, normalValueRenderer}) {
+export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=true, normalValueRenderer}) {
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
 
@@ -31,7 +31,7 @@ export function FieldPicker({value, onAction, onRemove, placeholder, normalValue
 
   return <div key={value}>
     <textarea
-      autoFocus
+      autoFocus={autoFocus}
       value={newValue}
       placeholder={placeholder}
       onChange={event => onValueChange(event.target.value)}
@@ -40,8 +40,8 @@ export function FieldPicker({value, onAction, onRemove, placeholder, normalValue
   </div>
 }
 
-export function NumberPicker({value, onAction, placeholder, normalValueRenderer}) {
-  var [editName, onChangeName] = useState(false)
+export function NumberPicker({value, onAction, placeholder, normalValueRenderer, defaultState=false}) {
+  var [editName, onChangeName] = useState(defaultState)
   var [newValue, onValueChange] = useState(value)
 
   if (!editName) {

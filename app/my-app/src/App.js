@@ -321,11 +321,12 @@ function BusinessPlanner({project}) {
   }
 
   return <div>
-    Let's talk about business
+    <h2>{"Can you get these numbers?".toUpperCase()}</h2>
+    {/*Let's talk about business*/}
     {/*{desiredProfit}*/}
     {/*{monthlyExpenses}*/}
     {/*{timeTillBurnout}*/}
-    <br/>
+    {/*<br/>*/}
     <br/>
     <div className={"Audience-Container"}>
       <table>
@@ -336,6 +337,7 @@ function BusinessPlanner({project}) {
             value={desiredProfit}
             placeholder={"Type your desired profit"}
             onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
+            defaultState={true}
           />
             <div>monthly</div>
           </td>
@@ -347,6 +349,7 @@ function BusinessPlanner({project}) {
             value={monthlyExpenses}
             placeholder={"What are ur expenses"}
             onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
+            defaultState={true}
           />
             {/*<div>monthly</div>*/}
           </td>
@@ -358,6 +361,7 @@ function BusinessPlanner({project}) {
             value={timeTillBurnout}
             placeholder={"How much months can you spend on that venture?"}
             onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
+            defaultState={true}
           />
             <div>months</div>
           </td>
@@ -402,7 +406,6 @@ function BusinessPlanner({project}) {
 
     <br/>
     <br/>
-    <h2>{"Can you get these numbers?".toUpperCase()}</h2>
   </div>
 }
 
@@ -617,7 +620,10 @@ function AudiencesList({audiences, state}) {
 
         if (isUsedInMonetizationPlans)
           usages.push('monetization plans')
-        // if (project)
+
+        if (a.messages.length)
+          usages.push('unique messaging')
+
           return <Audience
             onToggleFullInfo={() => {
               setIsFullInfo(!isFullAudienceInfo)
@@ -653,7 +659,7 @@ class ProjectPage extends Component {
       channels:           storage.getChannels(),
       risks:              storage.getRisks(),
       name:               storage.getProjectName(),
-      appType:               storage.getProjectType(),
+      appType:            storage.getProjectType(),
       links:              storage.getUsefulLinks(),
 
       project:            storage.getProject()
@@ -690,8 +696,9 @@ class ProjectPage extends Component {
     return (
       <div className="App">
         <header className="App-header">
+          {/*<div><textarea autoFocus /></div>*/}
           <FieldPicker
-            value={name}
+            value={this.state.project?.name}
             placeholder={"name the project"}
             onAction={val => {actions.editName(projectId, val)}}
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
@@ -704,13 +711,13 @@ class ProjectPage extends Component {
           <br />
           <AudiencesList audiences={audiences} state={this.state} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences} />
-          <RisksPanel risks={risks} />
-          <AudienceSourcesPanel channels={channels} />
-          <UsefulLinks links={this.state.links} />
-          <MarketingPlanner project={this.state} />
           <br />
           <br />
           <BusinessPlanner project={this.state.project} />
+          <MarketingPlanner project={this.state} />
+          <AudienceSourcesPanel channels={channels} />
+          <UsefulLinks links={this.state.links} />
+          <RisksPanel risks={risks} />
 
           <br />
           <br />
