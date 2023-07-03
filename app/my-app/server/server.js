@@ -173,7 +173,9 @@ const createProject = async (req, res) => {
 
     desiredProfit: 10000,
     monthlyExpenses: 500,
-    timeTillBurnout: 1
+    timeTillBurnout: 1,
+
+    iterations: [],
   })
 
   project.save()

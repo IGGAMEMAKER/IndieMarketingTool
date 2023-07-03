@@ -28,6 +28,8 @@ var ProjectSchema = new Schema({
   desiredProfit: Number,
   monthlyExpenses: Number,
   timeTillBurnout: Number,
+
+  iterations: Array,
 })
 
 

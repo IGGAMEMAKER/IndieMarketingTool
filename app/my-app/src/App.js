@@ -139,7 +139,7 @@ function RiskView({risk, index}) {
           <FieldPicker
             value={s}
             // normalValueRenderer={renderer}
-            placeholder={"Solution"}
+            placeholder={"Add possible solution"}
             onAction={val => {
               if (val.length)
                 actions.editRiskSolution(index, solutionIndex, val)
@@ -224,7 +224,7 @@ function ChannelAdder({}) {
 }
 
 function AudienceSourcesPanel({channels}) {
-  return <div>
+  return <div id="Sources">
     <br />
     <br />
     Where will you find your audience?
@@ -286,47 +286,57 @@ function CampaignAdder({audiences}) {
   )
 }
 
+const getBurnOutGoal = (project) => {
+  var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
+
+  return monthlyExpenses / timeTillBurnout
+}
+const getSustainabilityGoal = (project) => {
+  var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
+
+  return monthlyExpenses;
+}
+const getDreamGoal = (project) => {
+  var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
+
+  return desiredProfit;
+}
+
+const getGoal = (project, goal, goalName) => {
+  if (!goalName)
+    goalName = <span>make <b>{goal}</b> monthly</span>
+
+  return <div>
+    To {goalName}, you need one of
+    <br/>
+    <br/>
+    <center>
+      <table>
+        <tr>
+          {project.monetizationPlans.filter(plan => plan.price).map(plan => {
+            var rounded = Math.ceil(goal / plan.price)
+            return <td>
+              <b>{plan.name}'s</b>
+              <br/>
+              {rounded}
+            </td>
+          })}
+        </tr>
+      </table>
+    </center>
+  </div>
+}
+
 function BusinessPlanner({project}) {
   // var [desiredProfit, setDesiredProfit] = useState(project.desiredProfit || 10000)
   // var [monthlyExpenses, setMonthlyExpenses] = useState(project.monthlyExpenses || 500)
   // var [timeTillBurnout, setTimeTillBurnout] = useState(project.timeTillBurnout || 1)
   var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
-  console.log({
-    project
-  })
+  // console.log({project})
 
-  const getGoal = (goal, goalName) => {
-    if (!goalName)
-      goalName = <span>make <b>{goal}</b> monthly</span>
-
-    return <div>
-      To {goalName}, you need one of
-      <br/>
-      <br/>
-      <center>
-        <table>
-          <tr>
-            {project.monetizationPlans.filter(plan => plan.price).map(plan => {
-              var rounded = Math.ceil(goal / plan.price)
-              return <td>
-                <b>{plan.name}'s</b>
-                <br/>
-                {rounded}
-              </td>
-            })}
-          </tr>
-        </table>
-      </center>
-    </div>
-  }
-
-  return <div>
+  return <div id="Goals">
     <h2>{"Can you get these numbers?".toUpperCase()}</h2>
     {/*Let's talk about business*/}
-    {/*{desiredProfit}*/}
-    {/*{monthlyExpenses}*/}
-    {/*{timeTillBurnout}*/}
-    {/*<br/>*/}
     <br/>
     <div className={"Audience-Container"}>
       <table>
@@ -341,7 +351,7 @@ function BusinessPlanner({project}) {
           />
             <div>monthly</div>
           </td>
-          <td>{getGoal(desiredProfit)}</td>
+          <td>{getGoal(project, desiredProfit)}</td>
         </tr>
         <tr className={"Audience-item"}>
           <td>Your monthly expenses?</td>
@@ -353,7 +363,7 @@ function BusinessPlanner({project}) {
           />
             {/*<div>monthly</div>*/}
           </td>
-          <td>{getGoal(monthlyExpenses, 'become sustainable')}</td>
+          <td>{getGoal(project, monthlyExpenses, 'become sustainable')}</td>
         </tr>
         <tr className={"Audience-item"}>
           <td>How much time do you have until you run out of cash?</td>
@@ -365,7 +375,7 @@ function BusinessPlanner({project}) {
           />
             <div>months</div>
           </td>
-          <td>{getGoal(monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
+          <td>{getGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
         </tr>
         </tbody>
       </table>
@@ -388,7 +398,7 @@ function BusinessPlanner({project}) {
     {/*  />*/}
     {/*  <br/>*/}
     {/*  <br/>*/}
-    {/*  {getGoal(monthlyExpenses)}*/}
+    {/*  {getGoal(project, monthlyExpenses)}*/}
     {/*</div>*/}
 
     {/*<br/>*/}
@@ -401,7 +411,7 @@ function BusinessPlanner({project}) {
     {/*  />*/}
     {/*  <br/>*/}
     {/*  <br/>*/}
-    {/*  {getGoal(monthlyExpenses / timeTillBurnout, 'become sustainable')}*/}
+    {/*  {getGoal(project, monthlyExpenses / timeTillBurnout, 'become sustainable')}*/}
     {/*</div>*/}
 
     <br/>
@@ -415,7 +425,7 @@ function BusinessPlanner({project}) {
 // else
 //   strategyPicker = <div onClick={() => onEditStrategyStatus(true)}><i style={{color: 'green'}}>{strategy}</i></div>
 function MarketingPlanner({project}) {
-  return <div>
+  return <div id="Growth">
     <br/>
     <br/>
     How will you grow?
@@ -482,10 +492,10 @@ function MarketingPlanner({project}) {
                 {strategyPicker}
               </td>
               <td>
-                <b>What will you tell <span style={{color: 'green'}}>{a.name}</span>??</b>
+                <b>What will you tell <span style={{color: 'green'}}>{a.name}</span>?</b>
                 {messagePicker}
               </td>
-              <td>SLOW</td>
+              {/*<td>SLOW</td>*/}
             </tr>
           })}
         {/*<tr>*/}
@@ -498,7 +508,7 @@ function MarketingPlanner({project}) {
 }
 
 function UsefulLinks({links}) {
-  return <div>
+  return <div id="Links">
     <br />
     <br />
     Save useful links here
@@ -532,7 +542,7 @@ function UsefulLinks({links}) {
 }
 
 function RisksPanel({risks}) {
-  return <div>
+  return <div id="Risks">
     <br />
     What are your biggest risks / doubts?
     <br />
@@ -589,10 +599,11 @@ function RiskSolutionAdder({riskIndex}) {
 }
 
 function MonetizationPanel({plans, audiences}) {
-  return <div>
+  return <div id="Monetization">
     <br />
     {/*How will you make money?*/}
     How will you make money? <MonetizationAdder />
+    <h6>WHO WILL PAY & FOR WHAT?</h6>
     <br />
     <br />
     <div className="Audience-Container">
@@ -637,6 +648,184 @@ function AudiencesList({audiences, state}) {
             usages={usages}
             index={i}
           />
+        }
+      )}
+    </div>
+  </div>
+}
+
+class Iteration {
+  constructor(description, numberGoals) {
+    this.earn = []
+    this.grow = []
+    this.test = []
+    this.tweak = [] // problems
+
+    this.textGoal = description
+    this.numberGoals = numberGoals;
+
+    this.duration = 1;
+  }
+
+  setDuration(duration) {
+    this.duration = duration
+    return this;
+  }
+}
+function IterationEditor({project}) {
+  var earn, grow, test, tweak;
+  var textGoal, numberGoal;
+  var duration; // day, week, month
+
+  var [r, setR] = useState(-1)
+  var [sprintLength, setSprintLength] = useState(7)
+
+  var chosenRisks = []
+
+  const riskContainer = project.risks.map((r, i) => <option value={i}>{r.name}</option>)
+  var possibleSolutions = ''
+  if (r >= 0) {
+    possibleSolutions = <ul>{project.risks[r].solutions.map(s => <li>{s}</li>)}</ul>
+  }
+
+  return <div>
+    <br/>
+    <br/>
+    <select value={sprintLength} onChange={ev => setSprintLength(ev.target.value)}>
+      <option disabled selected value={-1}> -- select sprint duration --</option>
+      <option value={1}>1 Day</option>
+      <option value={7}>7 Days (Recommended)</option>
+      <option value={14}>14 Days</option>
+      <option value={30}>Month</option>
+    </select>
+    <div className={""}>
+      <h3>Earn</h3>
+      You can earn by
+      <center>
+        <table style={{textAlign: 'right'}}>
+          <tr>
+            <td><b>growing your audience</b></td>
+            <td>100%+</td>
+          </tr>
+          <tr>
+            <td>adding monetization plans</td>
+            <td>10%+</td>
+          </tr>
+          <tr>
+            <td>by making features</td>
+            <td>1%+</td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <br/>
+    <div className={"Container"}>
+      <table style={{width: '100%'}}>
+        <thead>
+        <th>Grow</th>
+        {/*<th>Risks</th>*/}
+        </thead>
+        <tr>
+          <td>
+            {/*<h3>Grow</h3>*/}
+            {getGoal(project, getSustainabilityGoal(project), 'become sustainable')}
+          </td>
+
+        </tr>
+      </table>
+    </div>
+
+    <br/>
+    <br/>
+    <div className={"Container"}>
+      <h3>DeRisk</h3>
+      <h6>Which risks will you reduce?</h6>
+      <select value={r} onChange={ev => {
+        var v = parseInt(ev.target.value)
+
+        console.log({v})
+        setR(v)
+      }}>
+        <option disabled selected value={-1}> -- select a risk --</option>
+        {riskContainer}
+      </select>
+      <br/>
+      {possibleSolutions}
+    </div>
+    <br/>
+    <br/>
+    <div className={"Container"}>
+      <h3>Tweak</h3>
+    </div>
+  </div>
+}
+
+function IterationPlanner({project}) {
+  var goals = [
+    {userId: 1, amount: 1000}, // failed peeps
+    {planId: 1, amount: 100}, // dreamers
+    {income: 10000}
+  ]
+
+
+  // not ready to pay:
+  // I don't like paying, I don't have money,
+  // I don't think, that this should cost money,
+  // I don't want to pay for THIS solution
+
+  // think like businessman with coding skills, not like coder, trying to make business
+  // Test the interest, Reduce risks and grow ur audience
+  var mockIterations = [
+    new Iteration(
+      'Who needs this app more?',
+      [{planId: 0, buyers: 1000}]
+    ),
+    new Iteration(
+      'Do they find value and want to pay for it?',
+      [{planId: 0, buyers: 1000}]
+    ),
+    new Iteration(
+      'Get core users. Personal contact',
+      [{planId: 0, buyers: 1000}]
+    ),
+    new Iteration(
+      'SURVIVE',
+      [{income: getBurnOutGoal(project)}]
+    ),
+    new Iteration('BECOME SUSTAINABLE', [{income: getSustainabilityGoal(project)}] ),
+    new Iteration("DREAM", [{income: getDreamGoal(project)}] ),
+    new Iteration("SELLOUT", [{income: getDreamGoal(project) * 20}] ),
+  ]
+
+  var iterations = project.iterations || [];
+
+  const onAutoGenerate = () => {
+    mockIterations.forEach(it => {
+      actions.addIteration(it);
+    })
+  }
+
+  return <div id="ITERATIONS">
+    <h1>Iteration Planner</h1>
+    <h2>Do the PROJECT, not just product</h2>
+    <div className={"Audience-Container"}>
+      {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
+      {iterations.map(
+        it => {
+          var goals = (it.numberGoals || [])
+          var incomeGoal = goals.find(g => g.income)
+          return <div className={"Audience-item"}>
+          <div style={{display: 'grid', gridTemplateColumns: '15% auto 15%'}}>
+            <div><button>+</button></div>
+            <div style={{display: 'grid', gridTemplateRows: '350px 50px'}}>
+              <div>{it.textGoal}</div>
+              <div>
+                {!incomeGoal ? '???' : <div style={{color: 'orange', fontWeight: '900'}}>${incomeGoal.income}/mo</div>}
+              </div>
+            </div>
+            <div><button>+</button></div>
+          </div>
+        </div>
         }
       )}
     </div>
@@ -693,8 +882,16 @@ class ProjectPage extends Component {
 
     var audiencePhrase = appType===APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your app?'
 
+
+    const menus = ["Audiences", "Monetization", "Goals", "Growth", "Sources", "Links", "Risks", "ITERATIONS"]
     return (
       <div className="App">
+        <div>
+          <div style={{display: 'grid', backgroundColor: 'orange', gridTemplateColumns: 'auto auto auto auto auto auto auto auto', position: 'fixed', height: '5vh', width: '100vw'}}>
+            {menus.map(Name => <span><a href={"#" + Name}>{Name}</a></span>)}
+            {/*{menus.map(Name => <span><Link to={"./#" + Name}>{Name}</Link></span>)}*/}
+          </div>
+        </div>
         <header className="App-header">
           {/*<div><textarea autoFocus /></div>*/}
           <FieldPicker
@@ -703,7 +900,7 @@ class ProjectPage extends Component {
             onAction={val => {actions.editName(projectId, val)}}
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
-          <a href={"/profile"}>Profile</a>
+          <a id="Audiences" href={"/profile"}>Profile</a>
           <br />
           <br />
           {audiencePhrase}       <AudienceAdder />
@@ -718,6 +915,7 @@ class ProjectPage extends Component {
           <AudienceSourcesPanel channels={channels} />
           <UsefulLinks links={this.state.links} />
           <RisksPanel risks={risks} />
+          <IterationPlanner project={this.state.project} />
 
           <br />
           <br />

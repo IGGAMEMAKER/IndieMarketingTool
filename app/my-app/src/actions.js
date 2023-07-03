@@ -43,7 +43,7 @@ import {
   AUDIENCE_ORDER_CHANGE,
   AUDIENCE_MESSAGE_ADD,
   AUDIENCE_MESSAGE_EDIT,
-  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES, PROJECT_EDIT_BURNOUT_TIME
+  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES, PROJECT_EDIT_BURNOUT_TIME, ITERATIONS_ADD
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -413,6 +413,16 @@ export function editProjectTimeTillBurnout(value) {
   })
 }
 
+
+export function addIteration(iteration) {
+  // text goal
+  // number goal
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_ADD,
+    iteration
+  })
+}
+
 export default {
   loadProject,
   loadProfile,
@@ -467,5 +477,7 @@ export default {
   editProjectDesiredProfit,
   editProjectMonthlyExpenses,
   editProjectTimeTillBurnout,
+
+  addIteration,
 }
 

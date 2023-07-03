@@ -42,7 +42,7 @@ import {
   AUDIENCE_MESSAGE_ADD,
   AUDIENCE_MESSAGE_EDIT,
   PROJECT_EDIT_BURNOUT_TIME,
-  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES
+  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES, ITERATIONS_ADD
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 import {LINK_TYPE_DOCS} from "./constants/constants";
@@ -463,6 +463,14 @@ Dispatcher.register((p) => {
       break;
     case PROJECT_EDIT_BURNOUT_TIME:
       project.timeTillBurnout = parseInt(p.value)
+      saveProjectChanges()
+      break;
+
+    case ITERATIONS_ADD:
+      if (!project.iterations)
+        project.iterations = []
+
+      project.iterations.push(Object.assign({}, p.iteration, {id: project.iterations.length + 1}))
       saveProjectChanges()
       break;
 
