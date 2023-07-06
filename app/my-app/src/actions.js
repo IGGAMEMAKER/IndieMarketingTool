@@ -43,7 +43,15 @@ import {
   AUDIENCE_ORDER_CHANGE,
   AUDIENCE_MESSAGE_ADD,
   AUDIENCE_MESSAGE_EDIT,
-  PROJECT_EDIT_DESIRED_PROFIT, PROJECT_EDIT_EXPENSES, PROJECT_EDIT_BURNOUT_TIME, ITERATIONS_ADD
+  PROJECT_EDIT_DESIRED_PROFIT,
+  PROJECT_EDIT_EXPENSES,
+  PROJECT_EDIT_BURNOUT_TIME,
+  ITERATIONS_ADD,
+  ITERATIONS_DESCRIPTION_EDIT,
+  ITERATIONS_REMOVE,
+  ITERATIONS_ORDER_CHANGE,
+  AUDIENCE_MESSAGE_REMOVE,
+  ITERATIONS_GOAL_EDIT, ITERATIONS_GOAL_ADD, ITERATIONS_GOAL_REMOVE
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -123,6 +131,14 @@ export function addAudienceMessage(message, audienceIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_MESSAGE_ADD,
     message,
+    audienceIndex,
+  })
+}
+
+export function removeAudienceMessage(audienceIndex, messageIndex) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_MESSAGE_REMOVE,
+    messageIndex,
     audienceIndex,
   })
 }
@@ -257,6 +273,8 @@ export function changeMonetizationOrder(monetizationIndex1, monetizationIndex2) 
   })
 }
 
+
+
 export function editRiskName(index, name) {
   Dispatcher.dispatch({
     actionType: RISK_EDIT_NAME,
@@ -320,14 +338,12 @@ export function addChannel(url) {
   })
 }
 
-
 export function removeChannel(channelIndex) {
   Dispatcher.dispatch({
     actionType: CHANNELS_REMOVE,
     channelIndex
   })
 }
-
 
 export function editChannelName(channelIndex, name) {
   Dispatcher.dispatch({
@@ -336,6 +352,8 @@ export function editChannelName(channelIndex, name) {
     name
   })
 }
+
+
 
 export function addLink(link) {
   Dispatcher.dispatch({
@@ -351,7 +369,7 @@ export function removeLink(linkIndex) {
   })
 }
 
-export function editNotes(linkIndex, note) {
+export function editLinkNotes(linkIndex, note) {
   Dispatcher.dispatch({
     actionType: LINKS_NOTES_EDIT,
     linkIndex,
@@ -414,14 +432,68 @@ export function editProjectTimeTillBurnout(value) {
 }
 
 
-export function addIteration(iteration) {
+export function addIteration(iteration, {pasteAfter = -1, pasteBefore = -1}) {
   // text goal
   // number goal
+
+  // index: will paste to iterations[index]
   Dispatcher.dispatch({
     actionType: ITERATIONS_ADD,
-    iteration
+    iteration,
+    pasteAfter,
+    pasteBefore
   })
 }
+
+export function removeIteration(id) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_REMOVE,
+    id
+  })
+}
+
+export function changeIterationOrder(index1, index2) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_ORDER_CHANGE,
+    index1,
+    index2
+  })
+}
+
+export function editIterationDescription(id, textGoal) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_DESCRIPTION_EDIT,
+    id,
+    textGoal
+  })
+}
+
+export function editIterationGoal(id, numberGoalId, goal) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GOAL_EDIT,
+    id,
+    numberGoalId,
+    goal
+  })
+}
+
+export function addIterationGoal(id, goal) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GOAL_ADD,
+    id,
+    goal
+  })
+}
+
+export function removeIterationGoal(id, goalIndex) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GOAL_REMOVE,
+    id,
+    goalIndex
+  })
+}
+
+
 
 export default {
   loadProject,
@@ -430,6 +502,8 @@ export default {
   addProject,
   editName,
   removeProject,
+
+
 
   addAudience,
   removeAudience,
@@ -440,6 +514,7 @@ export default {
   addAudienceStrategy,
   changeAudienceOrder,
   addAudienceMessage,
+  removeAudienceMessage,
   editAudienceMessage,
 
   addMonetizationPlan,
@@ -469,7 +544,7 @@ export default {
 
   addLink,
   removeLink,
-  editNotes,
+  editLinkNotes,
   editLinkType,
 
   addMarketingCampaign,
@@ -479,5 +554,12 @@ export default {
   editProjectTimeTillBurnout,
 
   addIteration,
+  removeIteration,
+  changeIterationOrder,
+  editIterationDescription, // text description of the iteration goal
+
+  editIterationGoal,
+  addIterationGoal,
+  removeIterationGoal,
 }
 

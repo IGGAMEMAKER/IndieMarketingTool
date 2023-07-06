@@ -169,7 +169,7 @@ const createProject = async (req, res) => {
     monetizationPlans: [],
     channels: [],
     links: [],
-    risks,
+    risks: risks.map(r => r.solutions ? Object.assign({}, r, {solutions: []}) : r),
 
     desiredProfit: 10000,
     monthlyExpenses: 500,

@@ -23,43 +23,40 @@ function BenefitAdder({index}) {
 export function MonetizationPlan({plan, index, audiences}) {
   const LEFT = <button onClick={() => {actions.changeMonetizationOrder(index, index -1)}}>←</button>
   const RIGHT = <button onClick={() => {actions.changeMonetizationOrder(index, index +1)}}>→</button>
+  var planId = plan.id
 
   var namePicker = <FieldPicker
     value={plan.name}
     placeholder={"Monetization type name"}
-    onAction={newValue => {
-      if (newValue.length)
-        actions.editMonetizationName(index, newValue)
-      else
-        actions.removeMonetizationPlan(index)
-    }}
+    onAction={newValue => actions.editMonetizationName(planId, newValue)}
+    onRemove={() => actions.removeMonetizationPlan(planId)}
     normalValueRenderer={onChangeName => <div>{LEFT}<b onClick={() => onChangeName(true)}>{plan.name}</b>{RIGHT}</div>}
   />
 
   var descriptionPicker = <FieldPicker
     value={plan.description || ""}
     placeholder={"Monetization type description"}
-    onAction={newValue => {actions.editMonetizationDescription(index, newValue)}}
+    onAction={newValue => {actions.editMonetizationDescription(planId, newValue)}}
     normalValueRenderer={onChangeName => <div className={"Monetization-plan-description"} onClick={() => onChangeName(true)}>{plan.description || ""}</div>}
   />
 
-  var benefitPicker = plan.benefits.map((b, bIndex) => <FieldPicker
-    value={b}
+  var benefitPicker = plan.benefits.map(b => <FieldPicker
+    value={b.name}
     placeholder={"Describe monetization: which features / limits will you offer?"}
-    onAction={newValue => {
-      if (newValue.length)
-        actions.editMonetizationBenefit(index, bIndex, newValue)
-      else
-        actions.removeBenefitFromMonetizationPlan(index, bIndex)
-    }}
-    normalValueRenderer={onChangeName => <li style={{textAlign: 'left'}} onClick={() => onChangeName(true)}>{b}</li>}
+    onAction={newValue => actions.editMonetizationBenefit(planId, b.id, newValue)}
+    onRemove={() => actions.removeBenefitFromMonetizationPlan(planId, b.id)}
+    normalValueRenderer={onChangeName => <li style={{textAlign: 'left'}} onClick={() => onChangeName(true)}>{b.name}</li>}
+    key={'benefit.' + plan.id + '.' + b.id}
   />)
 
   var moneyPicker = <NumberPicker
     value={plan.price}
     placeholder={"Describe monetization: which features / limits will you offer?"}
-    onAction={newValue => {actions.editMonetizationPrice(index, newValue)}}
-    normalValueRenderer={onChangeName => <div style={{color: "red"}} onClick={() => onChangeName(true)}><b>{plan.price ? plan.price + '$' : 'FREE'}</b></div>}
+    onAction={newValue => actions.editMonetizationPrice(planId, newValue)}
+    normalValueRenderer={onChangeName =>
+      <div style={{color: "red"}} onClick={() => onChangeName(true)}>
+        <b>{plan.price ? plan.price + '$' : 'FREE'}</b>
+      </div>}
   />
 
   var includedAudiences = plan?.audiences || []
@@ -70,21 +67,22 @@ export function MonetizationPlan({plan, index, audiences}) {
 
   var audienceSelect;
   if (allowedOptions.length) {
+    // TODO AUDIENCE PICKER??
     audienceSelect = <li>
       <select value={-1} onChange={event => {
         var val = event.target.value
         // console.log(val)
 
-        actions.attachAudienceToMonetizationPlan(parseInt(val), index)
+        actions.attachAudienceToMonetizationPlan(parseInt(val), planId)
       }}>
-        <option disabled selected value={-1}> -- select an audience --</option>
+        <option disabled value={-1}> -- select an audience --</option>
         {/*{allowedOptions.map((aa, i) => <option value={aa.index}>{aa.name}</option>)}*/}
-        {allowedOptions.map((aa, i) => <option value={aa.id}>{aa?.name}</option>)}
+        {allowedOptions.map(aa => <option key={"custom-audience-picker-in-monetization-plan." + aa.id} value={aa.id}>{aa?.name}</option>)}
       </select>
     </li>
   }
 
-  var adder = <BenefitAdder index={index} />
+  var adder = <BenefitAdder index={planId} />
 
   return <div className="Audience-item">
     {/*<div>{LEFT}{namePicker}{RIGHT}</div>*/}
@@ -98,14 +96,14 @@ export function MonetizationPlan({plan, index, audiences}) {
     <div>
       <ul>
         {includedAudiences
-          .map(id => <li style={{color: 'green', textAlign: 'left'}}>
+          .map(audienceId => <li key={"incl"+audienceId} style={{color: 'green', textAlign: 'left'}}>
             <i
               onClick={event => {
                 // on double click => remove audience
                 if (event.detail === 2)
-                  actions.detachAudienceFromMonetizationPlan(id, index)
+                  actions.detachAudienceFromMonetizationPlan(audienceId, planId)
               }}
-            >{audiences.find(a => a.id === id)?.name || 'ERRORED AUDIENCE, DOUBLE CLICK TO REMOVE'}</i>
+            >{audiences.find(a => a.id === audienceId)?.name || 'ERRORED AUDIENCE, DOUBLE CLICK TO REMOVE'}</i>
           </li>)}
         {audienceSelect}
       </ul>
