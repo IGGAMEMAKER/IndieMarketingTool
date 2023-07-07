@@ -11,7 +11,7 @@ import {
 import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {getByID} from "./utils";
 import {AudiencePicker} from "./AudiencePicker";
-import {renderIncomeGoal} from "./RenderIncomeGoal";
+import {FieldAdder} from "./FieldAdder";
 
 function RiskPicker({onPick, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
@@ -42,11 +42,11 @@ class Iteration {
     return this;
   }
 
-  static getRiskGoal = (project, riskId)                         => ({goalType: GOAL_TYPE_RISK, riskId})
-  static getIncomeGoal = (project, income)                       => ({goalType: GOAL_TYPE_INCOME, income})
-  static getUserGoal = (project, audienceID, amount)             => ({goalType: GOAL_TYPE_USERS, userId: audienceID, amount})
-  static getMonetizationGoal = (project, monetizationID, amount) => ({goalType: GOAL_TYPE_MONETIZATION, planId: monetizationID, amount})
-  static getFeatureGoal = (project, text)                        => ({goalType: GOAL_TYPE_FEATURES, text})
+  static createRiskGoal = (project, riskId)                         => ({goalType: GOAL_TYPE_RISK, riskId})
+  static createIncomeGoal = (project, income)                       => ({goalType: GOAL_TYPE_INCOME, income})
+  static createUserGoal = (project, audienceID, amount)             => ({goalType: GOAL_TYPE_USERS, userId: audienceID, amount})
+  static createMonetizationGoal = (project, monetizationID, amount) => ({goalType: GOAL_TYPE_MONETIZATION, planId: monetizationID, amount})
+  static createFeatureGoal = (project, text)                        => ({goalType: GOAL_TYPE_FEATURES, text})
 
   static getGoalsByGoalType = goalType => (it) => it.goals.filter(gg => gg.goalType === goalType)
   static getRiskGoals = Iteration.getGoalsByGoalType(GOAL_TYPE_RISK)
@@ -69,7 +69,43 @@ const getDreamGoal = (project) => {
   return desiredProfit;
 }
 
-function IterationEditor({project, chosenIterationId}) {
+const renderRiskGoals = (project, it) => {
+  var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_RISK)(it)
+
+  return goals.map(gg => <div key={"ideaG." + gg.id} onClick={onGoalRemove(it, gg)}>
+    {getByID(project.risks, gg.riskId)?.name}
+  </div>)
+}
+
+const renderFeatureGoals = (project, it) => {
+  var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
+
+  return goals.map(gg => <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
+    {/*{JSON.stringify(gg)}*/}
+    {/*<FieldPicker*/}
+    {/*  value={gg.text}*/}
+    {/*  placeholder={"Features"}*/}
+    {/*  onRemove={onGoalRemove(it, gg)}*/}
+    {/*  onAction={val => {actions.editIterationGoal(it.id, gg.id, )}}*/}
+    {/*/>*/}
+    {/*#{gg.id} */}<b>{gg.text}</b>
+    {/*{getByID(it.features, gg.featureId)?.name}*/}
+  </li>)
+}
+
+const renderUserGoals = (project, it) => {
+  var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it)
+
+  return goals.map(gg => {
+    var audience = getByID(project.audiences, gg.userId)
+
+    return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)}>
+      Get {gg.amount} <span style={{color: 'green'}}>{audience?.name}</span>
+    </div>
+  })
+}
+
+function IterationPopup({project, chosenIterationId, onChoose}) {
   // APPS/SERVICES
   // REDUCE RISKS
   // GROW / EARN
@@ -82,19 +118,10 @@ function IterationEditor({project, chosenIterationId}) {
   // EARN
   // POLISH MORE
 
-  var [r, setR] = useState(-1)
   var [sprintLength, setSprintLength] = useState(7)
 
   if (chosenIterationId === -1)
     return ''
-
-  var chosenRisks = []
-
-  const riskContainer = project.risks.map((r, i) => <option key={"itp." + r.id} value={r.id}>{r.name}</option>)
-  var possibleSolutions = ''
-  if (r >= 0) {
-    possibleSolutions = <ul>{project.risks[r].solutions.map(s => <li key={s.id}>{s}</li>)}</ul>
-  }
 
   const durationSelector = <select value={sprintLength} onChange={ev => setSprintLength(ev.target.value)}>
     <option disabled selected value={-1}> -- select sprint duration --</option>
@@ -104,80 +131,121 @@ function IterationEditor({project, chosenIterationId}) {
     <option value={30}>Month</option>
   </select>
 
-  return <div id="editIteration">
-    <br/>
-    <br/>
-    <h3>{project.iterations.find(it => it.id === chosenIterationId).description}</h3>
-    <br/>
-    <div className={"Container"}>
-      <table style={{width: '100%'}}>
-        <thead>
-        <tr>
-          <th>Grow</th>
-        </tr>
-        </thead>
-        <tr>
-          <td>
-            {renderIncomeGoal(project, getSustainabilityGoal(project), 'become sustainable')}
-          </td>
-        </tr>
-      </table>
-    </div>
+  var it = getByID(project.iterations, chosenIterationId);
+  var popupCloser = <div onClick={() => onChoose(-1)} className={"iteration-container"} />
 
-    <br/>
-    <br/>
-    <div className={"background-standard"}>
-      <h3>DeRisk</h3>
-      <h6>Which risks will you reduce?</h6>
-      <select value={r} onChange={ev => {
-        var v = parseInt(ev.target.value)
-        setR(v)
-      }}>
-        <option disabled selected value={-1}> -- select a risk --</option>
-        {riskContainer}
-      </select>
-      <br/>
-      {possibleSolutions}
-
-    </div>
-    <br/>
-    <br/>
-    <div className={"Container"}>
-      <h3>Tweak</h3>
-    </div>
+  return <div id="editIteration" className={"editIteration"}>
+    {popupCloser}
     <div>
-      {durationSelector}
+      <h3>{it.description}</h3>
+      {/*<div>{durationSelector}</div>*/}
+      <NumberGoalPicker project={project} it={it} />
     </div>
+    {popupCloser}
   </div>
 }
 
 const getExcludedAudiencesFromMonetizationPlan = (project, monetizationId) => {
   var audiences = project.audiences;
-  var mp = project.monetizationPlans[monetizationId];
+  var mp = getByID(project.monetizationPlans, monetizationId)
 
   var used = {}
   mp.audiences.forEach(a => used[a] = 1)
 
   return audiences.filter(a => !used[a.id]).map(a => a.id)
 }
-const renderNecessaryUsers = (project, income, monetizationPlan) => {
-  var plan = project.monetizationPlans[monetizationPlan]
-  var needToSell = income / plan.price
+
+const getNecessaryUsers = (project, planId, income) => {
+  var plan = getByID(project.monetizationPlans, planId) //project.monetizationPlans[monetizationPlan]
+  var needToSell = Math.ceil(income / plan.price)
+
+  return needToSell
+}
+
+const getGoalsAboutGettingSpecificAudience = (it, audienceId) => {
+  return Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it).filter(g => g.userId === audienceId)
+}
+const isHasGoalToGetSpecificAudience = (it, audienceId) => {
+  return getGoalsAboutGettingSpecificAudience(it, audienceId).length
+}
+
+const renderNecessaryUsers = (project, income, planId, it) => {
+  var plan = getByID(project.monetizationPlans, planId) //project.monetizationPlans[monetizationPlan]
+  var needToSell = getNecessaryUsers(project, planId, income)
 
   return <div>
+    <br />
     {`You need to find ${needToSell} ${plan.name}'s: `}
     <br/>
     <ul>
-      {plan.audiences.map(a => {
-        var name = project.audiences.find(aa => aa.id === a).name
-        // return <div>{name}: {needToSell}</div>
-        return <li key={"necessaryUsers." + plan.id}>{name}</li>
+      {plan.audiences.map(audienceId => {
+        // console.log({audienceId}, plan)
+
+        var name = getByID(project.audiences, audienceId).name
+        var hasGoalToGetTheseUsers = isHasGoalToGetSpecificAudience(it, audienceId) // Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it).filter(g => g.userId === audienceId).length
+
+        // return <li key={"necessaryUsers." + plan.id + "." + a.id}>{name}</li>
+        return <li
+          key={"necessaryUsers." + audienceId}
+          style={{color: hasGoalToGetTheseUsers ? 'green': 'gray'}}
+          onClick={() => {
+            if (hasGoalToGetTheseUsers) {
+              var goals = getGoalsAboutGettingSpecificAudience(it, audienceId)
+              goals.forEach(gg => {
+                actions.removeIterationGoal(it.id, gg.id)
+              })
+            } else {
+              actions.addIterationGoal(it.id, Iteration.createUserGoal(project, audienceId, needToSell))
+            }
+          }}>{name}</li>
       })}
     </ul>
   </div>
 }
 
+const onGoalRemove = (it, gg) => event => {
+  if (event.detail === 2) {
+    actions.removeIterationGoal(it.id, gg.id)
+  }
+}
 
+function renderIncomeSection(project, it, income, planId, setMonetizationPlan) {
+  if (income <= 0) return ''
+
+  var mp;
+  if (planId >= 0) {
+    mp = <div>
+      {income > 0 ? renderNecessaryUsers(project, income, planId, it) : ''}
+      {/*<AudiencePicker*/}
+      {/*  audiences={project.audiences}*/}
+      {/*  excluded={getExcludedAudiencesFromMonetizationPlan(project, planId)}*/}
+      {/*  onPick={v => {actions.addIterationGoal(it.id, Iteration.createUserGoal(project, v, getNecessaryUsers(project, planId, income)))}}*/}
+      {/*/>*/}
+    </div>
+  }
+
+  return <div>
+    <br/>
+    {/*How will you achieve this?*/}
+    {/*<br/>*/}
+    You need to sell <select value={planId} onChange={ev => {
+      var planId = parseInt(ev.target.value)
+
+      setMonetizationPlan(planId)
+      var needToSell = getNecessaryUsers(project, planId, income)
+      actions.addIterationGoal(it.id, Iteration.createMonetizationGoal(project, planId, needToSell))
+    }}>
+      <option disabled value={-1}>Choose monetization</option>
+      {project.monetizationPlans.map(mp => {
+        var needToSell = getNecessaryUsers(project, mp.id, income)
+
+        return <option key={'mp_in_iteration.' + mp.id} value={mp.id}>{mp.name}</option>
+      })}
+    </select>
+    {mp}
+    <br />
+  </div>
+}
 
 function NumberGoalPicker({project, it}) {
   var [goalType, setGoalType] = useState(-1)
@@ -188,7 +256,16 @@ function NumberGoalPicker({project, it}) {
   var [risk, setRisk] = useState(-1)
   var [goals, setGoals] = useState([])
 
+  var [r, setR] = useState(-1)
+
+
   var hasChanges = users || income || audienceType >= 0
+
+  const riskContainer = project.risks.map(r => <option key={"itp." + r.id} value={r.id}>{r.name}</option>)
+  var possibleSolutions = ''
+  if (r >= 0) {
+    possibleSolutions = <ul>{project.risks[r].solutions.map(s => <li key={s.id}>{s.name}</li>)}</ul>
+  }
 
   var goalPicker;
   var audiencePicker = <div>
@@ -196,86 +273,116 @@ function NumberGoalPicker({project, it}) {
     <br />
     {audienceType === -1 ? '' : <NumberPicker value={users} onAction={val => {
       setDesiredUsers(val)
-      actions.addIterationGoal(it.id, Iteration.getUserGoal(project, audienceType, val))
+      actions.addIterationGoal(it.id, Iteration.createUserGoal(project, audienceType, val))
     }}/>}
   </div>
 
-  var monetizationPicker = <div>
-    <select value={monetizationPlan} onChange={ev => setMonetizationPlan(parseInt(ev.target.value))}>
-      <option disabled value={-1}>Choose monetization</option>
-      {project.monetizationPlans.map((mp, i) => <option key={'mp_in_iteration.' + mp.id} value={mp.id}>{mp.name}</option>)}
-    </select>
-    {monetizationPlan >= 0 ?
-      <div>
-        {income > 0 ? renderNecessaryUsers(project, income, monetizationPlan) : ''}
-        <AudiencePicker
-          audiences={project.audiences}
-          excluded={getExcludedAudiencesFromMonetizationPlan(project, monetizationPlan)}
-        />
-      </div>
-      : ''}
+  var featurePicker = <div>
+    You will do this anyways, but don't feature creep
+    <br />
+    Think, which problem will this feature solve?
+    <br />
+    <br />
+    <ol>{renderFeatureGoals(project, it)}</ol>
+    <br />
+    <br />
+    <FieldAdder
+      placeholder={"Add new feature"}
+      onAdd={val => {
+        actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, val))
+      }}
+    />
   </div>
 
+  // if (goalType === -1)
+  //   goalPicker = priorityMockup
+
   if (goalType === GOAL_TYPE_INCOME) {
-    // INCOME
     var sustainability = getSustainabilityGoal(project)
     var dream = getDreamGoal(project)
+
+    const onIncomeSet = v => {
+      setDesiredIncome(v)
+      actions.addIterationGoal(it.id, Iteration.createIncomeGoal(project, v))
+    }
+
     goalPicker = <div>
-      {income === sustainability ? '' : <button onClick={() => setDesiredIncome(sustainability)}>Survive</button>}
-      {income === dream ? '' : <button onClick={() => setDesiredIncome(dream)}>Dream</button>}
+      <h3>How much do you want to earn?</h3>
+      {income === sustainability ? '' : <button onClick={() => onIncomeSet(sustainability)}>Survive</button>}
+      {income === dream          ? '' : <button onClick={() => onIncomeSet(dream)}>Dream</button>}
       <NumberPicker
         value={income}
-        onAction={val => setDesiredIncome(val)}
+        onAction={val => onIncomeSet(val)}
         normalValueRenderer={onChoose => <label style={{color: 'orange'}} onClick={onChoose}>{income}$/mo</label>}
       />
-      {
-        income > 0
-          ?
-          <div>
-            How will you achieve this?
-            <br/>
-            {monetizationPicker}
-          </div>
-          :
-          ''
-      }
+      {renderIncomeSection(project, it, income, monetizationPlan, setMonetizationPlan)}
     </div>
   }
+
 
   if (goalType === GOAL_TYPE_USERS) {
     goalPicker = audiencePicker
   }
 
-  if (goalType === GOAL_TYPE_MONETIZATION)
-    goalPicker = monetizationPicker
+  if (goalType === GOAL_TYPE_FEATURES) {
+    goalPicker = featurePicker
+  }
 
-  if (goalType === GOAL_TYPE_RISK)
+  // if (goalType === GOAL_TYPE_MONETIZATION)
+  //   goalPicker = monetizationPicker
+
+  if (goalType === GOAL_TYPE_RISK) {
     goalPicker = <div style={{width: '100%'}}>
       <RiskPicker risks={project.risks} onPick={val => {
-        console.log('pick risk', {val, it})
+        // console.log('pick risk', {val, it})
         setRisk(val)
-        actions.addIterationGoal(it.id, Iteration.getRiskGoal(project, val))
-      }} defaultRisk={-1} excluded={[]} />
+        actions.addIterationGoal(it.id, Iteration.createRiskGoal(project, val))
+      }} defaultRisk={-1} excluded={[]}/>
+
+      <div className={"background-standard"}>
+        <h3>DeRisk</h3>
+        <h6>Which risks will you reduce?</h6>
+        {renderRiskGoals(project, it)}
+        <br/>
+        {possibleSolutions}
+      </div>
     </div>
+  }
+
+
+  const gt = (goalType1, name) => {
+    var goals = Iteration.getGoalsByGoalType(goalType1)(it).length
+    return <button
+      onClick={() => setGoalType(goalType1)}
+      style={{backgroundColor: goalType === goalType1 ? 'yellow' : 'white'}}
+    >{name}{goals ? ' (' + goals + ')' : ''}</button>
+  }
 
   return <div>
-    <select value={goalType} onChange={ev => setGoalType(parseInt(ev.target.value))}>
-      <option value={-1} disabled>Choose goal</option>
-      <option value={GOAL_TYPE_RISK}>REDUCE RISKS</option>
-      <option value={GOAL_TYPE_INCOME}>EARN</option>
-      <option value={GOAL_TYPE_USERS}>Get Users</option>
-      <option value={GOAL_TYPE_MONETIZATION}>Sell X Plans</option>
-    </select>
+    <div>
+      {gt(GOAL_TYPE_RISK, 'REDUCE RISKS')}
+      {gt(GOAL_TYPE_INCOME, 'EARN')}
+      {gt(GOAL_TYPE_USERS, 'GROW')}
+      {gt(GOAL_TYPE_FEATURES, 'Features')}
+    </div>
+    {/*<select value={goalType} onChange={ev => setGoalType(parseInt(ev.target.value))}>*/}
+    {/*  <option value={-1}>Choose goal</option>*/}
+    {/*  <option value={GOAL_TYPE_RISK}>REDUCE RISKS</option>*/}
+    {/*  <option value={GOAL_TYPE_INCOME}>EARN</option>*/}
+    {/*  <option value={GOAL_TYPE_USERS}>Get Users</option>*/}
+    {/*  /!*<option value={GOAL_TYPE_MONETIZATION}>Sell X Plans</option>*!/*/}
+    {/*  <option value={GOAL_TYPE_FEATURES}>Features</option>*/}
+    {/*</select>*/}
+    <br />
+    <br />
     {goalPicker}
+    {renderUserGoals(project, it)}
   </div>
 }
 
 function renderIteration(project, it, i, setChosenIterationId) {
-  var goals = (it.goals || [])
-  var incomeGoal = goals.find(g => g.income)
-
-  const evolvedIteration = new Iteration("PASTED", [])
-  const simplifiedIteration = new Iteration("PASTED", [])
+  const evolvedIteration = new Iteration("NEW ITERATION", [])
+  const simplifiedIteration = new Iteration("NEW ITERATION", [])
 
   const evolveButton = <button
     onClick={() => actions.addIteration(evolvedIteration, {pasteAfter: it.id})}
@@ -287,30 +394,33 @@ function renderIteration(project, it, i, setChosenIterationId) {
 
   const moveLeftButton = <button onClick={() => actions.changeIterationOrder(i, i - 1)}>{ARROW_LEFT}</button>
   const moveRightButton = <button onClick={() => actions.changeIterationOrder(i, i + 1)}>{ARROW_RIGHT}</button>
+  const editLink = <a href={"#editIteration"} onClick={() => setChosenIterationId(it.id)}>Edit</a>
 
   const ideaIcon = <span style={{color: 'orange'}}>💡</span>
   const growthIcon = <span style={{color: 'green'}}>😄</span>
   const bigGrowthIcon = <span style={{color: 'green'}}>😄😄😄</span>
+  const featureIcon = <span style={{color: 'red'}}>⚙︎</span>
   const incomeIcon = bigGrowthIcon
-
-  const onGoalRemove = gg => event => {
-    if (event.detail === 2) {
-      actions.removeIterationGoal(it.id, gg.id)
-    }
-  }
 
   var ideaGoals = Iteration.getRiskGoals(it)
   var userGoals = Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it)
+  var featureGoals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
   var incomeGoals = Iteration.getGoalsByGoalType(GOAL_TYPE_INCOME)(it)
+
+  var incomeGoal = ''
+  if (incomeGoals.length) {
+    var g = incomeGoals[0]
+
+    incomeGoal = <div className={"income-goal"} onClick={onGoalRemove(it, g)}>+${g.income}/mo</div>
+  }
 
   return <div className={"Audience-item"} key={it.id}>
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
     <div style={{display: 'grid', gridTemplateColumns: 'auto 25px'}}>
       {/*{simplifyButton}*/}
-      <div style={{display: 'grid', gridTemplateRows: '450px 50px'}}>
+      <div style={{display: 'grid', gridTemplateRows: '350px 50px'}}>
         <div>
-          <div>{moveLeftButton}{moveRightButton}</div>
-          {/*<div><b>{it.id}</b></div>*/}
+          <div>{moveLeftButton}{moveRightButton} {editLink}</div>
           <div className={"iteration-title"}>
             <FieldPicker
               value={it.description}
@@ -320,32 +430,17 @@ function renderIteration(project, it, i, setChosenIterationId) {
             />
           </div>
 
-          {/*<br />*/}
-          {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
-          {/*{new Array(ideaGoals.length).fill(<b>{ideaIcon}</b>)}*/}
-          {/*{new Array(userGoals.length).fill(<b>{growthIcon}</b>)}*/}
-          {/*<br />*/}
+          <br />
+          {new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}
+          {new Array(ideaGoals.length).fill(<b>{ideaIcon}</b>)}
+          {new Array(userGoals.length).fill(<b>{growthIcon}</b>)}
+          {new Array(featureGoals.length).fill(<b>{featureIcon}</b>)}
           <br/>
-          {ideaGoals.map(gg => <div key={"ideaG." + gg.id} onClick={onGoalRemove(gg)}>
-            {getByID(project.risks, gg.riskId)?.name} {/*project.risks[gg.riskId]?.name*/} {/*getByID(project.risks, gg.riskId)?.name*/} {/*JSON.stringify(gg)*/}
-          </div>)}
-
-          {/*<br />*/}
-          {userGoals.map(gg => <div key={"userG." + gg.id} onClick={onGoalRemove(gg)}>
-            Get {gg.amount} <span
-            style={{color: 'green'}}>{getByID(project.audiences, gg.userId).name}</span> {/*JSON.stringify(gg)*/}
-          </div>)}
-
-          {/*<br />*/}
-          <NumberGoalPicker project={project} it={it}/>
-          <br/>
-          <a href={"#editIteration"} onClick={() => setChosenIterationId(it.id)}>Edit</a>
+          {/*{renderRiskGoals(project, it)}*/}
+          {/*{renderUserGoals(project, it)}*/}
         </div>
         <div>
-          {incomeGoal ?
-            <div style={{color: 'orange', fontWeight: '900'}}>${incomeGoal.income}/mo</div>
-            : '???'
-          }
+          {incomeGoal}
         </div>
       </div>
       {evolveButton}
@@ -353,15 +448,31 @@ function renderIteration(project, it, i, setChosenIterationId) {
   </div>
 }
 
+const priorityMockup =     <div>
+  <h3>You can earn by</h3>
+  <center>
+    <table style={{textAlign: 'right'}}>
+      <tbody>
+      <tr>
+        <td><b>growing your audience</b></td>
+        <td>100%+</td>
+      </tr>
+      <tr>
+        <td>adding/tweaking monetization plans</td>
+        <td>10%+</td>
+      </tr>
+      <tr>
+        <td>by making features</td>
+        <td>1%+</td>
+      </tr>
+      </tbody>
+    </table>
+  </center>
+</div>
+
+
 export function IterationPlanner({project}) {
   var [chosenIterationId, setChosenIterationId] = useState(-1)
-
-  var goals = [
-    {userId: 1, amount: 1000}, // failed peeps
-    {planId: 1, amount: 100}, // dreamers
-    {income: 10000}
-  ]
-
 
   // not ready to pay:
   // *   I don't like paying, I don't have money,
@@ -377,24 +488,24 @@ export function IterationPlanner({project}) {
   const onAutoGenerate = () => {
     var mockIterations = [
       new Iteration('Who needs this app more?', [
-        Iteration.getRiskGoal(project, 0),
-        Iteration.getRiskGoal(project, 1),
-        Iteration.getMonetizationGoal(project, 0, 1000)
+        // Iteration.getRiskGoal(project, 0),
+        // Iteration.getRiskGoal(project, 1),
+        Iteration.createMonetizationGoal(project, 0, 1000)
       ]),
       new Iteration('Do they find value and want to pay for it?', [
-        Iteration.getRiskGoal(project, 3)
+        // Iteration.getRiskGoal(project, 3)
       ]),
       new Iteration('Get core users. Personal contact', [
-        Iteration.getUserGoal(project, project.audiences[0].id, 100)]
-      ),
+        // Iteration.getUserGoal(project, project.audiences[0].id, 100)
+      ]),
       new Iteration('SURVIVE', [
-        Iteration.getIncomeGoal(project, getBurnOutGoal(project))
+        Iteration.createIncomeGoal(project, getBurnOutGoal(project))
       ]),
       new Iteration('BECOME SUSTAINABLE', [
-        Iteration.getIncomeGoal(project, getSustainabilityGoal(project))
+        Iteration.createIncomeGoal(project, getSustainabilityGoal(project))
       ]),
       new Iteration("DREAM", [
-        Iteration.getIncomeGoal(project, getDreamGoal(project))
+        Iteration.createIncomeGoal(project, getDreamGoal(project))
       ]),
       // new Iteration("SELLOUT", [{income: getDreamGoal(project) * 20}] ),
     ]
@@ -407,38 +518,15 @@ export function IterationPlanner({project}) {
   return <div id="ITERATIONS">
     <h1>Iteration Planner</h1>
     <h2>Do the PROJECT, not just product</h2>
-    <div className={""}>
-      <h3>Earn</h3>
-      You can earn by
-      <center>
-        <table style={{textAlign: 'right'}}>
-          <tbody>
-            <tr>
-              <td><b>growing your audience</b></td>
-              <td>100%+</td>
-            </tr>
-            <tr>
-              <td>adding/tweaking monetization plans</td>
-              <td>10%+</td>
-            </tr>
-            <tr>
-              <td>by making features</td>
-              <td>1%+</td>
-            </tr>
-          </tbody>
-        </table>
-      </center>
-    </div>
+    {priorityMockup}
     <br/>
 
     <div className={"Audience-Container"} style={{gridTemplateColumns: 'auto auto auto'}}>
       {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
-      {iterations.map(
-        (it, i, array) => renderIteration(project, it, i, setChosenIterationId)
-      )}
+      {iterations.map((it, i) => renderIteration(project, it, i, setChosenIterationId))}
     </div>
     <br/>
     <br/>
-    <IterationEditor project={project} chosenIterationId={chosenIterationId}/>
+    <IterationPopup project={project} chosenIterationId={chosenIterationId} onChoose={setChosenIterationId} />
   </div>
 }

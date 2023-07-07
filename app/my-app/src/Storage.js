@@ -120,9 +120,9 @@ const patchWithIDs = (list, tagName = '', printOnly = true) => {
     }
   }
 
-  // if (undefinedCount > 1) {
+  if (undefinedCount > 0) {
     console.log('pushed to ', {tagName}, undefinedCount)
-  // }
+  }
 
   return undefinedCount
 }
@@ -161,11 +161,26 @@ const fixProject = () => {
       return s;
     return {name: s}
   }
+
   try {
     patches += patchWithIDs(project.audiences, 'audiences', printOnly)
     project.audiences.forEach(a => {
+      if (!a.messages)
+        a.messages = []
+
       a.messages = a.messages.map(namify)
       patches += patchWithIDs(a.messages, 'audiences.' + a.id + '.messages', printOnly)
+
+      console.log({
+        strategy: a.strategy
+      })
+
+      if (!Array.isArray(a.strategy)) {
+        a.strategy = [a.strategy]
+      }
+
+      a.strategy = a.strategy.map(namify)
+      patches += patchWithIDs(a.strategy, 'audiences.' + a.id + '.strategy', printOnly)
     })
 
     patches += patchWithIDs(project.monetizationPlans, 'plans', printOnly)
@@ -185,6 +200,13 @@ const fixProject = () => {
       patches += patchWithIDs(r.solutions, 'risks.' + r.id + '.solutions', printOnly)
     })
     patches += patchWithIDs(project.iterations, 'iterations', printOnly)
+    project.iterations.forEach(it => {
+      if (!it.features)
+        it.features = []
+
+      it.features = it.features.map(namify)
+      patches += patchWithIDs(it.features, 'features.' + it.id, printOnly)
+    })
   } catch (e) {
     console.error('CANNOT FIX PROJECT', e)
     console.error('CANNOT FIX PROJECT', e)
@@ -205,11 +227,15 @@ Dispatcher.register((p) => {
 
   const fixStrategy = (p) => {
     // TODO PATCH FOR OLDER PROJECTS
-    if (!Array.isArray(project.audiences[p.audienceIndex].strategy))
-      project.audiences[p.audienceIndex].strategy = [p.strategy]
+    console.log('fixStrategy', {p})
+    var ind = getIndexByID(project.audiences, p.audienceIndex)
+    console.log('fixStrategy', {ind}, p)
 
-    if (!project.audiences[p.audienceIndex].messages)
-      project.audiences[p.audienceIndex].messages = []
+    if (!Array.isArray(project.audiences[ind].strategy))
+      project.audiences[ind].strategy = [p.strategy]
+
+    if (!project.audiences[ind].messages)
+      project.audiences[ind].messages = []
   }
 
   const refreshToFixIndexBug = (time = 800) => {
@@ -310,20 +336,11 @@ Dispatcher.register((p) => {
       saveProjectChanges();
       break;
 
-    case AUDIENCE_STRATEGY_EDIT:
-      fixStrategy(p)
-
-      ind = getIndexByID(project.audiences, p.audienceIndex)
-      project.audiences[ind].strategy[p.textIndex] = p.strategy
-
-      saveProjectChanges();
-      break;
-
     case AUDIENCE_MESSAGE_ADD:
       fixStrategy(p)
 
       ind = getIndexByID(project.audiences, p.audienceIndex)
-      push(project.audiences[ind].messages, p.message)
+      push(project.audiences[ind].messages, {name: p.message})
 
       saveProjectChanges();
       break;
@@ -332,8 +349,8 @@ Dispatcher.register((p) => {
       fixStrategy(p)
 
       ind = getIndexByID(project.audiences, p.audienceIndex)
-
-      project.audiences[ind].messages[p.messageIndex] = p.message
+      var ind2 = getIndexByID(project.audiences[ind].messages, p.messageIndex);
+      project.audiences[ind].messages[ind2].name = p.message
 
       saveProjectChanges();
       break;
@@ -341,7 +358,8 @@ Dispatcher.register((p) => {
     case AUDIENCE_MESSAGE_REMOVE:
       ind = getIndexByID(project.audiences, p.audienceIndex)
 
-      project.audiences[ind].messages.splice(p.messageIndex, 1)
+      removeById(project.audiences[ind].messages, p.messageIndex)
+      // project.audiences[ind].messages.splice(p.messageIndex, 1)
 
       saveProjectChanges()
       break;
@@ -350,7 +368,20 @@ Dispatcher.register((p) => {
       fixStrategy(p)
       ind = getIndexByID(project.audiences, p.audienceIndex)
 
-      project.audiences[ind].strategy.push(p.strategy)
+      push(project.audiences[ind].strategy, {name: p.strategy})
+      // project.audiences[ind].strategy.push(p.strategy)
+
+      saveProjectChanges();
+      break;
+
+    case AUDIENCE_STRATEGY_EDIT:
+      fixStrategy(p)
+
+      ind = getIndexByID(project.audiences, p.audienceIndex)
+      var ind2 = getIndexByID(project.audiences[ind].strategy, p.textIndex)
+
+      console.log('EDIT STRATEGY', {p})
+      project.audiences[ind].strategy[ind2].name = p.strategy
 
       saveProjectChanges();
       break;
@@ -364,6 +395,7 @@ Dispatcher.register((p) => {
       saveProjectChanges();
       // refreshToFixIndexBug()
       break;
+
 
     case AUDIENCE_ORDER_CHANGE:
       project.audiences = swap(p.audienceIndex1, p.audienceIndex2, project.audiences)
@@ -634,7 +666,7 @@ Dispatcher.register((p) => {
 
     case ITERATIONS_DESCRIPTION_EDIT:
       ind = getIndexByID(project.iterations, p.id) // project.iterations.findIndex(it => it.id === p.id)
-      project.iterations[ind].textGoal = p.textGoal
+      project.iterations[ind].description = p.description
 
       saveProjectChanges()
       break

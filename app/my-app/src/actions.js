@@ -460,11 +460,11 @@ export function changeIterationOrder(index1, index2) {
   })
 }
 
-export function editIterationDescription(id, textGoal) {
+export function editIterationDescription(id, description) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_DESCRIPTION_EDIT,
     id,
-    textGoal
+    description
   })
 }
 

@@ -288,7 +288,7 @@ function MarketingPlanner({project}) {
             strategy = [strategy]
 
           var messagePicker = <ol>
-            {messages.map((m, i) => {
+            {messages.map(m => {
               // TODO not i, but m.id
               var messageId = m.id
 
@@ -311,13 +311,13 @@ function MarketingPlanner({project}) {
           </ol>
 
           var strategyPicker = <ol>
-            {strategy.map((s, i) => {
-              // TODO not i, but s.id
+            {strategy.map(s => {
               var strategyId = s.id
+              console.log(s.id, 'strategyPicker', {strategyId})
 
               return <li key={"strategy." + id + "." + strategyId}>
                 <FieldPicker
-                  value={s}
+                  value={s.name}
                   placeholder={"How will you reach them?"}
                   onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}
                   onRemove={() => actions.removeAudienceStrategy(id, strategyId)}
