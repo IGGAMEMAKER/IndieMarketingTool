@@ -182,7 +182,10 @@ const createProject = async (req, res) => {
     .then(r => {
       console.log({r})
       var newId = r._id;
-      res.redirect('projects/' + newId)
+      console.log({newId})
+      var newUrl = 'http://www.indiemarketingtool.com/projects/' + newId
+      console.log({newUrl})
+      res.redirect(newUrl)
       // res.json({objectId: '??', r})
     })
     .catch(e => {
