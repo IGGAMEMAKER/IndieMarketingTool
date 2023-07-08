@@ -19,7 +19,7 @@ function ProjectAdder({appType, defaultState}) {
       actions.addProject(name, appType)
 
       // TODO GO TO NEW PROJECT PAGE
-      setTimeout(refresh, 2500)
+      // setTimeout(refresh, 2500)
     }}
     placeholder={"add?"}
     defaultWord={defaultWord}
@@ -35,9 +35,10 @@ function NewProjectAdder({}) {
 
   var chooseTypeForm
   if (!isChosen) {
-    chooseTypeForm = <div>
-      <button onClick={() => setAppType(APP_TYPE_GAME)}>NEW GAME</button><button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP</button>
-    </div>
+    var newGameButton = <button onClick={() => setAppType(APP_TYPE_GAME)}>NEW GAME</button>
+    var newAppButton = <button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP</button>
+
+    chooseTypeForm = <div>{newGameButton}{newAppButton}</div>
   } else {
     chooseTypeForm = <ProjectAdder appType={appType} defaultState={true}/>
   }
