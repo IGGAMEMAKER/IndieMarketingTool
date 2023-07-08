@@ -55,6 +55,10 @@ export class ProfilePage extends Component {
   }
 
   componentWillMount() {
+    this.loadProfiles()
+  }
+
+  loadProfiles() {
     ping('/api/profile', response => {
       this.setState({
         projectIDs: response.body.projects
