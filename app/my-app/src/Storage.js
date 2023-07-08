@@ -269,6 +269,7 @@ Dispatcher.register((p) => {
       break
 
     case PROJECT_ADD:
+      console.log(PROJECT_ADD, {p})
       post('/api/projects/',
         {name: p.name, appType: p.appType},
         data => {
