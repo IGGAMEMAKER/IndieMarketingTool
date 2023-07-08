@@ -40,6 +40,11 @@
   padding: 10px;
 }
 
+.scrollable-goal-wrapper{
+  height: 70vh;
+  overflow-y: scroll;
+}
+
 .Container {
   display: grid;
 

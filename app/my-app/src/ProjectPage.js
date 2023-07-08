@@ -8,6 +8,8 @@ import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldAdder} from "./FieldAdder";
 import {renderIncomeGoal} from "./RenderIncomeGoal";
+import {RiskAdder} from "./RiskAdder";
+import {RiskList, RiskView} from "./RiskView";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -92,58 +94,6 @@ function Channel({channel}) {
         >x</button>
       </td>
     </tr>
-  )
-}
-
-function RiskList({risks}) {
-  return (
-    <ul>
-      {risks.map((r, index) => <RiskView key={"risk-list." + r.id} risk={r} index={index} />)}
-      <li><RiskAdder /></li>
-    </ul>
-  )
-}
-
-function RiskView({risk, index}) {
-  var id = risk.id;
-
-  var renderer = onChange => {
-    var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>Up</button>
-    var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
-
-    var solutions = risk.solutions || []
-    var solutionRenderer;
-    if (solutions.length) {
-      solutionRenderer = solutions.map(s => <li key={"risk." + id +".solution" + s.id}>
-        <FieldPicker
-          value={s.name}
-          placeholder={"Add possible solution"}
-          onAction={val => actions.editRiskSolution(id, s.id, val)}
-          onRemove={() => actions.removeRiskSolution(id, s.id)}
-        />
-      </li>)
-    }
-
-    return <div>
-      <span onClick={() => onChange(true)}>{risk.name}</span>
-      {up} {down}
-      <ul>
-        {solutionRenderer}
-        <RiskSolutionAdder riskIndex={id} />
-      </ul>
-    </div>
-  }
-
-  return (
-    <li className="Risk-item" key={'risk' + id}>
-      <FieldPicker
-        value={risk?.name}
-        normalValueRenderer={renderer}
-        placeholder={"Risk"}
-        onAction={val => actions.editRiskName(id, val)}
-        onRemove={() => actions.removeRisk(id)}
-      />
-    </li>
   )
 }
 
@@ -313,7 +263,7 @@ function MarketingPlanner({project}) {
           var strategyPicker = <ol>
             {strategy.map(s => {
               var strategyId = s.id
-              console.log(s.id, 'strategyPicker', {strategyId})
+              // console.log(s.id, 'strategyPicker', {strategyId})
 
               return <li key={"strategy." + id + "." + strategyId}>
                 <FieldPicker
@@ -397,42 +347,13 @@ function RisksPanel({risks}) {
   return <div id="Risks">
     <br />
     <br />
-    What are your biggest risks / doubts?
+    What are your biggest risks / doubts / problems?
     <br />
     <br />
     <div className="Container">
       <RiskList risks={risks} />
     </div>
   </div>
-}
-
-function RiskAdder({}) {
-  const [name, onChangeName] = useState("");
-
-  return (
-    <div className="Risk-item">
-      <textarea
-        value={name}
-        onChange={event => {
-          var v = event.target.value
-
-          onChangeName(v)
-        }}
-      />
-      <br />
-      <button onClick={() => {actions.addRisk(name); onChangeName("")}}>ADD</button>
-    </div>
-  )
-}
-
-function RiskSolutionAdder({riskIndex}) {
-  return <li className="Risk-item">
-    <FieldAdder
-      onAdd={v => {actions.addRiskSolution(riskIndex, v)}}
-      defaultValue={""}
-      placeholder={"Solution"}
-    />
-  </li>
 }
 
 

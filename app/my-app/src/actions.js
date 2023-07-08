@@ -51,7 +51,7 @@ import {
   ITERATIONS_REMOVE,
   ITERATIONS_ORDER_CHANGE,
   AUDIENCE_MESSAGE_REMOVE,
-  ITERATIONS_GOAL_EDIT, ITERATIONS_GOAL_ADD, ITERATIONS_GOAL_REMOVE
+  ITERATIONS_GOAL_EDIT, ITERATIONS_GOAL_ADD, ITERATIONS_GOAL_REMOVE, ITERATIONS_GOAL_SOLVE
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -493,6 +493,15 @@ export function removeIterationGoal(id, goalIndex) {
   })
 }
 
+export function solveIterationGoal(id, goalIndex, solved = true) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GOAL_SOLVE,
+    id,
+    goalIndex,
+    solved
+  })
+}
+
 
 
 export default {
@@ -561,5 +570,6 @@ export default {
   editIterationGoal,
   addIterationGoal,
   removeIterationGoal,
+  solveIterationGoal
 }
 

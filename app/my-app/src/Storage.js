@@ -18,7 +18,7 @@ import {
   ITERATIONS_ADD,
   ITERATIONS_DESCRIPTION_EDIT,
   ITERATIONS_GOAL_ADD,
-  ITERATIONS_GOAL_REMOVE,
+  ITERATIONS_GOAL_REMOVE, ITERATIONS_GOAL_SOLVE,
   ITERATIONS_ORDER_CHANGE,
   ITERATIONS_REMOVE,
   LINKS_ADD,
@@ -53,7 +53,7 @@ import {
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 import {LINK_TYPE_DOCS} from "./constants/constants";
-import {getIndexByID} from "./utils";
+import {getIndexByID, getNextID} from "./utils";
 
 const CE = 'CHANGE_EVENT';
 
@@ -136,15 +136,7 @@ const removeById = (list, id) => {
   list.splice(getIndexByID(list, id), 1)
 }
 
-const getNextID = list => {
-  var ids = list.map(a => a.id || 0)
-  console.log({ids})
 
-  if (!ids.length)
-    ids.push(0)
-
-  return 1 + Math.max(...ids)
-}
 
 const refresh = (time = 800) => {
   setTimeout(() => window.location.reload(true), time)
@@ -159,6 +151,7 @@ const fixProject = () => {
   const namify = s => {
     if (s.name)
       return s;
+
     return {name: s}
   }
 
@@ -200,13 +193,16 @@ const fixProject = () => {
       patches += patchWithIDs(r.solutions, 'risks.' + r.id + '.solutions', printOnly)
     })
     patches += patchWithIDs(project.iterations, 'iterations', printOnly)
-    project.iterations.forEach(it => {
-      if (!it.features)
-        it.features = []
-
-      it.features = it.features.map(namify)
-      patches += patchWithIDs(it.features, 'features.' + it.id, printOnly)
-    })
+    // project.iterations.forEach(it => {
+    //   if (it.features) {
+    //     delete it.features
+    //     // it.features = []
+    //   }
+    //
+    //   console.log('IT.FEATURES', it.features)
+    //   // it.features = it.features.map(namify)
+    //   // patches += patchWithIDs(it.features, 'features.' + it.id, printOnly)
+    // })
   } catch (e) {
     console.error('CANNOT FIX PROJECT', e)
     console.error('CANNOT FIX PROJECT', e)
@@ -645,6 +641,7 @@ Dispatcher.register((p) => {
       project.iterations = swap(p.index1, p.index2, project.iterations)
       saveProjectChanges()
       break;
+
     case ITERATIONS_ADD:
       if (!project.iterations)
         project.iterations = []
@@ -695,6 +692,16 @@ Dispatcher.register((p) => {
       console.log('goals.remove', {p})
       // project.iterations[ind].goals.splice(p.goalIndex, 1)
       removeById(project.iterations[ind].goals, p.goalIndex)
+
+      saveProjectChanges()
+      break;
+
+    case ITERATIONS_GOAL_SOLVE:
+      ind      = getIndexByID(project.iterations,            p.id)
+      var ind2 = getIndexByID(project.iterations[ind].goals, p.goalIndex)
+
+      project.iterations[ind].goals[ind2].solved = p.solved
+      console.log(ITERATIONS_GOAL_SOLVE, {p})
 
       saveProjectChanges()
       break;
