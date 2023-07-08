@@ -1,6 +1,6 @@
-const getIndexByID = (list, id) => list.findIndex(item => item.id === id)
-const getByID = (list, id) => list.find(item => item.id === id)
-const getNextID = list => {
+export const getIndexByID = (list, id) => list.findIndex(item => item.id === id)
+export const getByID = (list, id) => list.find(item => item.id === id)
+export const getNextID = list => {
   var ids = list.map(a => a.id || 0)
   // console.log({ids})
 
@@ -10,8 +10,8 @@ const getNextID = list => {
   return 1 + Math.max(...ids)
 }
 
-module.exports = {
-  getIndexByID,
-  getByID,
-  getNextID
-}
+// module.exports = {
+//   getIndexByID,
+//   getByID,
+//   getNextID
+// }
