@@ -15,6 +15,7 @@ export class Iteration {
     this.solved = false
   }
 
+
   setDuration(duration) {
     this.duration = duration
     return this;
