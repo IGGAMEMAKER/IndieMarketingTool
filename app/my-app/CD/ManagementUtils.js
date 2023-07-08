@@ -202,7 +202,7 @@ const gitPull = async (ssh, ip, updateNPMLibs = false, check = {}) => {
   if (updateNPMLibs) {
     console.log('wanna update npm libs');
 
-    await ssh.exec('npm i', [], crawlerOptions)
+    await ssh.exec('npm i --force', [], crawlerOptions)
       .then(r => {
         check['npm_install_packages'] = true;
         console.log('npm libs updated?');
