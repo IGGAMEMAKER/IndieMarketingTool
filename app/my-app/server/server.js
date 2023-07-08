@@ -181,7 +181,9 @@ const createProject = async (req, res) => {
   project.save()
     .then(r => {
       console.log({r})
-      res.json({objectId: '??', r})
+      var newId = r._id;
+      res.redirect('projects/' + newId)
+      // res.json({objectId: '??', r})
     })
     .catch(e => {
       console.error({e})
