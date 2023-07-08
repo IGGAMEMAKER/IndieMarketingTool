@@ -128,11 +128,11 @@ const prepareServer = async (ip, forceProjectRemoval = false) => {
   await updateAPT(ssh, check);
 
 
-  // await installNPM(ssh, check);
-  // await installPM2(ssh, check);
-  // await installN(ssh, check);
+  await installNPM(ssh, check);
+  await installPM2(ssh, check);
+  await installN(ssh, check);
 
-  // await installNodeWithN(ssh, check);
+  await installNodeWithN(ssh, check);
 
   await gitPull(ssh, ip, true);
 

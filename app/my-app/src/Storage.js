@@ -142,6 +142,11 @@ const refresh = (time = 800) => {
   setTimeout(() => window.location.reload(true), time)
 }
 
+const openNewProject = newId => {
+  var newUrl = 'http://www.indiemarketingtool.com/projects/' + newId
+  window.location.href = newUrl
+}
+
 const fixProject = () => {
   var changeData = true
   var printOnly = !changeData
@@ -269,7 +274,11 @@ Dispatcher.register((p) => {
         data => {
           console.log({body: data.body})
 
+          var newId = data.body.newId
+          console.log({newId})
+
           // TODO force refresh
+          openNewProject(newId)
         })
         .finally(() => {
           store.emitChange()
