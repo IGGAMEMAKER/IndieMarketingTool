@@ -8,6 +8,7 @@ const errorHandler = (err, req, res, next) => {
 const createApp = port => {
   const express = require('express');
   const cors = require("cors");
+  const cookieParser = require('cookie-parser')
 
   const corsOptions = {
     origin: '*',
@@ -20,6 +21,7 @@ const createApp = port => {
   var path = __dirname.replace('server', 'build')
   console.log('APP.USE', path, __dirname)
   app.use('/static', express.static(path + '/static'));
+  app.use(cookieParser())
   app.use(cors(corsOptions))
   app.use(errorHandler)
 
