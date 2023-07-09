@@ -1,12 +1,13 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import {Component} from 'react';
+import {Component, useState} from 'react';
 // import { BrowserRouter } from 'react-router-dom';
 import {Link, Route, Routes} from 'react-router-dom';
 import {ProjectList} from "./ProjectList";
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
+import generatePassword from "./secret";
 
 
 class Examples extends Component {
@@ -36,8 +37,132 @@ class Examples extends Component {
   }
 }
 
+function RegisterForm({}) {
+  var [email, setEmail] = useState("")
+  var [password, setPassword] = useState("")
+
+  var passButton = <button
+    onClick={() => {
+      var p = generatePassword(35)
+      setPassword(p)
+      navigator.clipboard.writeText(p)
+    }}>Generate & Copy to Clipboard
+  </button>
+
+  return <div>
+    <h2>Register</h2>
+    <table>
+      <tbody>
+      <tr>
+        <td>
+          <input
+            autoComplete="email"
+            type="email"
+            placeholder="Input email"
+          />
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <input
+            autoComplete="new-password"
+            type="password"
+            placeholder="Input password"
+            value={password}
+            onChange={ev => setPassword(ev.target.value)}
+          />
+        </td>
+        <td>
+          {passButton}
+        </td>
+      </tr>
+      <tr></tr>
+      <tr>
+        <td style={{float: 'left'}}>
+          <button>Register</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <br />
+    <br />
+    <Link to={"/Login"}>Have an account?</Link>
+  </div>
+}
+
+function LoginForm({}) {
+  var [email, setEmail] = useState("")
+  var [password, setPassword] = useState("")
+
+  return <div>
+    <h2>Log in</h2>
+    <table>
+      <tr>
+        <td>
+          <input
+            autoComplete={"email"}
+            type={"email"}
+            placeholder={"Input email"}/>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <input
+            autoComplete="current-password"
+            type={"password"}
+            placeholder={"Input password"}
+            value={password}
+            onChange={ev => setPassword(ev.target.value)}
+          />
+        </td>
+        <td>
+          <Link to={"/Reset"}>Forgot password?</Link>
+        </td>
+      </tr>
+      {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
+    </table>
+    <br />
+    <br />
+    <Link to={"/Register"}>Don't have an account?</Link>
+  </div>
+}
+
+function ResetPasswordForm({}) {
+  var [email, setEmail] = useState("")
+  var [isSent, sendEmail] = useState(false)
+
+  return <div>
+    <h2>Reset password</h2>
+    <table>
+      <tr>
+        <td>
+          <input
+            autoComplete={"email"}
+            type={"email"}
+            placeholder={"Input email"}
+            onChange={ev => setEmail(ev.target.value)}
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {email.length ? <Link to={"/Login"}>Restore</Link>: ''}
+        </td>
+      </tr>
+    </table>
+  </div>
+}
+
 class MainPage extends Component {
+  state = {}
+
   render() {
+    var isAuthenticated = false
+    var isNewUser = true
+
+
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>Stop wasting years on a game/app, that nobody needs</h1>
@@ -46,7 +171,13 @@ class MainPage extends Component {
         <h2>Innovate without destroying ur mental health</h2>
         {/*<Link to={"/examples"}>Examples</Link>*/}
         {/*<Link to={"/pricing"}>Pricing</Link>*/}
-        <Link to={"/profile"}>Profile</Link>
+
+        {/*<RegisterForm />*/}
+        {/*<LoginForm />*/}
+        <Link to={"/Register"}>Register</Link>
+        <Link to={"/Login"}>Login</Link>
+
+        {isAuthenticated ? <Link to={"/profile"}>Profile</Link> : ''}
       </header>
     </div>
   }
@@ -62,6 +193,10 @@ class App extends Component {
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
             <Route path='/' element={<MainPage/>}/>
+            <Route path='/Register' element={<RegisterForm/>}/>
+            <Route path='/Login' element={<LoginForm/>}/>
+            <Route path='/Reset' element={<ResetPasswordForm />}/>
+
             <Route path='/examples' element={<Examples/>}/>
             <Route path='/about' element={<div>ABOUT</div>}/>
 

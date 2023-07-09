@@ -10,6 +10,7 @@ import {FieldAdder} from "./FieldAdder";
 import {renderIncomeGoal} from "./RenderIncomeGoal";
 import {RiskAdder} from "./RiskAdder";
 import {RiskList, RiskView} from "./RiskView";
+import generatePassword from "./secret";
 
 const getUrlWithoutPrefixes = link => {
   try {

@@ -270,12 +270,11 @@ Dispatcher.register((p) => {
 
     case PROJECT_ADD:
       console.log(PROJECT_ADD, {p})
-      post('/api/projects/',
-        {name: p.name, appType: p.appType},
-        data => {
-          console.log({body: data.body})
+      post('/api/projects/', {name: p.name, appType: p.appType})
+        .then(data => {
+          console.log({data})
 
-          var newId = data.body.newId
+          var newId = data.newId
           console.log({newId})
 
           // TODO force refresh

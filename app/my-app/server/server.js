@@ -1,4 +1,3 @@
-const {ping} = require("../src/PingBrowser");
 const {app} = require('./expressGenerator')(3000);
 
 const configs = require('../CD/Configs')
@@ -10,10 +9,6 @@ const {UserModel, ProjectModel} = require('./Models')
 
 // var ObjectId = require('mongodb').ObjectId
 var ObjectId = require('mongoose').Types.ObjectId;
-
-// var u = new UserModel({email: '23i03g@mail.ru'})
-//
-// u.save().then(r => console.log({r})).catch(e => console.error({e}))
 
 // var project = new ProjectModel({
 //   name: 'Indie Marketing Tool',
@@ -94,13 +89,49 @@ const renderSPA = (req, res) => {
   res.sendFile(appPath);
 }
 
-const getUserInfoMiddleware = (req, res, next) => {
+const loggedUser = (req, res, next) => {
+  // check email & sessionToken
+  // if they match => set userId && next()
+  // otherwise => redirect to /Login
+
+  // UserModel.find({
+  //
+  // })
   req.userId = '6495f2aad151580c1f4b516a'
 
   next()
 }
 
-const createUser = async (req, res) => {}
+const createSessionToken = () => {
+  return 'wwwNNmm'
+}
+
+const HASH = password => '555' + password
+
+const createUser = async (req, res) => {
+  var {email, password} = req.body.email;
+
+  var sessionToken = createSessionToken()
+
+  var u = new UserModel({
+    email,
+    password: HASH(password),
+    sessionToken,
+    sessionCreatedAt: new Date()
+  })
+
+  u.save()
+    .then(r => {
+      console.log({r})
+      res.json({
+        // UserID???
+
+      })
+    })
+    .catch(e => {
+      console.error({e})
+    })
+}
 const getProfile = async (req, res) => {
   ProjectModel.find({ownerId: new ObjectId(req.userId)})
     .then(projects => {
@@ -138,7 +169,7 @@ const createProject = async (req, res) => {
 
   var isGame = appType === 2;
   var risks = []
-  var userId = req.userId; // "6495f2aad151580c1f4b516a"
+  var userId = req.userId;
 
   if (isGame) {
     risks = [
@@ -183,9 +214,7 @@ const createProject = async (req, res) => {
       console.log({r})
       var newId = r._id;
       console.log({newId})
-      var newUrl = 'http://www.indiemarketingtool.com/projects/' + newId
-      console.log({newUrl})
-      // res.redirect(newUrl)
+
       res.json({objectId: '??', newId, r})
     })
     .catch(e => {
@@ -320,13 +349,25 @@ app.get('/pricing', renderSPA)
 
 
 // ---------------- API ------------------------
-app.post('/api/user', createUser)
+app.post  ('/api/user', createUser)
 
-app.get ('/api/profile', getUserInfoMiddleware, getProfile)
-app.post('/api/projects', getUserInfoMiddleware, createProject)
+app.get('/test/cookies/:str', (req, res) => {
+  res.cookie("testCookieeeee", req.params.str)
+  res.json({ok: 1})
+})
 
-app.get('/api/projects/:objectId', getProject)
-app.put('/api/projects/:objectId', getUserInfoMiddleware, updateProject) // save changes
-app.delete('/api/projects/:objectId', getUserInfoMiddleware, removeProject)
+app.get('/test/cookies', (req, res) => {
+  var v = req.cookies["testCookieeeee"]
+  console.log({v})
+  res.json({ok: 1, v})
+})
 
+app.get   ('/api/profile',            loggedUser, getProfile)
+app.post  ('/api/projects',           loggedUser, createProject)
+
+app.get   ('/api/projects/:objectId', loggedUser, getProject)
+app.put   ('/api/projects/:objectId', loggedUser, updateProject) // save changes
+app.delete('/api/projects/:objectId', loggedUser, removeProject)
+
+// TODO protect that link with password too?
 app.post('/links/name', getLinkName)

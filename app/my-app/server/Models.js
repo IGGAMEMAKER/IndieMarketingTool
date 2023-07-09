@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 var UserSchema = new Schema({
-  email: String
+  email: String,
+  password: String,
+  sessionToken: String,
+  sessionCreatedAt: Date,
+
   // payments, chosen plan (when)
   // shown interest in (plan...)
 })
