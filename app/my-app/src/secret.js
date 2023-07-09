@@ -18,4 +18,4 @@ function generatePassword(length) {
   return secret;
 }
 
-module.exports = generatePassword
+module.exports = {generatePassword}

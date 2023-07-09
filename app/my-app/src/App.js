@@ -7,7 +7,7 @@ import {Link, Route, Routes} from 'react-router-dom';
 import {ProjectList} from "./ProjectList";
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
-import generatePassword from "./secret";
+import {generatePassword} from "./secret";
 
 
 class Examples extends Component {
