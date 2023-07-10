@@ -6,8 +6,9 @@ const FRONTEND = 'http://www.indiemarketingtool.com'
 const ping = (url, picker) => {
   var t0 = new Date();
 
+  // https://ladjs.github.io/superagent/#cors
   return request
-    .get((FRONTEND + url))
+    .get(FRONTEND + url)
     // .set('Control-Allow-Credentials', 'true')
     .withCredentials()
     // .set('Control-Allow-Credentials', 'true')
@@ -56,8 +57,9 @@ const ping = (url, picker) => {
 const update = (url, parameters = {}) => {
   return request
     .put(FRONTEND + url)
+    // .set('Control-Allow-Credentials', 'true')
     .withCredentials()
-    .set('Control-Allow-Credentials', 'true')
+    // .set('Control-Allow-Credentials', 'true')
     // .set('Access-Control-Allow-Origin', '*')
     .send(parameters)
     .then(response => {
@@ -73,8 +75,9 @@ const update = (url, parameters = {}) => {
 const post = (url, parameters = {}) => {
   return request
     .post(FRONTEND + url)
+    // .set('Control-Allow-Credentials', 'true')
     .withCredentials()
-    .set('Control-Allow-Credentials', 'true')
+    // .set('Control-Allow-Credentials', 'true')
     // .set('Access-Control-Allow-Origin', '*')
     .send(parameters)
     .then(response => {
@@ -90,8 +93,9 @@ const post = (url, parameters = {}) => {
 const remove = (url, parameters = {}) => {
   return request
     .delete(FRONTEND + url)
+    // .set('Control-Allow-Credentials', 'true')
     .withCredentials()
-    .set('Control-Allow-Credentials', 'true')
+    // .set('Control-Allow-Credentials', 'true')
     // .set('Access-Control-Allow-Origin', '*')
     .send(parameters)
     .then(response => {
