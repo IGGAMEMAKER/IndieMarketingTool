@@ -48,7 +48,7 @@ const logIn = (req, res, next) => {
 
   UserModel.findOne({
     email,
-    // password: HASH(password)
+    password: HASH(password)
   })
     .then(user => {
       if (user) {
