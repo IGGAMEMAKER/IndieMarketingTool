@@ -102,6 +102,7 @@ function LoginForm({}) {
         <tr>
           <td>
             <input
+              name={"email"}
               autoComplete={"email"}
               type={"email"}
               placeholder={"Input email"}/>
@@ -111,6 +112,7 @@ function LoginForm({}) {
         <tr>
           <td>
             <input
+              name={"password"}
               autoComplete="current-password"
               type={"password"}
               placeholder={"Input password"}
