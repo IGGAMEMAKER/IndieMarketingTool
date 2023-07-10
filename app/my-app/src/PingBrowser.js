@@ -1,17 +1,19 @@
 const rrr = require("superagent")
 const request = rrr.agent()
 
-const FRONTEND = 'http://indiemarketingtool.com'
+const FRONTEND = 'http://www.indiemarketingtool.com'
 
 const ping = (url, picker) => {
   var t0 = new Date();
 
   return request
     .get((FRONTEND + url))
+    .set('Control-Allow-Credentials', 'true')
     .withCredentials()
     .set('Control-Allow-Credentials', 'true')
 
     // .set('Access-Control-Allow-Origin', '*')
+    .set('Access-Control-Allow-Origin', FRONTEND)
     .then(response => {
       var b = picker ? picker(response) : response.body;
 
