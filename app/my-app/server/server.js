@@ -19,8 +19,9 @@ const renderSPA = (req, res) => {
 
 const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 const customErrorHandler = (err, req, res, next) => {
+  console.error('custom error handler')
   if (err) {
-    console.log(err)
+    console.log(err, {err})
   }
 
   // if auth err
