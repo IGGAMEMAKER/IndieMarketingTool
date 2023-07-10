@@ -24,6 +24,7 @@ const customErrorHandler = (err, req, res, next) => {
     console.log(err, {err})
   }
 
+
   // if auth err
   res.redirect('/login')
 }
