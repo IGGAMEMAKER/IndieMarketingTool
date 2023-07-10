@@ -81,7 +81,10 @@ const logIn = (req, res, next) => {
     })
 }
 
-
+const logout = (req, res, next) => {
+  flushCookies(res)
+  next()
+}
 const authenticate = (req, res, next) => {
   var {email, sessionToken} = getCookies(req)
   // check email & sessionToken
@@ -175,6 +178,7 @@ app.get('/pricing', renderSPA)
 app.get('/register', renderSPA)
 app.get('/login', renderSPA)
 app.get('/reset', renderSPA)
+app.get('/logout', logout, renderSPA)
 
 
 // ---------------- API ------------------------
