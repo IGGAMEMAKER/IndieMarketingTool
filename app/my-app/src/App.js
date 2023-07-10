@@ -97,34 +97,38 @@ function LoginForm({}) {
 
   return <div>
     <h2>Log in</h2>
-    <table>
-      <tr>
-        <td>
-          <input
-            autoComplete={"email"}
-            type={"email"}
-            placeholder={"Input email"}/>
-        </td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>
-          <input
-            autoComplete="current-password"
-            type={"password"}
-            placeholder={"Input password"}
-            value={password}
-            onChange={ev => setPassword(ev.target.value)}
-          />
-        </td>
-        <td>
-          <Link to={"/reset"}>Forgot password?</Link>
-        </td>
-      </tr>
-      {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
-    </table>
-    <br />
-    <br />
+    <form action="/api/login" method="POST">
+      <table>
+        <tr>
+          <td>
+            <input
+              autoComplete={"email"}
+              type={"email"}
+              placeholder={"Input email"}/>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <input
+              autoComplete="current-password"
+              type={"password"}
+              placeholder={"Input password"}
+              value={password}
+              onChange={ev => setPassword(ev.target.value)}
+            />
+          </td>
+          <td>
+            <Link to={"/reset"}>Forgot password?</Link>
+          </td>
+        </tr>
+        {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
+      </table>
+      <input type="submit" value="Submit"/>
+    </form>
+
+    <br/>
+    <br/>
     <Link to={"/register"}>Don't have an account?</Link>
   </div>
 }
