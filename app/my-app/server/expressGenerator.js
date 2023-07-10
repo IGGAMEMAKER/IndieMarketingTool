@@ -16,9 +16,9 @@ const createApp = (port, handlers) => {
   app.use('/static', express.static(path + '/static'));
   app.use(cookieParser())
   app.use(cors(corsOptions))
-  handlers.forEach(h => {
-    app.use(h)
-  })
+  // handlers.forEach(h => {
+  //   app.use(h)
+  // })
   // app.use(errorHandler)
 
 // http://expressjs.com/en/resources/middleware/body-parser.html
