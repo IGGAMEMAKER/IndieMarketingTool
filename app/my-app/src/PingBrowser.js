@@ -1,4 +1,5 @@
-const request = require("superagent");
+const rrr = require("superagent")
+const request = rrr.agent()
 
 const FRONTEND = 'http://indiemarketingtool.com'
 
