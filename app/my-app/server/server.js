@@ -98,6 +98,7 @@ const authenticate = (req, res, next) => {
         console.log({user})
 
         req.userId = '6495f2aad151580c1f4b516a'
+        console.log('set userId', req.url)
         next()
       } else {
         req.userId = ''
@@ -202,7 +203,7 @@ app.delete('/api/projects/:objectId', authenticate, removeProject)
 app.post('/links/name', getLinkName)
 
 const customErrorHandler = (err, req, res, next) => {
-  console.error('custom error handler')
+  console.error('custom error handler', req.url, req.method)
   if (err) {
     console.log(err, {err})
   }
