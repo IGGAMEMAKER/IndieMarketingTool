@@ -101,7 +101,7 @@ const authenticate = (req, res, next) => {
       if (user) {
         console.log({user})
 
-        req.userId = user._id // '6495f2aad151580c1f4b516a'
+        req.userId = user._id.toString() // '6495f2aad151580c1f4b516a'
         console.log(req.userId)
         next()
       } else {
