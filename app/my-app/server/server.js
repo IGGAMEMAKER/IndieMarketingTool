@@ -46,12 +46,15 @@ const logIn = (req, res, next) => {
   var {email, password} = req.body;
   console.log('LOG IN', {email, password})
 
-  UserModel.find({
+  UserModel.findOne({
     email,
     // password: HASH(password)
   })
     .then(user => {
       if (user) {
+        console.log('logIn', {
+          user
+        })
         generateCookies(res, email)
         res.redirect('/profile')
       } else {
