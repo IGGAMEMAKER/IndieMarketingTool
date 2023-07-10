@@ -75,7 +75,7 @@ const authenticate = (req, res, next) => {
   // if they match => set userId && next()
   // otherwise => redirect to /Login
 
-  UserModel.find({
+  UserModel.findOne({
     email,
     sessionToken
   })
