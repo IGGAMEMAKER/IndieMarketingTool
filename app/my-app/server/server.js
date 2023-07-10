@@ -142,7 +142,7 @@ const resetPassword = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-  var {email, password} = req.body.email;
+  var {email, password} = req.body;
 
   var u = new UserModel({
     email,
