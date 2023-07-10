@@ -87,7 +87,7 @@ function RegisterForm({}) {
         <tr></tr>
         <tr>
           <td style={{float: 'left'}}>
-            <input type="submit">Register</input>
+            <input type="submit" value={"Register"} />
           </td>
         </tr>
         </tbody>
