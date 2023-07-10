@@ -1,5 +1,24 @@
 const {getProject} = require("./routes/getProject");
-const {app} = require('./expressGenerator')(3000);
+const customErrorHandler = (err, req, res, next) => {
+  console.error('custom error handler')
+  if (err) {
+    console.log(err, {err})
+  }
+
+
+  // if auth err
+  res.redirect('/login')
+}
+const standardErrorHandler = (err, req, res, next) => {
+  console.error(err, req.url);
+
+  res.status(500);
+  res.json({ error: err });
+}
+// app.use(customErrorHandler)
+// app.use(standardErrorHandler)
+
+const {app} = require('./expressGenerator')(3000, [customErrorHandler, standardErrorHandler]);
 
 const {updateProject} = require("./routes/updateProject");
 const {removeProject} = require("./routes/removeProject");
@@ -18,24 +37,7 @@ const renderSPA = (req, res) => {
 }
 
 const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
-const customErrorHandler = (err, req, res, next) => {
-  console.error('custom error handler')
-  if (err) {
-    console.log(err, {err})
-  }
 
-
-  // if auth err
-  res.redirect('/login')
-}
-const standardErrorHandler = (err, req, res, next) => {
-  console.error(err, req.url);
-
-  res.status(500);
-  res.json({ error: err });
-}
-app.use(customErrorHandler)
-app.use(standardErrorHandler)
 
 
 const getCookies = req => {
