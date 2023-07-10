@@ -134,8 +134,8 @@ const createUser = async (req, res) => {
 
 // ROUTES
 app.get('/', renderSPA)
-app.get('/projects/:objectId', renderSPA)
-app.get('/profile', renderSPA) // show user projects here
+app.get('/projects/:objectId', authenticate, renderSPA)
+app.get('/profile', authenticate, renderSPA) // show user projects here
 app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
 
