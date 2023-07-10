@@ -42,7 +42,9 @@ const createSessionToken = (email) => {
 const HASH = password => sha(password)
 
 const logIn = (req, res, next) => {
+  console.log('LOG IN')
   var {email, password} = req.body;
+  console.log('LOG IN', {email, password})
 
   UserModel.find({
     email,
