@@ -102,7 +102,7 @@ const authenticate = (req, res, next) => {
         console.log({user})
 
         req.userId = user._id // '6495f2aad151580c1f4b516a'
-        console.log('set userId', req.url)
+        console.log(req.userId)
         next()
       } else {
         console.log('user not found', match, req.cookies)
