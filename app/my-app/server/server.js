@@ -1,4 +1,4 @@
-import {generatePassword} from "../src/secret";
+const {generatePassword} = require("../src/secret")
 
 const {app} = require('./expressGenerator')(3000);
 
