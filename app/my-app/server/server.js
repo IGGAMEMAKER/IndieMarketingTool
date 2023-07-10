@@ -89,10 +89,11 @@ const authenticate = (req, res, next) => {
   // otherwise => redirect to /Login
 
   console.log('authenticate')
-  UserModel.findOne({
+  var match = {
     email,
     sessionToken
-  })
+  }
+  UserModel.findOne(match)
     .then(user => {
       if (user) {
         console.log({user})
@@ -100,10 +101,12 @@ const authenticate = (req, res, next) => {
         req.userId = '6495f2aad151580c1f4b516a'
         console.log('set userId', req.url)
         next()
-      } /*else {
+      } else {
+        console.log('user not found', match)
+
         req.userId = ''
         next(AUTHENTICATION_FAILED_ERROR)
-      }*/
+      }
     })
     .catch(err => {
       console.error('CANNOT AUTHENTICATE', err)
