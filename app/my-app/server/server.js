@@ -49,10 +49,16 @@ const logIn = (req, res, next) => {
   var {email, password} = req.body;
   console.log('LOG IN', {email, password})
 
-  UserModel.findOne({
+  var matchObject = {
     email,
     password: HASH(password)
+  }
+
+  console.log({
+    matchObject
   })
+
+  UserModel.findOne(matchObject)
     .then(user => {
       if (user) {
         console.log('logIn', {
