@@ -27,8 +27,16 @@ const getCookies = req => {
     sessionToken: req.cookies["sessionToken"]
   }
 }
-const generateCookies = (res, email) => {
-  setCookies(res, createSessionToken(email), email)
+const generateCookies = async (res, email) => {
+  var token = createSessionToken(email)
+  setCookies(res, token, email)
+
+  await UserModel.updateOne({
+    email
+  }, {
+    sessionToken: token,
+    sessionCreatedAt: new Date()
+  })
 }
 const flushCookies = (res) => {
   setCookies(res, '', '')
@@ -54,15 +62,15 @@ const logIn = (req, res, next) => {
     password: HASH(password)
   }
 
-  console.log({
-    matchObject
-  })
+  // console.log({
+  //   matchObject
+  // })
 
   UserModel.findOne(matchObject)
-    .then(user => {
+    .then(async user => {
       if (user) {
         console.log('logIn', {user})
-        generateCookies(res, email)
+        await generateCookies(res, email)
 
         res.redirect('/profile')
       } else {
@@ -119,9 +127,8 @@ const resetPassword = async (req, res) => {
     email
   }, {password: HASH(newPassword)})
     .then(r => {
-      // TODO SEND VERIFICATION EMAIL
       console.log({r})
-      // res.redirect('/login')
+      // TODO SEND VERIFICATION EMAIL
     })
     .catch(err => {
       console.log('cannot reset password', {err})
