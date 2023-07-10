@@ -25,7 +25,7 @@ const getCookies = req => {
   }
 }
 const generateCookies = (res, email) => {
-  setCookies(res, createSessionToken(), email)
+  setCookies(res, createSessionToken(email), email)
 }
 const flushCookies = (res) => {
   setCookies(res, '', '')
