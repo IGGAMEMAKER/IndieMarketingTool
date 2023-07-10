@@ -97,7 +97,7 @@ function LoginForm({}) {
 
   return <div>
     <h2>Log in</h2>
-    <form action="/api/login" method="">
+    <form action="/api/login" method="post">
       <table>
         <tr>
           <td>
