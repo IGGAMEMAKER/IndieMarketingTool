@@ -15,8 +15,7 @@ const standardErrorHandler = (err, req, res, next) => {
   res.status(500);
   res.json({ error: err });
 }
-// app.use(customErrorHandler)
-// app.use(standardErrorHandler)
+
 
 const {app} = require('./expressGenerator')(3000, [customErrorHandler, standardErrorHandler]);
 
@@ -187,3 +186,6 @@ app.delete('/api/projects/:objectId', authenticate, removeProject)
 
 // TODO protect that link with password too?
 app.post('/links/name', getLinkName)
+
+app.use(customErrorHandler)
+app.use(standardErrorHandler)
