@@ -83,7 +83,7 @@ const logIn = (req, res, next) => {
 
 const logout = (req, res, next) => {
   flushCookies(res)
-  next()
+  res.redirect('/')
 }
 const authenticate = (req, res, next) => {
   var {email, sessionToken} = getCookies(req)
@@ -101,7 +101,7 @@ const authenticate = (req, res, next) => {
       if (user) {
         console.log({user})
 
-        req.userId = '6495f2aad151580c1f4b516a'
+        req.userId = user._id // '6495f2aad151580c1f4b516a'
         console.log('set userId', req.url)
         next()
       } else {
@@ -186,12 +186,12 @@ app.post  ('/api/login', logIn)
 app.post  ('/api/user', createUser)
 app.post  ('/api/reset-password', resetPassword)
 
-app.get('/test/cookies/:str', (req, res) => {
+app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)
   res.json({ok: 1})
 })
 
-app.get('/test/cookies', (req, res) => {
+app.get   ('/test/cookies', (req, res) => {
   var v = req.cookies["Cookieee"]
   console.log({v})
   res.json({ok: 1, v, cookies: req.cookies})
@@ -228,5 +228,6 @@ const standardErrorHandler = (err, req, res, next) => {
   res.status(500);
   res.json({ error: err });
 }
+
 app.use(customErrorHandler)
 app.use(standardErrorHandler)
