@@ -27,12 +27,12 @@ const getCookies = req => {
 const generateCookies = (res, email) => {
   setCookies(res, createSessionToken(), email)
 }
+const flushCookies = (res) => {
+  setCookies(res, '', '')
+}
 const setCookies = (res, token, email) => {
   res.cookie('sessionToken', token)
   res.cookie('email', email)
-}
-const flushCookies = (res) => {
-  setCookies(res, '', '')
 }
 
 const createSessionToken = (email) => {
@@ -59,7 +59,7 @@ const logIn = (req, res, next) => {
     })
     .catch(err => {
       // next('ERROR IN AUTHENTICATE')
-      console.error('ERROR IN AUTHENTICATE', {err})
+      console.error('ERROR IN logIn', {err})
       res.redirect('Login')
     })
 }
@@ -86,10 +86,9 @@ const authenticate = (req, res, next) => {
       }
     })
     .catch(err => {
-
+      console.error('CANNOT AUTHENTICATE', err)
+      next(err)
     })
-
-  next()
 }
 
 
@@ -114,6 +113,8 @@ const createUser = async (req, res) => {
     })
     .catch(e => {
       console.error({e})
+      flushCookies(res)
+
       res.redirect('Register?userExists=1')
     })
 }
@@ -126,6 +127,10 @@ app.get('/projects/:objectId', renderSPA)
 app.get('/profile', renderSPA) // show user projects here
 app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
+
+app.get('/register', renderSPA)
+app.get('/login', renderSPA)
+app.get('/reset', renderSPA)
 
 
 // ---------------- API ------------------------
