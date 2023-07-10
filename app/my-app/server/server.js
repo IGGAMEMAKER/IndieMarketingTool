@@ -69,6 +69,11 @@ const logIn = (req, res, next) => {
     })
 }
 
+// const errorHandler = (err, req, res, next) => {
+//   // if auth err
+//   res.redirect('/login')
+// }
+
 const authenticate = (req, res, next) => {
   var {email, sessionToken} = getCookies(req)
   // check email & sessionToken
@@ -92,7 +97,8 @@ const authenticate = (req, res, next) => {
     })
     .catch(err => {
       console.error('CANNOT AUTHENTICATE', err)
-      next(err)
+      res.redirect('/login')
+      // next(err)
     })
 }
 
