@@ -87,7 +87,7 @@ function RegisterForm({}) {
     </table>
     <br />
     <br />
-    <Link to={"/Login"}>Have an account?</Link>
+    <Link to={"/login"}>Have an account?</Link>
   </div>
 }
 
@@ -118,14 +118,14 @@ function LoginForm({}) {
           />
         </td>
         <td>
-          <Link to={"/Reset"}>Forgot password?</Link>
+          <Link to={"/reset"}>Forgot password?</Link>
         </td>
       </tr>
       {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
     </table>
     <br />
     <br />
-    <Link to={"/Register"}>Don't have an account?</Link>
+    <Link to={"/register"}>Don't have an account?</Link>
   </div>
 }
 
@@ -148,7 +148,7 @@ function ResetPasswordForm({}) {
       </tr>
       <tr>
         <td>
-          {email.length ? <Link to={"/Login"}>Restore</Link>: ''}
+          {email.length ? <Link to={"/login"}>Restore</Link>: ''}
         </td>
       </tr>
     </table>
@@ -174,8 +174,8 @@ class MainPage extends Component {
 
         {/*<RegisterForm />*/}
         {/*<LoginForm />*/}
-        <Link to={"/Register"}>Register</Link>
-        <Link to={"/Login"}>Login</Link>
+        <Link to={"/register"}>Register</Link>
+        <Link to={"/login"}>Login</Link>
 
         {isAuthenticated ? <Link to={"/profile"}>Profile</Link> : ''}
       </header>
@@ -193,9 +193,9 @@ class App extends Component {
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
             <Route path='/' element={<MainPage/>}/>
-            <Route path='/Register' element={<RegisterForm/>}/>
-            <Route path='/Login' element={<LoginForm/>}/>
-            <Route path='/Reset' element={<ResetPasswordForm />}/>
+            <Route path='/register' element={<RegisterForm/>}/>
+            <Route path='/login' element={<LoginForm/>}/>
+            <Route path='/reset' element={<ResetPasswordForm />}/>
 
             <Route path='/examples' element={<Examples/>}/>
             <Route path='/about' element={<div>ABOUT</div>}/>

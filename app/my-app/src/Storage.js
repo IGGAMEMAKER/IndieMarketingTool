@@ -57,8 +57,7 @@ import {getIndexByID, getNextID} from "./utils";
 
 const CE = 'CHANGE_EVENT';
 
-var userId = '6495f2aad151580c1f4b516a';
-var projectId = '' // 6495f797115f0e146936e5ad
+var projectId = ''
 
 var projectMock = {
   name: 'NOT LOADED',

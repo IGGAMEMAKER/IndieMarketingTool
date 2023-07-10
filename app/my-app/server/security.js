@@ -11,6 +11,7 @@ function sha(text){
   return hash;
 }
 
+
 // var phrase = 'I luv pitsa1'
 // var code = sha(phrase)
 // console.log({code}, code.toLowerCase() === sha(phrase).toLowerCase())
