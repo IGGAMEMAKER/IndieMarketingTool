@@ -53,16 +53,16 @@ const logIn = (req, res, next) => {
     .then(user => {
       if (user) {
         generateCookies(res, email)
-        res.redirect('profile')
+        res.redirect('/profile')
       } else {
-        res.redirect('login')
+        res.redirect('/login')
         // next('user not found')
       }
     })
     .catch(err => {
       // next('ERROR IN AUTHENTICATE')
       console.error('ERROR IN logIn', {err})
-      res.redirect('login')
+      res.redirect('/login')
     })
 }
 
@@ -111,13 +111,13 @@ const createUser = async (req, res) => {
       console.log({r})
       setCookies(res, sessionToken, email)
 
-      res.redirect('profile')
+      res.redirect('/profile')
     })
     .catch(e => {
       console.error({e})
       flushCookies(res)
 
-      res.redirect('register?userExists=1')
+      res.redirect('/register?userExists=1')
     })
 }
 
