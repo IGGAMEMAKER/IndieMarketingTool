@@ -10,8 +10,7 @@ const ping = (url, picker) => {
     .get((FRONTEND + url))
     // .set('Control-Allow-Credentials', 'true')
     .withCredentials()
-    .set('Control-Allow-Credentials', 'true')
-
+    // .set('Control-Allow-Credentials', 'true')
     // .set('Access-Control-Allow-Origin', '*')
     .set('Access-Control-Allow-Origin', FRONTEND)
     .then(response => {
