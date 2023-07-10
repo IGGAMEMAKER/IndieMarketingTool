@@ -100,10 +100,10 @@ const authenticate = (req, res, next) => {
         req.userId = '6495f2aad151580c1f4b516a'
         console.log('set userId', req.url)
         next()
-      } else {
+      } /*else {
         req.userId = ''
         next(AUTHENTICATION_FAILED_ERROR)
-      }
+      }*/
     })
     .catch(err => {
       console.error('CANNOT AUTHENTICATE', err)
