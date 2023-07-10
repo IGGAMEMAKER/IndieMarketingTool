@@ -102,7 +102,7 @@ const authenticate = (req, res, next) => {
         console.log('set userId', req.url)
         next()
       } else {
-        console.log('user not found', match)
+        console.log('user not found', match, req.cookies)
 
         req.userId = ''
         next(AUTHENTICATION_FAILED_ERROR)
