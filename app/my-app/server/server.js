@@ -17,6 +17,24 @@ const renderSPA = (req, res) => {
   res.sendFile(appPath);
 }
 
+const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
+const customErrorHandler = (err, req, res, next) => {
+  if (err) {
+    console.log(err)
+  }
+
+  // if auth err
+  res.redirect('/login')
+}
+const standardErrorHandler = (err, req, res, next) => {
+  console.error(err, req.url);
+
+  res.status(500);
+  res.json({ error: err });
+}
+app.use(customErrorHandler)
+app.use(standardErrorHandler)
+
 
 const getCookies = req => {
   return {
@@ -58,21 +76,18 @@ const logIn = (req, res, next) => {
         generateCookies(res, email)
         res.redirect('/profile')
       } else {
-        res.redirect('/login')
-        // next('user not found')
+        next(AUTHENTICATION_FAILED_ERROR)
+        // res.redirect('/login')
       }
     })
     .catch(err => {
       // next('ERROR IN AUTHENTICATE')
       console.error('ERROR IN logIn', {err})
-      res.redirect('/login')
+      next(AUTHENTICATION_FAILED_ERROR)
+      // res.redirect('/login')
     })
 }
 
-// const errorHandler = (err, req, res, next) => {
-//   // if auth err
-//   res.redirect('/login')
-// }
 
 const authenticate = (req, res, next) => {
   var {email, sessionToken} = getCookies(req)
@@ -92,13 +107,13 @@ const authenticate = (req, res, next) => {
         next()
       } else {
         req.userId = ''
-        next('authentication failed')
+        next(AUTHENTICATION_FAILED_ERROR)
       }
     })
     .catch(err => {
       console.error('CANNOT AUTHENTICATE', err)
-      res.redirect('/login')
-      // next(err)
+
+      next(AUTHENTICATION_FAILED_ERROR)
     })
 }
 
@@ -129,8 +144,6 @@ const createUser = async (req, res) => {
       res.redirect('/register?userExists=1')
     })
 }
-
-
 
 // ROUTES
 app.get('/', renderSPA)

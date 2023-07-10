@@ -1,10 +1,3 @@
-const errorHandler = (err, req, res, next) => {
-  console.error(err, req.url);
-
-  res.status(500);
-  res.json({ error: err });
-}
-
 const createApp = port => {
   const express = require('express');
   const cors = require("cors");
@@ -23,7 +16,7 @@ const createApp = port => {
   app.use('/static', express.static(path + '/static'));
   app.use(cookieParser())
   app.use(cors(corsOptions))
-  app.use(errorHandler)
+  // app.use(errorHandler)
 
 // http://expressjs.com/en/resources/middleware/body-parser.html
 // https://stackoverflow.com/questions/19917401/error-request-entity-too-large
