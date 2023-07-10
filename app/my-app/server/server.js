@@ -62,10 +62,6 @@ const logIn = (req, res, next) => {
     password: HASH(password)
   }
 
-  // console.log({
-  //   matchObject
-  // })
-
   UserModel.findOne(matchObject)
     .then(async user => {
       if (user) {
@@ -99,7 +95,7 @@ const authenticate = (req, res, next) => {
   })
     .then(user => {
       if (user) {
-        console.log('authenticate', user)
+        console.log({user})
 
         req.userId = '6495f2aad151580c1f4b516a'
         next()

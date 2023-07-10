@@ -2,6 +2,8 @@ const {ProjectModel} = require("../Models");
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const getProfile = async (req, res) => {
+  console.log('getProfile', req.userId)
+
   ProjectModel.find({ownerId: new ObjectId(req.userId)})
     .then(projects => {
       res.json({
