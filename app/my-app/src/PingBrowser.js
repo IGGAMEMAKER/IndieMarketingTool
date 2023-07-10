@@ -8,7 +8,7 @@ const ping = (url, picker) => {
 
   return request
     .get((FRONTEND + url))
-    .set('Control-Allow-Credentials', 'true')
+    // .set('Control-Allow-Credentials', 'true')
     .withCredentials()
     .set('Control-Allow-Credentials', 'true')
 
