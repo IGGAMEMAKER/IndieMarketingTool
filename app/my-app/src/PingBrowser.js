@@ -8,7 +8,8 @@ const ping = (url, picker) => {
 
   return request
     .get((FRONTEND + url))
-    .set('Access-Control-Allow-Origin', '*')
+    .withCredentials()
+    // .set('Access-Control-Allow-Origin', '*')
     .then(response => {
       var b = picker ? picker(response) : response.body;
 
@@ -52,7 +53,8 @@ const ping = (url, picker) => {
 const update = (url, parameters = {}) => {
   return request
     .put(FRONTEND + url)
-    .set('Access-Control-Allow-Origin', '*')
+    .withCredentials()
+    // .set('Access-Control-Allow-Origin', '*')
     .send(parameters)
     .then(response => {
       return response.body;
@@ -67,7 +69,8 @@ const update = (url, parameters = {}) => {
 const post = (url, parameters = {}) => {
   return request
     .post(FRONTEND + url)
-    .set('Access-Control-Allow-Origin', '*')
+    .withCredentials()
+    // .set('Access-Control-Allow-Origin', '*')
     .send(parameters)
     .then(response => {
       return response.body;
@@ -82,7 +85,8 @@ const post = (url, parameters = {}) => {
 const remove = (url, parameters = {}) => {
   return request
     .delete(FRONTEND + url)
-    .set('Access-Control-Allow-Origin', '*')
+    .withCredentials()
+    // .set('Access-Control-Allow-Origin', '*')
     .send(parameters)
     .then(response => {
       return response.body;
