@@ -51,42 +51,50 @@ function RegisterForm({}) {
 
   return <div>
     <h2>Register</h2>
-    <table>
-      <tbody>
-      <tr>
-        <td>
-          <input
-            autoComplete="email"
-            type="email"
-            placeholder="Input email"
-          />
-        </td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>
-          <input
-            autoComplete="new-password"
-            type="password"
-            placeholder="Input password"
-            value={password}
-            onChange={ev => setPassword(ev.target.value)}
-          />
-        </td>
-        <td>
-          {passButton}
-        </td>
-      </tr>
-      <tr></tr>
-      <tr>
-        <td style={{float: 'left'}}>
-          <button>Register</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <br />
-    <br />
+    <form method="POST" action="/api/user">
+      <table>
+        <tbody>
+        <tr>
+          <td>
+            <input
+              name="email"
+              autoComplete="email"
+              type="email"
+              placeholder="Input email"
+
+              value={email}
+              onChange={ev => setEmail(ev.target.value)}
+            />
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <input
+              name="password"
+              autoComplete="new-password"
+              type="password"
+              placeholder="Input password"
+
+              value={password}
+              onChange={ev => setPassword(ev.target.value)}
+            />
+          </td>
+          <td>
+            {passButton}
+          </td>
+        </tr>
+        <tr></tr>
+        <tr>
+          <td style={{float: 'left'}}>
+            <input type="submit">Register</input>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+    <br/>
+    <br/>
     <Link to={"/login"}>Have an account?</Link>
   </div>
 }
@@ -209,16 +217,16 @@ class App extends Component {
       <div className="App">
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
-            <Route path='/' element={<MainPage/>}/>
-            <Route path='/register' element={<RegisterForm/>}/>
-            <Route path='/login' element={<LoginForm/>}/>
-            <Route path='/reset' element={<ResetPasswordForm />}/>
+            <Route path='/'                     element={<MainPage/>}/>
+            <Route path='/register'             element={<RegisterForm/>}/>
+            <Route path='/login'                element={<LoginForm/>}/>
+            <Route path='/reset'                element={<ResetPasswordForm />}/>
 
-            <Route path='/examples' element={<Examples/>}/>
-            <Route path='/about' element={<div>ABOUT</div>}/>
+            <Route path='/examples'             element={<Examples/>}/>
+            <Route path='/about'                element={<div>ABOUT</div>}/>
 
-            <Route path='/profile' element={<ProfilePage/>}/>
-            <Route path='/projects/:projectId' element={<ProjectPage/>}/>
+            <Route path='/profile'              element={<ProfilePage/>}/>
+            <Route path='/projects/:projectId'  element={<ProjectPage/>}/>
           </Routes>
         </header>
       </div>

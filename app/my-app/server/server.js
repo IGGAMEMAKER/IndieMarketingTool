@@ -144,19 +144,16 @@ const resetPassword = async (req, res) => {
 const createUser = async (req, res) => {
   var {email, password} = req.body.email;
 
-  var sessionToken = createSessionToken(email)
-
   var u = new UserModel({
     email,
-    password: HASH(password),
-    sessionToken,
-    sessionCreatedAt: new Date()
+    password: HASH(password)
   })
 
   u.save()
-    .then(r => {
+    .then(async r => {
       console.log({r})
-      setCookies(res, sessionToken, email)
+      await generateCookies(res, email)
+      // setCookies(res, sessionToken, email)
 
       res.redirect('/profile')
     })
@@ -190,7 +187,6 @@ app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)
   res.json({ok: 1})
 })
-
 app.get   ('/test/cookies', (req, res) => {
   var v = req.cookies["Cookieee"]
   console.log({v})
