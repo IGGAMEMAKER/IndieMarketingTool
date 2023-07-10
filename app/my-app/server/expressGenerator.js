@@ -16,6 +16,8 @@ const createApp = (port, handlers) => {
   app.use('/static', express.static(path + '/static'));
   app.use(cookieParser())
   app.use(cors(corsOptions))
+
+
   // handlers.forEach(h => {
   //   app.use(h)
   // })
