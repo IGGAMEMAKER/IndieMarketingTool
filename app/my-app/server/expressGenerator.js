@@ -4,7 +4,9 @@ const createApp = (port) => {
   const cookieParser = require('cookie-parser')
 
   const corsOptions = {
-    origin: 'http://indiemarketingtool.com',
+    // origin: '*',
+    // origin: 'http://indiemarketingtool.com',
+    origin: true,
     credentials: true,            //access-control-allow-credentials:true
     optionSuccessStatus: 200,
   }
