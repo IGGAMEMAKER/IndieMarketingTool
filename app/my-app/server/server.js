@@ -61,14 +61,12 @@ const logIn = (req, res, next) => {
   UserModel.findOne(matchObject)
     .then(user => {
       if (user) {
-        console.log('logIn', {
-          user
-        })
+        console.log('logIn', {user})
         generateCookies(res, email)
+
         res.redirect('/profile')
       } else {
         next(AUTHENTICATION_FAILED_ERROR)
-        // res.redirect('/login')
       }
     })
     .catch(err => {
@@ -86,6 +84,7 @@ const authenticate = (req, res, next) => {
   // if they match => set userId && next()
   // otherwise => redirect to /Login
 
+  console.log('authenticate')
   UserModel.findOne({
     email,
     sessionToken
