@@ -1,29 +1,11 @@
+import {generatePassword} from "../src/secret";
+
+const {app} = require('./expressGenerator')(3000);
+
 const {getProject} = require("./routes/getProject");
-const customErrorHandler = (err, req, res, next) => {
-  console.error('custom error handler')
-  if (err) {
-    console.log(err, {err})
-  }
-
-
-  // if auth err
-  res.redirect('/login')
-}
-const standardErrorHandler = (err, req, res, next) => {
-  console.error(err, req.url);
-
-  res.status(500);
-  res.json({ error: err });
-}
-
-
-const {app} = require('./expressGenerator')(3000, [customErrorHandler, standardErrorHandler]);
-
 const {updateProject} = require("./routes/updateProject");
 const {removeProject} = require("./routes/removeProject");
 const {getProfile} = require("./routes/getProfile");
-
-
 const {createProject} = require("./routes/createProject");
 const {getLinkName} = require("./routes/researchLinks");
 const {sha} = require("./security");
@@ -120,6 +102,29 @@ const authenticate = (req, res, next) => {
     })
 }
 
+const resetPassword = async (req, res) => {
+  var {email} = req.body
+  var newPassword = generatePassword(35);
+
+  console.log({
+    newPassword
+  })
+
+  UserModel.updateOne({
+    email
+  }, {password: HASH(newPassword)})
+    .then(r => {
+      // TODO SEND VERIFICATION EMAIL
+      console.log({r})
+      res.redirect('/login')
+    })
+    .catch(err => {
+      console.log('cannot reset password', {err})
+    })
+    .finally(() => {
+      res.redirect('/login')
+    })
+}
 
 const createUser = async (req, res) => {
   var {email, password} = req.body.email;
@@ -163,6 +168,7 @@ app.get('/reset', renderSPA)
 // ---------------- API ------------------------
 app.post  ('/api/login', logIn)
 app.post  ('/api/user', createUser)
+app.post  ('/api/reset-password', resetPassword)
 
 app.get('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)
@@ -187,5 +193,24 @@ app.delete('/api/projects/:objectId', authenticate, removeProject)
 // TODO protect that link with password too?
 app.post('/links/name', getLinkName)
 
+const customErrorHandler = (err, req, res, next) => {
+  console.error('custom error handler')
+  if (err) {
+    console.log(err, {err})
+  }
+
+  if (err === AUTHENTICATION_FAILED_ERROR) {
+    res.redirect('/login')
+    return
+  }
+
+  next(err)
+}
+const standardErrorHandler = (err, req, res, next) => {
+  console.error(err, req.url);
+
+  res.status(500);
+  res.json({ error: err });
+}
 app.use(customErrorHandler)
 app.use(standardErrorHandler)

@@ -1,4 +1,4 @@
-const createApp = (port, handlers) => {
+const createApp = (port) => {
   const express = require('express');
   const cors = require("cors");
   const cookieParser = require('cookie-parser')
@@ -17,11 +17,6 @@ const createApp = (port, handlers) => {
   app.use(cookieParser())
   app.use(cors(corsOptions))
 
-
-  // handlers.forEach(h => {
-  //   app.use(h)
-  // })
-  // app.use(errorHandler)
 
 // http://expressjs.com/en/resources/middleware/body-parser.html
 // https://stackoverflow.com/questions/19917401/error-request-entity-too-large
