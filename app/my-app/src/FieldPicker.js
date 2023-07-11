@@ -48,6 +48,7 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer,
     if (normalValueRenderer)
       return <span className="onHover">{normalValueRenderer(onChangeName)}</span>
 
+
     return <label className="onHover" onClick={() => onChangeName(true)}>{value}</label>
   }
 
