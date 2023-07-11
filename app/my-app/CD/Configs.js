@@ -11,5 +11,7 @@ module.exports = {
   MAILER_EMAIL: confs.MAILER_EMAIL,
   MAILER_PASS: confs.MAILER_PASS,
 
+  MAILTRAP_KEY: confs.MAILTRAP_KEY,
+
   BREVO_KEY: confs.BREVO_KEY,
 }
