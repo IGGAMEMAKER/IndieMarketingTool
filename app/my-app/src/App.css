@@ -46,7 +46,8 @@
 }
 
 .onHover:hover {
-  background-color: purple;
+  /*background-color: purple;*/
+  background-color: #80008017;
 }
 
 .Container {
