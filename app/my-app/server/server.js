@@ -176,6 +176,7 @@ app.get('/register', renderSPA)
 app.get('/login', renderSPA)
 app.get('/reset', renderSPA)
 app.get('/logout', logout, renderSPA)
+app.get('/authenticated', authenticate, (req, res) => res.json({ok: !!req.userId}))
 
 
 // ---------------- API ------------------------

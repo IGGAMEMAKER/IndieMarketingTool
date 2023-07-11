@@ -8,6 +8,7 @@ import {ProjectList} from "./ProjectList";
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {generatePassword} from "./secret";
+import {ping} from "./PingBrowser";
 
 
 class Examples extends Component {
@@ -181,11 +182,23 @@ function ResetPasswordForm({}) {
 }
 
 class MainPage extends Component {
-  state = {}
+  state = {
+    authenticated: false
+  }
+
+  componentDidMount() {
+    ping('/authenticated', r => {
+      console.log({r})
+
+      this.setState({
+        authenticated: false
+      })
+    })
+  }
 
   render() {
-    var isAuthenticated = false
-    var isNewUser = true
+    var {authenticated} = this.state
+    var isNewUser = true // non auth + no cookies
 
 
     return <div className="App">
@@ -197,13 +210,11 @@ class MainPage extends Component {
         {/*<Link to={"/examples"}>Examples</Link>*/}
         {/*<Link to={"/pricing"}>Pricing</Link>*/}
 
-        {/*<RegisterForm />*/}
-        {/*<LoginForm />*/}
         <Link to={"/register"}>Register</Link>
         <Link to={"/login"}>Login</Link>
         {document.cookie}
 
-        {isAuthenticated ? <Link to={"/profile"}>Profile</Link> : ''}
+        {authenticated ? <Link to={"/profile"}>Profile</Link> : ''}
       </header>
     </div>
   }
