@@ -133,9 +133,13 @@ function LoginForm({}) {
             <Link to={"/reset"}>Forgot password?</Link>
           </td>
         </tr>
+        <tr>
+          <td><input type="submit" value="Submit"/></td>
+          <td></td>
+        </tr>
         {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
       </table>
-      <input type="submit" value="Submit"/>
+      {/*<input type="submit" value="Submit"/>*/}
     </form>
 
     <br/>
