@@ -188,7 +188,8 @@ class MainPage extends Component {
 
   componentDidMount() {
     ping('/authenticated', r => {
-      console.log({r})
+      var authenticated = r.body.authenticated
+      console.log({r}, authenticated)
 
       this.setState({
         authenticated: false
