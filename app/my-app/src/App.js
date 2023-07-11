@@ -192,7 +192,7 @@ class MainPage extends Component {
       console.log({r}, authenticated)
 
       this.setState({
-        authenticated: false
+        authenticated
       })
     })
   }
