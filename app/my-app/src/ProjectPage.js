@@ -482,6 +482,8 @@ export class ProjectPage extends Component {
         </div>
         <header className="App-header">
           {/*<div><textarea autoFocus /></div>*/}
+          <br />
+          <br />
           <FieldPicker
             value={this.state.project?.name}
             placeholder={"name the project"}
