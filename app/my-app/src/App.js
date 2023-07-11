@@ -47,7 +47,7 @@ function RegisterForm({}) {
       var p = generatePassword(35)
       setPassword(p)
       navigator.clipboard.writeText(p)
-    }}>Generate & Copy to Clipboard
+    }}>Generate & Copy
   </button>
 
   return <div>
@@ -134,7 +134,9 @@ function LoginForm({}) {
           </td>
         </tr>
         <tr>
-          <td><input type="submit" value="Submit"/></td>
+          <td style={{float: 'left'}}>
+            <input type="submit" value={"Login"} />
+          </td>
           <td></td>
         </tr>
         {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
