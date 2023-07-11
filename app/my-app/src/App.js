@@ -220,6 +220,7 @@ class MainPage extends Component {
           :
           <div>
             <Link to={"/register"}>Register</Link>
+            <br />
             <Link to={"/login"}>Login</Link>
           </div>
         }
