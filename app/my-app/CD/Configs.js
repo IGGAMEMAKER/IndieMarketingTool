@@ -14,4 +14,6 @@ module.exports = {
   MAILTRAP_KEY: confs.MAILTRAP_KEY,
 
   BREVO_KEY: confs.BREVO_KEY,
+
+  GA_DATA_FLOW_ID: confs.GA_DATA_FLOW_ID
 }
