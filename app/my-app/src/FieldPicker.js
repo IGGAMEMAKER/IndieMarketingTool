@@ -6,9 +6,9 @@ export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=t
 
   if (value.length && !editName) {
     if (!normalValueRenderer)
-      return <span className="onHover" onClick={onChangeName}>{value}</span>
+      return <span className="editable" onClick={onChangeName}>{value}</span>
 
-    return <div className="onHover">{normalValueRenderer(onChangeName)}</div>
+    return <div className="editable">{normalValueRenderer(onChangeName)}</div>
   }
 
   var saveButton = ''
@@ -46,10 +46,10 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer,
 
   if (!editName) {
     if (normalValueRenderer)
-      return <div className="onHover">{normalValueRenderer(onChangeName)}</div>
+      return <div className="editable">{normalValueRenderer(onChangeName)}</div>
 
 
-    return <label className="onHover" onClick={() => onChangeName(true)}>{value}</label>
+    return <label className="editable" onClick={() => onChangeName(true)}>{value}</label>
   }
 
   var saveButton = ''

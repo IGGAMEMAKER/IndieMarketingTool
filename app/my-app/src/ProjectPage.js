@@ -490,7 +490,7 @@ export class ProjectPage extends Component {
             onAction={val => {
               actions.editName(projectId, val)
             }}
-            normalValueRenderer={onEdit => <h1 className={"onHover"} onClick={onEdit}>{name}</h1>}
+            normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
           <a id="Audiences" href={"/profile"}>Profile</a>
           <br/>

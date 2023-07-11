@@ -75,7 +75,7 @@ export class ProfilePage extends Component {
 
 
     return <div>
-      <h1 className={"onHover"}>PROFILE</h1>
+      <h1>PROFILE</h1>
       <br/>
       <br/>
       <ProjectList projectIDs={projectIDs}/>

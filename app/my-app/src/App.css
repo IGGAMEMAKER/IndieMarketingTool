@@ -45,7 +45,7 @@
   overflow-y: scroll;
 }
 
-.onHover:hover {
+.editable:hover {
   /*background-color: purple;*/
   /*background-color: #80008017;*/
   background-color: rgba(128, 0, 128, 0.32);
