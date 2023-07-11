@@ -47,7 +47,8 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer,
   if (!editName) {
     if (normalValueRenderer)
       return normalValueRenderer(onChangeName)
-    return <label onClick={() => onChangeName(true)}>{value}</label>
+
+    return <label className="onHover" onClick={() => onChangeName(true)}>{value}</label>
   }
 
   var saveButton = ''
