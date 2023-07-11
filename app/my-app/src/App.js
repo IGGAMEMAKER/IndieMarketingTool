@@ -199,7 +199,8 @@ class MainPage extends Component {
 
   render() {
     var {authenticated} = this.state
-    var isNewUser = true // non auth + no cookies
+    var hasCookies = document.cookie.length
+    var isNewUser = !authenticated && !hasCookies
 
 
     return <div className="App">
@@ -211,11 +212,17 @@ class MainPage extends Component {
         {/*<Link to={"/examples"}>Examples</Link>*/}
         {/*<Link to={"/pricing"}>Pricing</Link>*/}
 
-        <Link to={"/register"}>Register</Link>
-        <Link to={"/login"}>Login</Link>
-        {document.cookie}
 
-        {authenticated ? <Link to={"/profile"}>Profile</Link> : ''}
+        {/*{document.cookie}*/}
+
+        {authenticated ?
+          <Link to={"/profile"}>Profile</Link>
+          :
+          <div>
+            <Link to={"/register"}>Register</Link>
+            <Link to={"/login"}>Login</Link>
+          </div>
+        }
       </header>
     </div>
   }
