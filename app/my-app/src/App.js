@@ -111,26 +111,29 @@ function LoginForm({}) {
         <tr>
           <td>
             <input
-              name={"email"}
-              autoComplete={"email"}
-              type={"email"}
-              placeholder={"Input email"}/>
+              name="email"
+              autoComplete="email"
+              type="email"
+              placeholder="Input email"
+              value={email}
+              onChange={ev => setEmail(ev.target.value)}
+            />
           </td>
           <td></td>
         </tr>
         <tr>
           <td>
             <input
-              name={"password"}
+              name="password"
               autoComplete="current-password"
-              type={"password"}
-              placeholder={"Input password"}
+              type="password"
+              placeholder="Input password"
               value={password}
               onChange={ev => setPassword(ev.target.value)}
             />
           </td>
           <td>
-            <Link to={"/reset"}>Forgot password?</Link>
+            <Link to={"/reset"}>Forgot it?</Link>
           </td>
         </tr>
         <tr>

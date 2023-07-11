@@ -4,6 +4,7 @@ import {ProjectList} from "./ProjectList";
 import {APP_TYPE_APP, APP_TYPE_GAME} from "./constants/constants";
 import {FieldAdder} from "./FieldAdder";
 import actions from "./actions";
+import {Link} from "react-router-dom";
 
 function ProjectAdder({appType, defaultState}) {
   const refresh = () => window.location.reload(true)
@@ -81,6 +82,12 @@ export class ProfilePage extends Component {
       <br/>
       <br/>
       <NewProjectAdder/>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <Link to={"/logout"}>Logout</Link>
     </div>
   }
 }
