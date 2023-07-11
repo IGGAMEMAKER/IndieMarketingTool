@@ -45,7 +45,7 @@
   overflow-y: scroll;
 }
 
-.onHover :hover {
+.onHover:hover {
   background-color: purple;
 }
 
