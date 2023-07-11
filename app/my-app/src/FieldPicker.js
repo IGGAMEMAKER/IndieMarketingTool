@@ -8,7 +8,7 @@ export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=t
     if (!normalValueRenderer)
       return <span className="editable" onClick={onChangeName}>{value}</span>
 
-    return <div className="editable">{normalValueRenderer(onChangeName)}</div>
+    return <span className="editable">{normalValueRenderer(onChangeName)}</span>
   }
 
   var saveButton = ''
