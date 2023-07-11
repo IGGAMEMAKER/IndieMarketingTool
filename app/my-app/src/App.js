@@ -201,6 +201,7 @@ class MainPage extends Component {
         {/*<LoginForm />*/}
         <Link to={"/register"}>Register</Link>
         <Link to={"/login"}>Login</Link>
+        {document.cookie}
 
         {isAuthenticated ? <Link to={"/profile"}>Profile</Link> : ''}
       </header>
