@@ -204,6 +204,13 @@ class MainPage extends Component {
         authenticated
       })
     })
+
+    Calendly.initInlineWidget({
+      url: 'https://calendly.com/konstantin-gevorkov/strategic-session',
+      parentElement: document.getElementById('CalendlyID'),
+      prefill: {},
+      utm: {}
+    });
   }
 
   render() {
@@ -233,6 +240,7 @@ class MainPage extends Component {
             <Link to={"/login"}>Login</Link>
           </div>
         }
+        <div id={"CalendlyID"}>CALENDLY</div>
       </header>
     </div>
   }
