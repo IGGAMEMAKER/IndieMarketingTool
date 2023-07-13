@@ -190,6 +190,17 @@ function ResetPasswordForm({}) {
   </div>
 }
 
+function CalendlyTest({}) {
+  useCalendlyEventListener({
+    onProfilePageViewed: () => console.log("onProfilePageViewed"),
+    onDateAndTimeSelected: () => console.log("onDateAndTimeSelected"),
+    onEventTypeViewed: () => console.log("onEventTypeViewed"),
+    onEventScheduled: (e) => console.log(e.data.payload),
+  });
+
+  return <InlineWidget url={"https://calendly.com/konstantin-gevorkov/strategic-session"} />
+}
+
 class MainPage extends Component {
   state = {
     authenticated: false
@@ -210,13 +221,6 @@ class MainPage extends Component {
     var {authenticated} = this.state
     var hasCookies = document.cookie.length
     var isNewUser = !authenticated && !hasCookies
-
-    useCalendlyEventListener({
-      onProfilePageViewed: () => console.log("onProfilePageViewed"),
-      onDateAndTimeSelected: () => console.log("onDateAndTimeSelected"),
-      onEventTypeViewed: () => console.log("onEventTypeViewed"),
-      onEventScheduled: (e) => console.log(e.data.payload),
-    });
 
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
@@ -239,7 +243,7 @@ class MainPage extends Component {
             <Link to={"/login"}>Login</Link>
           </div>
         }
-        <InlineWidget url={"https://calendly.com/konstantin-gevorkov/strategic-session"} />
+        <CalendlyTest />
       </header>
     </div>
   }
