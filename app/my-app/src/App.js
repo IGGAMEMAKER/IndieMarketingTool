@@ -9,7 +9,7 @@ import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {generatePassword} from "./secret";
 import {ping} from "./PingBrowser";
-
+import { InlineWidget } from "react-calendly";
 
 class Examples extends Component {
   render() {
@@ -205,12 +205,13 @@ class MainPage extends Component {
       })
     })
 
-    Calendly.initInlineWidget({
-      url: 'https://calendly.com/konstantin-gevorkov/strategic-session',
-      parentElement: document.getElementById('CalendlyID'),
-      prefill: {},
-      utm: {}
-    });
+
+    // Calendly.initInlineWidget({
+    //   url: 'https://calendly.com/konstantin-gevorkov/strategic-session',
+    //   parentElement: document.getElementById('CalendlyID'),
+    //   prefill: {},
+    //   utm: {}
+    // });
   }
 
   render() {
@@ -241,6 +242,7 @@ class MainPage extends Component {
           </div>
         }
         <div id={"CalendlyID"}>CALENDLY</div>
+        <InlineWidget url={"https://calendly.com/konstantin-gevorkov/strategic-session"} />
       </header>
     </div>
   }
