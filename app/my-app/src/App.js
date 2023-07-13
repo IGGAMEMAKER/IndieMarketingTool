@@ -9,7 +9,7 @@ import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {generatePassword} from "./secret";
 import {ping} from "./PingBrowser";
-import { InlineWidget } from "react-calendly";
+import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 
 class Examples extends Component {
   render() {
@@ -204,14 +204,6 @@ class MainPage extends Component {
         authenticated
       })
     })
-
-
-    // Calendly.initInlineWidget({
-    //   url: 'https://calendly.com/konstantin-gevorkov/strategic-session',
-    //   parentElement: document.getElementById('CalendlyID'),
-    //   prefill: {},
-    //   utm: {}
-    // });
   }
 
   render() {
@@ -219,6 +211,12 @@ class MainPage extends Component {
     var hasCookies = document.cookie.length
     var isNewUser = !authenticated && !hasCookies
 
+    useCalendlyEventListener({
+      onProfilePageViewed: () => console.log("onProfilePageViewed"),
+      onDateAndTimeSelected: () => console.log("onDateAndTimeSelected"),
+      onEventTypeViewed: () => console.log("onEventTypeViewed"),
+      onEventScheduled: (e) => console.log(e.data.payload),
+    });
 
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
@@ -241,7 +239,6 @@ class MainPage extends Component {
             <Link to={"/login"}>Login</Link>
           </div>
         }
-        <div id={"CalendlyID"}>CALENDLY</div>
         <InlineWidget url={"https://calendly.com/konstantin-gevorkov/strategic-session"} />
       </header>
     </div>
