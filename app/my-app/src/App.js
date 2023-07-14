@@ -104,8 +104,19 @@ function LoginForm({}) {
   var [email, setEmail] = useState("")
   var [password, setPassword] = useState("")
 
+  var passwordWasReset = window.location.href.includes("resetPassword")
+  var passwordWasResetText;
+  if (passwordWasReset) {
+    passwordWasResetText = <div>
+      <label>
+        <span style={{color: 'orange', fontWeight: '800'}}>New password was sent to your email.</span>
+        <br />If there is no message, CHECK SPAM folder too</label>
+    </div>
+  }
+
   return <div>
     <h2>Log in</h2>
+    {passwordWasResetText}
     <form action="/api/login" method="post">
       <table>
         <tr>

@@ -1,5 +1,6 @@
 // const {generatePassword} = require("../src/secret")
 
+const {generatePassword} = require("../src/secret");
 const {sendResetPasswordEmail} = require("./mailer");
 const {app} = require('./expressGenerator')(3000);
 
@@ -121,7 +122,7 @@ const authenticate = (req, res, next) => {
 
 const resetPassword = async (req, res) => {
   var {email} = req.body
-  var newPassword = 'wwwd' //generatePassword(35);
+  var newPassword = generatePassword(35);
 
   console.log({
     newPassword
@@ -138,7 +139,7 @@ const resetPassword = async (req, res) => {
       console.log('cannot reset password', {err})
     })
     .finally(() => {
-      res.redirect('/login')
+      res.redirect('/login?resetPassword=1')
     })
 }
 

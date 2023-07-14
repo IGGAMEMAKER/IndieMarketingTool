@@ -26,13 +26,13 @@ const sendMail = (to, subject, html) => {
       }
     })
     .then(r => {
-      console.log({r})
+      // console.log({r})
     })
     .catch(err => {
       console.error({err})
     })
     .finally(() => {
-      console.log('did something?')
+      console.log('sent?')
     })
 }
 
