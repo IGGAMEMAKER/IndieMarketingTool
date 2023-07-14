@@ -1,6 +1,7 @@
 const {ELASTIC_MAIL_API_KEY, MY_MAIL} = require("../CD/Configs");
 const request = require('superagent').agent()
 
+var domain = 'http://www.indiemarketingtool.com'
 var siteName = "indiemarketingtool.com"
 const FROM = 'info@www.indiemarketingtool.com'
 
@@ -36,12 +37,24 @@ const sendMail = (to, subject, html) => {
     })
 }
 
-const sendVerificationEmail = (email) => {
+const sendVerificationEmail = (email, verificationLink) => {
   sendMail(
     email,
-    "Finish registration",
-    `<h1>Thank you for registration on ${siteName}</h1><br />Hope, you enjoy it`
+    "Verify your account",
+    `To start creating new games & apps, verify your account
+      <br />
+      <br />
+      <a href="${domain}/api/users/verify?user=${email}&link=${verificationLink}">Finish verification</a>
+    `
   )
+}
+
+const sendVerificationSuccess = (email) => {
+  sendMail(email, "Congratulations! Let's innovate together!",
+    `<h1>Thank you for registration on ${siteName}</h1>
+        <br />
+        Hope, you enjoy it
+    `)
 }
 
 const sendResetPasswordEmail = (email, newPassword) => {
@@ -59,4 +72,5 @@ const sendResetPasswordEmail = (email, newPassword) => {
 module.exports = {
   sendVerificationEmail,
   sendResetPasswordEmail,
+  sendVerificationSuccess
 }

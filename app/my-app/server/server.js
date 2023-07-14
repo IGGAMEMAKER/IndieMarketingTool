@@ -1,5 +1,6 @@
+const {sendVerificationSuccess} = require("./mailer");
 const {createRandomPassword} = require("./createPassword");
-const {sendResetPasswordEmail} = require("./mailer");
+const {sendResetPasswordEmail, sendVerificationEmail} = require("./mailer");
 const {app} = require('./expressGenerator')(3000);
 
 const {getProject} = require("./routes/getProject");
@@ -118,6 +119,22 @@ const authenticate = (req, res, next) => {
     })
 }
 
+const verifyNewUser = async (req, res) => {
+  var {email, verificationLink} = req.query;
+
+  UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
+    .then(r => {
+      console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
+      sendVerificationSuccess(email)
+    })
+    .catch(err => {
+      console.log('cannot reset password', {err})
+    })
+    .finally(() => {
+      res.redirect('/login?resetPassword=1')
+    })
+}
+
 const resetPassword = async (req, res) => {
   var {email} = req.body
   var newPassword = createRandomPassword(20);
@@ -144,9 +161,11 @@ const resetPassword = async (req, res) => {
 const createUser = async (req, res) => {
   var {email, password} = req.body;
 
+  var verificationLink = HASH(createRandomPassword(35))
   var u = new UserModel({
     email,
-    password: HASH(password)
+    password: HASH(password),
+    verificationLink
   })
 
   u.save()
@@ -154,6 +173,7 @@ const createUser = async (req, res) => {
       console.log({r})
       await generateCookies(res, email)
       // setCookies(res, sessionToken, email)
+      sendVerificationEmail(email, verificationLink)
 
       res.redirect('/profile')
     })
@@ -183,6 +203,7 @@ app.get('/authenticated', authenticate, (req, res) => res.json({authenticated: !
 app.post  ('/api/login', logIn)
 app.post  ('/api/user', createUser)
 app.post  ('/api/reset-password', resetPassword)
+app.get   ('/api/users/verify', verifyNewUser)
 
 app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)

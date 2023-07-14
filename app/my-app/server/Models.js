@@ -7,6 +7,8 @@ var UserSchema = new Schema({
   sessionToken: String,
   sessionCreatedAt: Date,
 
+  verifiedAt: Date,
+
   // payments, chosen plan (when)
   // shown interest in (plan...)
 })
