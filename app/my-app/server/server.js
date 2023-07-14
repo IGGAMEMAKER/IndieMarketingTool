@@ -123,12 +123,12 @@ const verifyNewUser = async (req, res) => {
   var {email, verificationLink} = req.query;
 
   UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
-    .then(r => {
+    .then(async r => {
       console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
 
       if (r.modifiedCount) {
         sendVerificationSuccess(email)
-        generateCookies(res, email)
+        await generateCookies(res, email)
         res.redirect('/profile')
       } else {
         res.redirect('login?verificationFailed=1')
