@@ -125,13 +125,20 @@ const verifyNewUser = async (req, res) => {
   UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
     .then(r => {
       console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
-      sendVerificationSuccess(email)
+
+      if (r.modifiedCount) {
+        sendVerificationSuccess(email)
+        generateCookies(res, email)
+        res.redirect('/profile')
+      } else {
+        res.redirect('login?verificationFailed=1')
+      }
     })
     .catch(err => {
       console.log('cannot reset password', {err})
+      res.redirect('/login?verificationFailed=2')
     })
     .finally(() => {
-      res.redirect('/login?resetPassword=1')
     })
 }
 

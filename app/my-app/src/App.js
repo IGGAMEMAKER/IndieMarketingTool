@@ -10,7 +10,6 @@ import {ProjectPage} from "./ProjectPage";
 import {ping} from "./PingBrowser";
 import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 import {generatePassword} from "./secret";
-// import {generatePassword} from "./secret";
 
 class Examples extends Component {
   render() {
