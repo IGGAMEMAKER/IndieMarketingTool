@@ -43,7 +43,7 @@ export function Audience({name, description, id, index, usages=[], isFull = fals
       {/*<div>{facePicker('😅', 'green', true)}{facePicker('😐', 'orange', false)}</div>*/}
       {/*{facePicker('😡', 'red', false)}*/}
       {descriptionPicker}
-      <h3>{id}</h3>
+      {/*<h3>{id}</h3>*/}
       {/*<br/>*/}
       {/*{strategy.map(s => <div><i style={{color: 'green'}}>{s}</i></div>)}*/}
     </div>

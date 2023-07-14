@@ -3,7 +3,7 @@ const request = require('superagent').agent()
 
 var domain = 'http://www.indiemarketingtool.com'
 var siteName = "indiemarketingtool.com"
-const FROM = 'info@www.indiemarketingtool.com'
+const FROM = 'IndieMarketingTool@www.indiemarketingtool.com'
 
 const sendMail = (to, subject, html) => {
   request.post('https://api.elasticemail.com/v4/emails/transactional')
@@ -21,7 +21,7 @@ const sendMail = (to, subject, html) => {
           }
         ],
         "Postback": "string",
-        "EnvelopeFrom": FROM,
+        "EnvelopeFrom": "Indie Marketing Tool",
         "From": FROM,
         "Subject": subject,
       }
