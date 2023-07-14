@@ -121,6 +121,7 @@ const authenticate = (req, res, next) => {
 
 const verifyNewUser = async (req, res) => {
   var {email, verificationLink} = req.query;
+  console.log(req.query, req.url, req.pathname)
 
   UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
     .then(async r => {
@@ -135,7 +136,7 @@ const verifyNewUser = async (req, res) => {
       }
     })
     .catch(err => {
-      console.log('cannot reset password', {err})
+      console.log('cannot verifyNewUser ERROR', {err})
       res.redirect('/login?verificationFailed=2')
     })
     .finally(() => {
