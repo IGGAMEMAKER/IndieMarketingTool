@@ -15,5 +15,7 @@ module.exports = {
 
   BREVO_KEY: confs.BREVO_KEY,
 
-  GA_DATA_FLOW_ID: confs.GA_DATA_FLOW_ID
+  GA_DATA_FLOW_ID: confs.GA_DATA_FLOW_ID,
+
+  ELASTIC_MAIL_API_KEY: confs.ELASTIC_MAIL_API_KEY,
 }

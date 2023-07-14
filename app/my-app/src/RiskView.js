@@ -45,7 +45,7 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
       var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>Up</button>
       var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
 
-      movementBar = <div>{up} {down}</div>
+      movementBar = <span>{up} {down}</span>
     }
 
     const removeButton = <button style={{float: 'right'}} onClick={() => {actions.removeRisk(id)}}>x</button>
