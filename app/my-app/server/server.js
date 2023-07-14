@@ -99,6 +99,7 @@ const logout = (req, res, next) => {
   res.redirect('/')
 }
 const authenticate = (req, res, next) => {
+  console.log('\nauthenticate')
   var {email, sessionToken} = getCookies(req)
   printCookies(req, res)
 
@@ -106,7 +107,6 @@ const authenticate = (req, res, next) => {
   // if they match => set userId && next()
   // otherwise => redirect to /Login
 
-  console.log('authenticate')
   var match = {
     email,
     sessionToken
