@@ -1,4 +1,4 @@
-const {ELASTIC_MAIL_API_KEY} = require("../CD/Configs");
+const {ELASTIC_MAIL_API_KEY, MY_MAIL} = require("../CD/Configs");
 const request = require('superagent').agent()
 
 
@@ -54,27 +54,4 @@ const sendVerificationEmail = (email) => {
   sendMail(email, "<h1>Thank you for registration on indiemarketingtool.com</h1><br />Hope, you enjoy it", "Finish registration")
 }
 
-sendVerificationEmail("23i03g@mail.ru")
-
-// var ElasticEmail = require('@elasticemail/elasticemail-client');
-//
-// var defaultClient = ElasticEmail.ApiClient.instance;
-// // Configure API key authorization: apikey
-// var apikey = defaultClient.authentications['apikey'];
-// apikey.apiKey = "536531D72D92781B64F98C8268E37DD44AD85DFFF9DA4C319FB70E27DDD1449D9A8146A1C482A635D23FC03B153760FB"
-// // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-// //apikey.apiKeyPrefix['X-ElasticEmail-ApiKey'] = "Token"
-//
-// var api = new ElasticEmail.EmailSend()
-//
-// var name = "name_example"; // {String} Name of Campaign to delete
-// var callback = function(error, data, response) {
-//   if (error) {
-//     console.error(error);
-//   } else {
-//     console.log('API called successfully.');
-//   }
-// };
-//
-// // api.campaignsByNameDelete(name, callback);
-// api.emailsTransactionalPost(name, callback);
+sendVerificationEmail(MY_MAIL)
