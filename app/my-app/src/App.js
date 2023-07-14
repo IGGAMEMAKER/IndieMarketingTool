@@ -9,6 +9,7 @@ import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {ping} from "./PingBrowser";
 import { useCalendlyEventListener, InlineWidget } from "react-calendly";
+import {generatePassword} from "./secret";
 // import {generatePassword} from "./secret";
 
 class Examples extends Component {
@@ -41,37 +42,32 @@ class Examples extends Component {
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
   var [password, setPassword] = useState("")
-  useEffect(() => {
-    // declare the async data fetching function
-    const fetchData = async () => {
-      // get the data from the api
-      const data = await ping('/api/passwords');
-      console.log({
-        data
-      })
-      // // convert the data to json
-      // const json = await response.json();
-      //
-      // // set state with the result
-      // setData(json);
-    }
-
-    // call the function
-    fetchData()
-      // make sure to catch any error
-      .catch(console.error);;
-  }, [])
+  // useEffect(() => {
+  //   // declare the async data fetching function
+  //   const fetchData = async () => {
+  //     // get the data from the api
+  //     const data = await ping('/api/passwords');
+  //     console.log({
+  //       data
+  //     })
+  //     // // convert the data to json
+  //     // const json = await response.json();
+  //     //
+  //     // // set state with the result
+  //     // setData(json);
+  //   }
+  //
+  //   // call the function
+  //   fetchData()
+  //     // make sure to catch any error
+  //     .catch(console.error);;
+  // }, [])
 
   var passButton = <button
-    onClick={async () => {
-      const data = await ping('/api/passwords');
-      console.log({
-        data
-      })
-
-      // var p = generatePassword(35)
-      // setPassword(p)
-      // navigator.clipboard.writeText(p)
+    onClick={() => {
+      var p = generatePassword(35)
+      setPassword(p)
+      navigator.clipboard.writeText(p)
     }}>Generate & Copy
   </button>
 

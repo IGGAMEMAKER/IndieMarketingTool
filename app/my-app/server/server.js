@@ -1,6 +1,4 @@
-// const {generatePassword} = require("../src/secret")
-
-const {generatePassword} = require("../src/secret");
+const {createRandomPassword} = require("./createPassword");
 const {sendResetPasswordEmail} = require("./mailer");
 const {app} = require('./expressGenerator')(3000);
 
@@ -122,7 +120,7 @@ const authenticate = (req, res, next) => {
 
 const resetPassword = async (req, res) => {
   var {email} = req.body
-  var newPassword = generatePassword(35);
+  var newPassword = createRandomPassword(35);
 
   console.log({
     newPassword
@@ -197,7 +195,7 @@ app.get   ('/test/cookies', (req, res) => {
 })
 
 
-app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
+// app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
 app.get   ('/api/profile',            authenticate, getProfile)
 app.post  ('/api/projects',           authenticate, createProject)
 

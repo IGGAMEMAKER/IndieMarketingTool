@@ -1,4 +1,4 @@
-function generatePassword(length) {
+export function generatePassword(length) {
   const crypto = window.crypto || window.msCrypto;
 
   if (typeof crypto === 'undefined') {
@@ -16,8 +16,4 @@ function generatePassword(length) {
   }
 
   return secret;
-}
-
-module.exports = {
-  generatePassword
 }
