@@ -132,11 +132,13 @@ const verifyNewUser = async (req, res) => {
         await generateCookies(res, email)
         res.redirect('/profile')
       } else {
-        res.redirect('login?verificationFailed=1')
+        await flushCookies(res)
+        res.redirect('/login?verificationFailed=1')
       }
     })
-    .catch(err => {
+    .catch(async err => {
       console.log('cannot verifyNewUser ERROR', {err})
+      await flushCookies(res)
       res.redirect('/login?verificationFailed=2')
     })
     .finally(() => {
