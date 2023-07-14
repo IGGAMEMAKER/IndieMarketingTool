@@ -243,7 +243,7 @@ class MainPage extends Component {
             <Link to={"/login"}>Login</Link>
           </div>
         }
-        <CalendlyTest />
+        {/*<CalendlyTest />*/}
       </header>
     </div>
   }

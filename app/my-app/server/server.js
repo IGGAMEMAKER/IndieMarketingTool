@@ -1,5 +1,6 @@
 // const {generatePassword} = require("../src/secret")
 
+const {sendResetPasswordEmail} = require("./mailer");
 const {app} = require('./expressGenerator')(3000);
 
 const {getProject} = require("./routes/getProject");
@@ -126,11 +127,11 @@ const resetPassword = async (req, res) => {
     newPassword
   })
 
-  UserModel.updateOne({
-    email
-  }, {password: HASH(newPassword)})
+  UserModel.updateOne({email}, {password: HASH(newPassword)})
     .then(r => {
       console.log({r})
+      sendResetPasswordEmail(email, newPassword)
+      console.log('sent reset password email')
       // TODO SEND VERIFICATION EMAIL
     })
     .catch(err => {
