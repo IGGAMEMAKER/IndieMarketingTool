@@ -56,6 +56,11 @@ const createVerificationLink = () => {
   return HASH(createRandomPassword(35))
 }
 
+const printCookies = (req, res) => {
+  var {email, sessionToken} = getCookies(req)
+
+  console.log('printCookies', email, sessionToken)
+}
 const logIn = (req, res, next) => {
   console.log('LOG IN')
   var {email, password} = req.body;
@@ -70,9 +75,13 @@ const logIn = (req, res, next) => {
     .then(async user => {
       if (user) {
         console.log('logIn', {user})
+        // if has OK cookies, maybe send existing ones?
+        printCookies(req, res)
         await generateCookies(res, email)
 
         res.redirect('/profile')
+        console.log('redirected to /profile')
+        printCookies(req, res)
       } else {
         next(AUTHENTICATION_FAILED_ERROR)
       }
@@ -91,6 +100,8 @@ const logout = (req, res, next) => {
 }
 const authenticate = (req, res, next) => {
   var {email, sessionToken} = getCookies(req)
+  printCookies(req, res)
+
   // check email & sessionToken
   // if they match => set userId && next()
   // otherwise => redirect to /Login
