@@ -120,6 +120,13 @@ function RegisterForm({}) {
   </div>
 }
 
+function VerifyForm ({}) {
+  return <div>
+    <h1>Check your email to verify your account</h1>
+    <h2>If message didn't arrive, check SPAM FOLDER</h2>
+  </div>
+}
+
 function LoginForm({}) {
   var [email, setEmail] = useState("")
   var [password, setPassword] = useState("")
@@ -293,6 +300,7 @@ class App extends Component {
           <Routes>
             <Route path='/'                     element={<MainPage/>}/>
             <Route path='/register'             element={<RegisterForm/>}/>
+            <Route path='/verify'                element={<VerifyForm />}/>
             <Route path='/login'                element={<LoginForm/>}/>
             <Route path='/logout'                element={<LoginForm/>}/>
             <Route path='/reset'                element={<ResetPasswordForm />}/>

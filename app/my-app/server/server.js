@@ -52,6 +52,9 @@ const createSessionToken = (email) => {
 }
 
 const HASH = password => sha(password)
+const createVerificationLink = () => {
+  return HASH(createRandomPassword(35))
+}
 
 const logIn = (req, res, next) => {
   console.log('LOG IN')
@@ -100,11 +103,17 @@ const authenticate = (req, res, next) => {
   UserModel.findOne(match)
     .then(user => {
       if (user) {
-        console.log({user})
+        if (!user.verifiedAt) {
+          sendVerificationEmail(email, createVerificationLink())
+          res.redirect('/verify')
+        } else {
+          // VERIFIED USER, WELCOME
+          console.log({user})
 
-        req.userId = user._id.toString() // '6495f2aad151580c1f4b516a'
-        console.log(req.userId)
-        next()
+          req.userId = user._id.toString()
+          // console.log(req.userId)
+          next()
+        }
       } else {
         console.log('user not found', match, req.cookies)
 
@@ -170,10 +179,11 @@ const resetPassword = async (req, res) => {
     })
 }
 
+
 const createUser = async (req, res) => {
   var {email, password} = req.body;
 
-  var verificationLink = HASH(createRandomPassword(35))
+  var verificationLink = createVerificationLink()
   var u = new UserModel({
     email,
     password: HASH(password),
@@ -184,7 +194,6 @@ const createUser = async (req, res) => {
     .then(async r => {
       console.log({r})
       await generateCookies(res, email)
-      // setCookies(res, sessionToken, email)
       sendVerificationEmail(email, verificationLink)
 
       res.redirect('/profile')
@@ -206,6 +215,7 @@ app.get('/pricing', renderSPA)
 
 app.get('/register', renderSPA)
 app.get('/login', renderSPA)
+app.get('/verify', renderSPA)
 app.get('/reset', renderSPA)
 app.get('/logout', logout, renderSPA)
 app.get('/authenticated', authenticate, (req, res) => res.json({authenticated: !!req.userId}))
