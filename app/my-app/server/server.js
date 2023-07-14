@@ -120,7 +120,9 @@ const authenticate = (req, res, next) => {
 }
 
 const verifyNewUser = async (req, res) => {
-  var {email, verificationLink} = req.query;
+  var {user, link} = req.query;
+  var email = user;
+  var verificationLink = link;
   console.log(req.query, req.url, req.pathname)
 
   UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
