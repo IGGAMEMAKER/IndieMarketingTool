@@ -197,7 +197,7 @@ app.get   ('/test/cookies', (req, res) => {
 })
 
 
-
+app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
 app.get   ('/api/profile',            authenticate, getProfile)
 app.post  ('/api/projects',           authenticate, createProject)
 
