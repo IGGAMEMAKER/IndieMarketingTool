@@ -192,6 +192,8 @@ function ResetPasswordForm({}) {
   if (email.length) {
     resetPassword = <div>
       <label>You will receive an email with new password</label>
+      <br />
+      <br />
       <input type={"submit"} value={"Reset"}/>
     </div>
   }

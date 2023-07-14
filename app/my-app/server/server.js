@@ -120,7 +120,7 @@ const authenticate = (req, res, next) => {
 
 const resetPassword = async (req, res) => {
   var {email} = req.body
-  var newPassword = createRandomPassword(35);
+  var newPassword = createRandomPassword(20);
 
   console.log({
     newPassword
