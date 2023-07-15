@@ -33,7 +33,8 @@ const generateCookies = async (res, email) => {
   setCookies(res, token, email)
 
   await UserModel.updateOne({
-    email
+    email,
+    sessionToken: {$exists: false}
   }, {
     sessionToken: token,
     sessionCreatedAt: new Date()
@@ -61,10 +62,15 @@ const printCookies = (req, res) => {
 
   console.log('printCookies', email, sessionToken)
 }
+
+const getUserId = user => user._id.toString()
+
 const logIn = (req, res, next) => {
   console.log('LOG IN')
+
   var {email, password} = req.body;
   console.log('LOG IN', {email, password})
+  printCookies(req, res)
 
   var matchObject = {
     email,
@@ -79,6 +85,9 @@ const logIn = (req, res, next) => {
         printCookies(req, res)
         await generateCookies(res, email)
 
+        req.authenticated = true;
+        req.userId = getUserId(user)
+
         res.redirect('/profile')
         console.log('redirected to /profile')
         printCookies(req, res)
@@ -87,21 +96,27 @@ const logIn = (req, res, next) => {
       }
     })
     .catch(err => {
-      // next('ERROR IN AUTHENTICATE')
       console.error('ERROR IN logIn', {err})
       next(AUTHENTICATION_FAILED_ERROR)
-      // res.redirect('/login')
     })
 }
 
 const logout = (req, res, next) => {
   flushCookies(res)
+  // TODO remove sessionToken on server
   res.redirect('/')
 }
+
 const authenticate = (req, res, next) => {
   console.log('\nauthenticate')
   var {email, sessionToken} = getCookies(req)
   printCookies(req, res)
+
+  if (req.authenticated) {
+    // was redirected from login
+    // userId was there
+    next()
+  }
 
   // check email & sessionToken
   // if they match => set userId && next()
@@ -111,6 +126,7 @@ const authenticate = (req, res, next) => {
     email,
     sessionToken
   }
+
   UserModel.findOne(match)
     .then(user => {
       if (user) {
@@ -121,7 +137,7 @@ const authenticate = (req, res, next) => {
           // VERIFIED USER, WELCOME
           console.log({user})
 
-          req.userId = user._id.toString()
+          req.userId = getUserId(user)
           // console.log(req.userId)
           next()
         }
