@@ -23,19 +23,6 @@ const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 
 
 const getCookies = req => {
-  // var was = req.originalUrl
-  // var now = req.path
-  // var wasRedirected = was !== now;
-
-  // // console.log('orig', was, now)
-  // if (wasRedirected) {
-  //   // console.log('REDIRECTED')
-  //   return {
-  //     email: req.email,
-  //     sessionToken: req.sessionToken
-  //   }
-  // }
-
   return {
     email: req.cookies["email"],
     sessionToken: req.cookies["sessionToken"]
@@ -64,17 +51,14 @@ const generateCookies = async (res, email, req) => {
     token = u.sessionToken
   }
 
-  setCookies(res, token, email, req)
+  setCookies(res, token, email)
 }
 const flushCookies = (res, req) => {
-  setCookies(res,'', '', req)
+  setCookies(res,'', '')
 }
-const setCookies = (res, token, email, req) => {
+const setCookies = (res, token, email) => {
   res.cookie('sessionToken', token)
   res.cookie('email', email)
-
-  // req.email = email;
-  // req.sessionToken = token
 }
 
 const createSessionToken = (email) => {

@@ -146,9 +146,7 @@ function LoginForm({}) {
     <h2>Log in</h2>
     {passwordWasResetText}
     {/*<form action="/api/login" method="post" onSubmit={() => {*/}
-    <form onSubmit={() => {
-      actions.logIn(email, password)
-    }}>
+    <div>
       <table>
         <tr>
           <td>
@@ -180,14 +178,14 @@ function LoginForm({}) {
         </tr>
         <tr>
           <td style={{float: 'left'}}>
-            <input type="submit" value={"Login"} />
+            <input type="submit" value={"Login"} onClick={() => {actions.logIn(email, password)}}/>
           </td>
           <td></td>
         </tr>
         {/*<tr><td style={{float: 'left'}}>Forgot password?</td></tr>*/}
       </table>
       {/*<input type="submit" value="Submit"/>*/}
-    </form>
+    </div>
 
     <br/>
     <br/>
