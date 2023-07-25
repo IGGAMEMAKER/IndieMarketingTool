@@ -497,7 +497,7 @@ export class ProjectPage extends Component {
           <AudienceSourcesPanel channels={channels}/>
           <UsefulLinks links={this.state.links}/>
           <RisksPanel risks={risks}/>
-          {/*<IterationPlanner project={this.state.project}/>*/}
+          <IterationPlanner project={this.state.project}/>
 
           <br/>
           <br/>
