@@ -23,11 +23,11 @@ const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 
 
 const getCookies = req => {
-  var wasRedirected = req.originalUrl !== req.url;
-  // var email        =  || req.email;
-  // var sessionToken =  || req.sessionToken
+  var was = req.originalUrl
+  var now = req.path
+  var wasRedirected = was !== now;
 
-  console.log('orig', req.originalUrl, req.url)
+  console.log('orig', was, now)
   if (wasRedirected) {
     console.log('REDIRECTED')
     return {
