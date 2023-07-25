@@ -307,10 +307,11 @@ function UsefulLinks({links}) {
   links.forEach(l => {
     list.push(<div key={"useful-links.link." + l.id}><a target={"_blank"} href={l.link}>Link</a></div>)
     list.push(          <FieldPicker
+      key={"links-field" + l.id}
       value={l.note}
       onAction={val => actions.editLinkNotes(l.id, val)}
-      key={"links-field" + l.id}
     />)
+
     list.push(          <div key={"useful-links.select." + l.id}>
       <select className="link-select" value={l.linkType} onChange={ev => {
         actions.editLinkType(l.id, parseInt(ev.target.value))
@@ -324,11 +325,13 @@ function UsefulLinks({links}) {
       <button onClick={() => actions.removeLink(l.id)}>x</button>
     </div>)
   })
+
   list.push(      <div>
     <div>
       <FieldAdder onAdd={val => actions.addLink(val)} placeholder="Add link" defaultState={false}/>
     </div>
   </div>)
+
   return <div id="Links">
     <br/>
     <br/>

@@ -151,6 +151,10 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     height: 75px;
   }
+
+  .Container.links {
+    grid-template-columns: 50px 200px 65px 35px;
+  }
 }
 
 
