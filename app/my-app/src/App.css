@@ -71,17 +71,18 @@ $phone: 420px;
 
   column-gap: 10px;
   row-gap: 10px;
-  /*grid-template-columns: auto auto auto auto auto;*/
   grid-template-columns: repeat(5, minmax(0, 1fr));
   background-color: #2196F3;
   padding: 10px;
   color: #282c34;
 }
-@media (max-width: $phone) {
+
+@media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }
+
 .Channel-item {
   display: block;
 
