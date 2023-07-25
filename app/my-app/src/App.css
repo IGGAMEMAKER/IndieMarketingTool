@@ -1,3 +1,4 @@
+
 .App {
   text-align: center;
 }
@@ -10,6 +11,13 @@
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
+  }
+
+}
+
+@media screen and (max-device-width: 420px) {
+  .Audience-Container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }
 
@@ -66,7 +74,8 @@
 
   column-gap: 50px;
   row-gap: 50px;
-  grid-template-columns: auto auto auto auto auto;
+  /*grid-template-columns: auto auto auto auto auto;*/
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   background-color: #2196F3;
   padding: 10px;
   color: #282c34;
@@ -76,7 +85,8 @@
 
   column-gap: 50px;
   row-gap: 50px;
-  grid-template-columns: auto auto auto;
+  /*grid-template-columns: auto auto auto;*/
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   background-color: #2196F3;
   padding: 10px;
   color: #282c34;
