@@ -69,8 +69,8 @@ $phone: 420px;
 .Audience-Container {
   display: grid;
 
-  column-gap: 50px;
-  row-gap: 50px;
+  column-gap: 10px;
+  row-gap: 10px;
   /*grid-template-columns: auto auto auto auto auto;*/
   grid-template-columns: repeat(5, minmax(0, 1fr));
   background-color: #2196F3;
