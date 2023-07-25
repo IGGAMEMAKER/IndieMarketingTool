@@ -54,21 +54,19 @@
 .Container {
   display: grid;
 
-  /*column-gap: 50px;*/
-  /*row-gap: 50px;*/
-  /*grid-template-columns: auto auto auto auto auto auto;*/
-  /*padding: 10px;*/
   background-color: #2196F3;
   color: #282c34;
 }
+
 .Audience-Container {
   display: grid;
 
   /*column-gap: 10px;*/
   /*row-gap: 10px;*/
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  background-color: #2196F3;
   /*padding: 10px;*/
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  background-color: #2196F3;
   color: #282c34;
 }
 
@@ -95,7 +93,12 @@
   text-align: center;
 }
 
-
+.link-select {
+  width: 65px;
+}
+.Container.links {
+  grid-template-columns: 50px auto 65px 35px;
+}
 .edit-iteration {
   position: fixed;
   width: 100vw;

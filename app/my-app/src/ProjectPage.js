@@ -307,7 +307,7 @@ function UsefulLinks({links}) {
     <br />
     <br />
     Save useful links here
-    <div className="Container">
+    <div className="Container links">
       <table>
         <thead></thead>
         <tbody>
@@ -321,11 +321,11 @@ function UsefulLinks({links}) {
               />
             </td>
             <td>
-              <select value={l.linkType} onChange={ev => {
+              <select className="link-select" value={l.linkType} onChange={ev => {
                 actions.editLinkType(l.id, parseInt(ev.target.value))
               }}>
                 <option value={LINK_TYPE_DOCS}>Docs</option>
-                <option value={LINK_TYPE_SIMILAR}>Similar / Competing</option>
+                <option value={LINK_TYPE_SIMILAR}>Similar</option>
               </select>
             </td>
             <td>
