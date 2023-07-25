@@ -303,36 +303,38 @@ function MarketingPlanner({project}) {
 }
 
 function UsefulLinks({links}) {
+  var list = []
+  links.forEach(l => {
+    list.push(<div key={"useful-links.link." + l.id}><a target={"_blank"} href={l.link}>Link</a></div>)
+    list.push(          <FieldPicker
+      value={l.note}
+      onAction={val => actions.editLinkNotes(l.id, val)}
+      key={"links-field" + l.id}
+    />)
+    list.push(          <div key={"useful-links.select." + l.id}>
+      <select className="link-select" value={l.linkType} onChange={ev => {
+        actions.editLinkType(l.id, parseInt(ev.target.value))
+      }}>
+        <option value={LINK_TYPE_DOCS}>Docs</option>
+        <option value={LINK_TYPE_SIMILAR}>Similar</option>
+      </select>
+    </div>)
+
+    list.push(          <div key={"useful-links.remove." + l.id}>
+      <button onClick={() => actions.removeLink(l.id)}>x</button>
+    </div>)
+  })
+  list.push(      <div>
+    <div>
+      <FieldAdder onAdd={val => actions.addLink(val)} placeholder="Add link" defaultState={false}/>
+    </div>
+  </div>)
   return <div id="Links">
     <br/>
     <br/>
     Save useful links here
     <div className="Container links">
-      {links.map(l =>
-        <div>
-          <div key={"useful-links.link." + l.id}><a target={"_blank"} href={l.link}>Link</a></div>
-          <FieldPicker
-            value={l.note}
-            onAction={val => actions.editLinkNotes(l.id, val)}
-            key={"links-field" + l.id}
-          />
-          <div key={"useful-links.select." + l.id}>
-            <select className="link-select" value={l.linkType} onChange={ev => {
-              actions.editLinkType(l.id, parseInt(ev.target.value))
-            }}>
-              <option value={LINK_TYPE_DOCS}>Docs</option>
-              <option value={LINK_TYPE_SIMILAR}>Similar</option>
-            </select>
-          </div>
-          <div key={"useful-links.remove." + l.id}>
-            <button onClick={() => actions.removeLink(l.id)}>x</button>
-          </div>
-        </div>)}
-      <div>
-        <div>
-          <FieldAdder onAdd={val => actions.addLink(val)} placeholder="Add link" defaultState={false}/>
-        </div>
-      </div>
+      {list}
     </div>
   </div>
 }
