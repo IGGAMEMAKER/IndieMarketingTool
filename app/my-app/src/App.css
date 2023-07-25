@@ -1,3 +1,4 @@
+$phone: 420px;
 
 .App {
   text-align: center;
@@ -76,7 +77,7 @@
   padding: 10px;
   color: #282c34;
 }
-@media (max-width: 420px) {
+@media (max-width: $phone) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
