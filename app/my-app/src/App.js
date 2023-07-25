@@ -145,7 +145,7 @@ function LoginForm({}) {
   return <div>
     <h2>Log in</h2>
     {passwordWasResetText}
-    <form action="/api/login" method="post" onSubmit={() => {
+    <form {/*action="/api/login" method="post"*/} onSubmit={() => {
       actions.logIn(email, password)
     }}>
       <table>
