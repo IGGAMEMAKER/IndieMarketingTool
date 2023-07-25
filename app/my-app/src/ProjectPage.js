@@ -468,14 +468,7 @@ export class ProjectPage extends Component {
     return (
       <div className="App">
         <div>
-          <div style={{
-            display: 'grid',
-            backgroundColor: 'orange',
-            gridTemplateColumns: 'auto auto auto auto auto auto auto auto',
-            position: 'fixed',
-            height: '5vh',
-            width: '100vw'
-          }}>
+          <div className="menu">
             {menus.map(Name => <span key={"menu" + Name}><a href={"#" + Name}>{Name}</a></span>)}
             {/*{menus.map(Name => <span><Link to={"./#" + Name}>{Name}</Link></span>)}*/}
           </div>
