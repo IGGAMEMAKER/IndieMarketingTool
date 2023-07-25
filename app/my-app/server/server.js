@@ -42,16 +42,29 @@ const getCookies = req => {
   }
 }
 const generateCookies = async (res, email, req) => {
-  var token = createSessionToken(email)
-  setCookies(res, token, email, req)
+  var token
 
-  await UserModel.updateOne({
-    email,
-    sessionToken: {$exists: false}
-  }, {
-    sessionToken: token,
-    sessionCreatedAt: new Date()
-  })
+  var u = await UserModel.findOne({email});
+  if (!u)
+    return
+
+  var expired = false
+  if (!u?.sessionToken || expired) {
+    // no token or expired token => create new
+    token = createSessionToken(email)
+    var r = await UserModel.updateOne({
+      email,
+      // sessionToken: {$exists: false}
+    }, {
+      sessionToken: token,
+      sessionCreatedAt: new Date()
+    })
+  } else {
+    // has active token already
+    token = u.sessionToken
+  }
+
+  setCookies(res, token, email, req)
 }
 const flushCookies = (res, req) => {
   setCookies(res,'', '', req)
@@ -107,16 +120,9 @@ const logIn = (req, res, next) => {
         printCookies(req, res)
         await generateCookies(res, email, req)
 
-        // req.authenticated = true;
-        // console.log('SAVE AUTHENTICATED')
-        // req.userId = getUserId(user)
-
         res.json({
           ok: 1
         })
-        // res.redirect('/profile')
-        // console.log('redirected to /profile')
-        // printCookies(req, res)
       } else {
         next(AUTHENTICATION_FAILED_ERROR)
       }
@@ -131,17 +137,6 @@ const authenticate = (req, res, next) => {
   console.log('\nauthenticate')
   var {email, sessionToken} = getCookies(req)
   printCookies(req, res)
-
-  if (req.authenticated) {
-    console.log('WAS AUTHENTICATED')
-    // was redirected from login
-    // userId was set there
-    next()
-  }
-
-  // check email & sessionToken
-  // if they match => set userId && next()
-  // otherwise => redirect to /Login
 
   var match = {
     email,
