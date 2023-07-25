@@ -20,6 +20,9 @@
   position: fixed;
   height: 5vh;
   width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .App-header h1 {
