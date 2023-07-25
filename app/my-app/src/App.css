@@ -57,18 +57,18 @@
 .Container {
   display: grid;
 
-  column-gap: 50px;
-  row-gap: 50px;
+  /*column-gap: 50px;*/
+  /*row-gap: 50px;*/
   /*grid-template-columns: auto auto auto auto auto auto;*/
-  padding: 10px;
+  /*padding: 10px;*/
   background-color: #2196F3;
   color: #282c34;
 }
 .Audience-Container {
   display: grid;
 
-  column-gap: 10px;
-  row-gap: 10px;
+  /*column-gap: 10px;*/
+  /*row-gap: 10px;*/
   grid-template-columns: repeat(5, minmax(0, 1fr));
   background-color: #2196F3;
   /*padding: 10px;*/
