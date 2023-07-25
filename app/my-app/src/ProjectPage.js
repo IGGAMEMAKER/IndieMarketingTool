@@ -144,8 +144,6 @@ function ChannelAdder({}) {
 
 function AudienceSourcesPanel({channels}) {
   return <div id="Sources" className="Panel">
-    <br />
-    <br />
     Where will you find your audience?
     <h6>User count will update in future releases</h6>
     {/*<div className="Audience-Container">*/}
@@ -219,8 +217,6 @@ function BusinessPlanner({project}) {
 
 function MarketingPlanner({project}) {
   return <div id="Growth" className="Panel">
-    <br/>
-    <br/>
     How will you grow?
     <br/>
     <br/>
@@ -335,8 +331,6 @@ function UsefulLinks({links}) {
   </div>)
 
   return <div id="Links" className="Panel">
-    <br/>
-    <br/>
     Save useful links here
     <div className="Container links">
       {list}
@@ -346,8 +340,6 @@ function UsefulLinks({links}) {
 
 function RisksPanel({risks}) {
   return <div id="Risks" className="Panel">
-    <br />
-    <br />
     What are your biggest risks / doubts / problems?
     <br />
     <br />
