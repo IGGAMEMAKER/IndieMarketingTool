@@ -142,6 +142,10 @@
   /*color: orange*/
 }
 
+#ITERATIONS.Audience-Container {
+  grid-template-columns: auto auto auto;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -155,9 +159,11 @@
   .Container.links {
     grid-template-columns: 50px 200px 65px 35px;
   }
+
+  #ITERATIONS.Audience-Container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
-
-
 
 
 .App-logo {
