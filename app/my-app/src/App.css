@@ -15,11 +15,7 @@
 
 }
 
-@media (max-width: 420px) {
-  .Audience-Container {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-}
+
 
 .App-header {
   background-color: #282c34;
@@ -79,6 +75,11 @@
   background-color: #2196F3;
   padding: 10px;
   color: #282c34;
+}
+@media (max-width: 420px) {
+  .Audience-Container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
 .Channel-item {
   display: block;
