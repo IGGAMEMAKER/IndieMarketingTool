@@ -35,7 +35,7 @@ import {
   MONETIZATION_EDIT_NAME,
   MONETIZATION_EDIT_PRICE,
   MONETIZATION_ORDER_CHANGE,
-  MONETIZATION_REMOVE,
+  MONETIZATION_REMOVE, PROFILE_LOGIN,
   PROJECT_ADD,
   PROJECT_EDIT_BURNOUT_TIME,
   PROJECT_EDIT_DESIRED_PROFIT,
@@ -56,6 +56,7 @@ import {LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
 
 const CE = 'CHANGE_EVENT';
+const domain = 'http://releasefaster.com'
 
 var projectId = ''
 
@@ -142,8 +143,12 @@ const refresh = (time = 800) => {
 }
 
 const openNewProject = newId => {
-  var newUrl = 'http://www.indiemarketingtool.com/projects/' + newId
-  window.location.href = newUrl
+  // var newUrl = 'http://www.indiemarketingtool.com/projects/' + newId
+  navigate('/projects/' + newId)
+}
+
+const navigate = url => {
+  window.location.href = domain + url
 }
 
 const fixProject = () => {
@@ -245,6 +250,17 @@ Dispatcher.register((p) => {
   var ind;
 
   switch (p.actionType) {
+    case PROFILE_LOGIN:
+      post('/api/login', p)
+        .then(r => {
+          if (r.ok) {
+            // redirect to profile
+            navigate('/profile')
+          } else {
+            navigate('/login')
+          }
+        })
+      break
     case PROJECT_LOAD:
       console.log('loading project', p.projectId)
       projectId = p.projectId

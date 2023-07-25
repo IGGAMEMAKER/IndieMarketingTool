@@ -108,11 +108,15 @@ const logIn = (req, res, next) => {
         await generateCookies(res, email, req)
 
         req.authenticated = true;
+        console.log('SAVE AUTHENTICATED')
         req.userId = getUserId(user)
 
-        res.redirect('/profile')
-        console.log('redirected to /profile')
-        printCookies(req, res)
+        res.json({
+          ok: 1
+        })
+        // res.redirect('/profile')
+        // console.log('redirected to /profile')
+        // printCookies(req, res)
       } else {
         next(AUTHENTICATION_FAILED_ERROR)
       }

@@ -51,7 +51,7 @@ import {
   ITERATIONS_REMOVE,
   ITERATIONS_ORDER_CHANGE,
   AUDIENCE_MESSAGE_REMOVE,
-  ITERATIONS_GOAL_EDIT, ITERATIONS_GOAL_ADD, ITERATIONS_GOAL_REMOVE, ITERATIONS_GOAL_SOLVE
+  ITERATIONS_GOAL_EDIT, ITERATIONS_GOAL_ADD, ITERATIONS_GOAL_REMOVE, ITERATIONS_GOAL_SOLVE, PROFILE_LOGIN
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -488,23 +488,26 @@ export function addIterationGoal(id, goal) {
 export function removeIterationGoal(id, goalIndex) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_GOAL_REMOVE,
-    id,
-    goalIndex
+    id, goalIndex
   })
 }
 
 export function solveIterationGoal(id, goalIndex, solved = true) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_GOAL_SOLVE,
-    id,
-    goalIndex,
-    solved
+    id, goalIndex, solved
   })
 }
 
-
+export function logIn(email, password) {
+  Dispatcher.dispatch({
+    actionType: PROFILE_LOGIN,
+    email, password
+  })
+}
 
 export default {
+  logIn,
   loadProject,
   loadProfile,
 

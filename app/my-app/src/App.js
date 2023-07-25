@@ -10,6 +10,7 @@ import {ProjectPage} from "./ProjectPage";
 import {ping} from "./PingBrowser";
 import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 import {generatePassword} from "./secret";
+import actions from "./actions";
 
 class Examples extends Component {
   render() {
@@ -144,7 +145,9 @@ function LoginForm({}) {
   return <div>
     <h2>Log in</h2>
     {passwordWasResetText}
-    <form action="/api/login" method="post">
+    <form action="/api/login" method="post" onSubmit={() => {
+      actions.logIn(email, password)
+    }}>
       <table>
         <tr>
           <td>
