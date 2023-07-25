@@ -23,14 +23,17 @@ const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 
 
 const getCookies = req => {
+  var email = req.cookies["email"] || req.email;
+  var sessionToken = req.cookies["sessionToken"] || req.sessionToken
+
   return {
-    email: req.cookies["email"],
-    sessionToken: req.cookies["sessionToken"]
+    email,
+    sessionToken
   }
 }
-const generateCookies = async (res, email) => {
+const generateCookies = async (res, email, req) => {
   var token = createSessionToken(email)
-  setCookies(res, token, email)
+  setCookies(res, token, email, req)
 
   await UserModel.updateOne({
     email,
@@ -40,12 +43,15 @@ const generateCookies = async (res, email) => {
     sessionCreatedAt: new Date()
   })
 }
-const flushCookies = (res) => {
-  setCookies(res, '', '')
+const flushCookies = (res, req) => {
+  setCookies(res,'', '', req)
 }
-const setCookies = (res, token, email) => {
+const setCookies = (res, token, email, req) => {
   res.cookie('sessionToken', token)
   res.cookie('email', email)
+
+  req.email = email;
+  req.sessionToken = token
 }
 
 const createSessionToken = (email) => {
@@ -65,6 +71,12 @@ const printCookies = (req, res) => {
 
 const getUserId = user => user._id.toString()
 
+const logout = (req, res, next) => {
+  flushCookies(res, req)
+  // TODO remove sessionToken on server
+  res.redirect('/')
+}
+
 const logIn = (req, res, next) => {
   console.log('LOG IN')
 
@@ -83,7 +95,7 @@ const logIn = (req, res, next) => {
         console.log('logIn', {user})
         // if has OK cookies, maybe send existing ones?
         printCookies(req, res)
-        await generateCookies(res, email)
+        await generateCookies(res, email, req)
 
         req.authenticated = true;
         req.userId = getUserId(user)
@@ -101,12 +113,6 @@ const logIn = (req, res, next) => {
     })
 }
 
-const logout = (req, res, next) => {
-  flushCookies(res)
-  // TODO remove sessionToken on server
-  res.redirect('/')
-}
-
 const authenticate = (req, res, next) => {
   console.log('\nauthenticate')
   var {email, sessionToken} = getCookies(req)
@@ -114,7 +120,7 @@ const authenticate = (req, res, next) => {
 
   if (req.authenticated) {
     // was redirected from login
-    // userId was there
+    // userId was set there
     next()
   }
 
@@ -138,7 +144,6 @@ const authenticate = (req, res, next) => {
           console.log({user})
 
           req.userId = getUserId(user)
-          // console.log(req.userId)
           next()
         }
       } else {
@@ -161,26 +166,27 @@ const verifyNewUser = async (req, res) => {
   var verificationLink = link;
   console.log(req.query, req.url, req.pathname)
 
-  UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
-    .then(async r => {
-      console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
+  try {
+    var r = await UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
+    console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
 
-      if (r.modifiedCount) {
-        sendVerificationSuccess(email)
-        await generateCookies(res, email)
-        res.redirect('/profile')
-      } else {
-        await flushCookies(res)
-        res.redirect('/login?verificationFailed=1')
-      }
-    })
-    .catch(async err => {
-      console.log('cannot verifyNewUser ERROR', {err})
-      await flushCookies(res)
-      res.redirect('/login?verificationFailed=2')
-    })
-    .finally(() => {
-    })
+    if (r.modifiedCount) {
+      // USER VERIFIED
+      sendVerificationSuccess(email)
+      await generateCookies(res, email, req)
+
+      // no redirect?
+      res.redirect('/profile')
+      return
+    }
+
+    await flushCookies(res, req)
+    res.redirect('/login?verificationFailed=1')
+  } catch (err) {
+    console.log('cannot verifyNewUser ERROR', {err})
+    await flushCookies(res, req)
+    res.redirect('/login?verificationFailed=2')
+  }
 }
 
 const resetPassword = async (req, res) => {
@@ -220,14 +226,14 @@ const createUser = async (req, res) => {
   u.save()
     .then(async r => {
       console.log({r})
-      await generateCookies(res, email)
+      await generateCookies(res, email, req)
       sendVerificationEmail(email, verificationLink)
 
       res.redirect('/profile')
     })
     .catch(e => {
       console.error({e})
-      flushCookies(res)
+      flushCookies(res, req)
 
       res.redirect('/register?userExists=1')
     })

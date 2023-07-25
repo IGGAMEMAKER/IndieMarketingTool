@@ -300,9 +300,9 @@ class App extends Component {
           <Routes>
             <Route path='/'                     element={<MainPage/>}/>
             <Route path='/register'             element={<RegisterForm/>}/>
-            <Route path='/verify'                element={<VerifyForm />}/>
+            <Route path='/verify'               element={<VerifyForm />}/>
             <Route path='/login'                element={<LoginForm/>}/>
-            <Route path='/logout'                element={<LoginForm/>}/>
+            <Route path='/logout'               element={<LoginForm/>}/>
             <Route path='/reset'                element={<ResetPasswordForm />}/>
 
             <Route path='/examples'             element={<Examples/>}/>
