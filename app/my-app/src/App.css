@@ -1,5 +1,3 @@
-$phone: 420px;
-
 .App {
   text-align: center;
 }
@@ -77,11 +75,11 @@ $phone: 420px;
   color: #282c34;
 }
 
-@media (max-width: 420px) {
-  .Audience-Container {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-}
+/*@media (max-width: 420px) {*/
+/*  .Audience-Container {*/
+/*    grid-template-columns: repeat(1, minmax(0, 1fr));*/
+/*  }*/
+/*}*/
 
 .Channel-item {
   display: block;
