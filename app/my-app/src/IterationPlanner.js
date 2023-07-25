@@ -502,7 +502,7 @@ export function IterationPlanner({project}) {
   }
 
   // style={{gridTemplateColumns: 'auto auto auto'}}
-  return <div id="ITERATIONS">
+  return <div id="ITERATIONS" className="Panel">
     <h1>Iteration Planner</h1>
     <h2>Do the PROJECT, not just product</h2>
     {priorityMockup}

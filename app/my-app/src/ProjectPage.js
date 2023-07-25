@@ -143,7 +143,7 @@ function ChannelAdder({}) {
 }
 
 function AudienceSourcesPanel({channels}) {
-  return <div id="Sources">
+  return <div id="Sources" className="Panel">
     <br />
     <br />
     Where will you find your audience?
@@ -163,8 +163,7 @@ function BusinessPlanner({project}) {
   var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
   // console.log({project})
 
-  return <div id="Goals">
-    <br />
+  return <div id="Goals" className="Panel">
     <h2>{"Can you get these numbers?".toUpperCase()}</h2>
     {/*Let's talk about business*/}
     <br/>
@@ -219,7 +218,7 @@ function BusinessPlanner({project}) {
 }
 
 function MarketingPlanner({project}) {
-  return <div id="Growth">
+  return <div id="Growth" className="Panel">
     <br/>
     <br/>
     How will you grow?
@@ -335,7 +334,7 @@ function UsefulLinks({links}) {
     </div>
   </div>)
 
-  return <div id="Links">
+  return <div id="Links" className="Panel">
     <br/>
     <br/>
     Save useful links here
@@ -346,7 +345,7 @@ function UsefulLinks({links}) {
 }
 
 function RisksPanel({risks}) {
-  return <div id="Risks">
+  return <div id="Risks" className="Panel">
     <br />
     <br />
     What are your biggest risks / doubts / problems?

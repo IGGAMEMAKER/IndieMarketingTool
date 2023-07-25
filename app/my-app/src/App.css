@@ -146,6 +146,10 @@
   grid-template-columns: auto auto auto;
 }
 
+.Panel {
+  margin-top: 25px;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -162,6 +166,10 @@
 
   #ITERATIONS.Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .Panel {
+    margin-top: 75px;
   }
 }
 
