@@ -172,37 +172,39 @@ function BusinessPlanner({project}) {
       <table>
         <tbody>
           <tr className={"Audience-item"}>
-            <td>How much do you want to earn?</td>
-            <td><NumberPicker
-              value={desiredProfit}
-              placeholder={"Type your desired profit"}
-              onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
-              defaultState={true}
-            />
+            <td>
+              How much do you want to earn?
+              <NumberPicker
+                value={desiredProfit}
+                placeholder={"Type your desired profit"}
+                onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
+                defaultState={true}
+              />
               <div>monthly</div>
             </td>
             <td>{renderIncomeGoal(project, desiredProfit)}</td>
           </tr>
           <tr className={"Audience-item"}>
-            <td>Your monthly expenses?</td>
-            <td><NumberPicker
-              value={monthlyExpenses}
-              placeholder={"What are ur expenses"}
-              onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
-              defaultState={true}
-            />
-              {/*<div>monthly</div>*/}
+            <td>
+              Your monthly expenses?
+              <NumberPicker
+                value={monthlyExpenses}
+                placeholder={"What are ur expenses"}
+                onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
+                defaultState={true}
+              />
             </td>
             <td>{renderIncomeGoal(project, monthlyExpenses, 'become sustainable')}</td>
           </tr>
           <tr className={"Audience-item"}>
-            <td>How much time do you have until you run out of cash?</td>
-            <td><NumberPicker
-              value={timeTillBurnout}
-              placeholder={"How many months can you spend on that venture?"}
-              onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
-              defaultState={true}
-            />
+            <td>
+              How much time do you have until you run out of cash?
+              <NumberPicker
+                value={timeTillBurnout}
+                placeholder={"How many months can you spend on that venture?"}
+                onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
+                defaultState={true}
+              />
               <div>months</div>
             </td>
             <td>{renderIncomeGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
