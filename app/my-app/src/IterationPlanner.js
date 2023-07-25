@@ -501,13 +501,14 @@ export function IterationPlanner({project}) {
     })
   }
 
+  // style={{gridTemplateColumns: 'auto auto auto'}}
   return <div id="ITERATIONS">
     <h1>Iteration Planner</h1>
     <h2>Do the PROJECT, not just product</h2>
     {priorityMockup}
     <br/>
 
-    <div className={"Audience-Container"} style={{gridTemplateColumns: 'auto auto auto'}}>
+    <div className={"Audience-Container"}>
       {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
       {iterations.map((it, i) => renderIteration(project, it, i, setChosenIterationId))}
     </div>
