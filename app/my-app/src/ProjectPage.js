@@ -479,9 +479,7 @@ export class ProjectPage extends Component {
           <FieldPicker
             value={this.state.project?.name}
             placeholder={"name the project"}
-            onAction={val => {
-              actions.editName(projectId, val)
-            }}
+            onAction={val => {actions.editName(projectId, val)}}
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
           <a id="Audiences" href={"/profile"}>Profile</a>
