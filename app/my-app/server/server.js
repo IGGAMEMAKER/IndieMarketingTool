@@ -27,9 +27,9 @@ const getCookies = req => {
   var now = req.path
   var wasRedirected = was !== now;
 
-  console.log('orig', was, now)
+  // console.log('orig', was, now)
   if (wasRedirected) {
-    console.log('REDIRECTED')
+    // console.log('REDIRECTED')
     return {
       email: req.email,
       sessionToken: req.sessionToken
@@ -129,6 +129,7 @@ const authenticate = (req, res, next) => {
   printCookies(req, res)
 
   if (req.authenticated) {
+    console.log('WAS AUTHENTICATED')
     // was redirected from login
     // userId was set there
     next()
