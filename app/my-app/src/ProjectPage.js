@@ -494,10 +494,10 @@ export class ProjectPage extends Component {
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
           <br/>
-          <BusinessPlanner project={this.state.project}/>
+          {/*<BusinessPlanner project={this.state.project}/>*/}
           {/*<MarketingPlanner project={this.state}/>*/}
-          {/*<AudienceSourcesPanel channels={channels}/>*/}
-          {/*<UsefulLinks links={this.state.links}/>*/}
+          <AudienceSourcesPanel channels={channels}/>
+          <UsefulLinks links={this.state.links}/>
           {/*<RisksPanel risks={risks}/>*/}
           {/*<IterationPlanner project={this.state.project}/>*/}
 
