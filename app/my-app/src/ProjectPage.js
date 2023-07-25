@@ -198,7 +198,8 @@ function BusinessPlanner({project}) {
           </tr>
           <tr className={"Audience-item"}>
             <td>
-              How much time do you have until you run out of cash?
+              {/*How much time do you have until you run out of cash?*/}
+              Time till money burnout
               <NumberPicker
                 value={timeTillBurnout}
                 placeholder={"How many months can you spend on that venture?"}
@@ -499,7 +500,7 @@ export class ProjectPage extends Component {
           <AudienceSourcesPanel channels={channels}/>
           <UsefulLinks links={this.state.links}/>
           <RisksPanel risks={risks}/>
-          {/*<IterationPlanner project={this.state.project}/>*/}
+          <IterationPlanner project={this.state.project}/>
 
           <br/>
           <br/>
