@@ -15,7 +15,7 @@
 
 }
 
-@media screen and (max-device-width: 420px) {
+@media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
