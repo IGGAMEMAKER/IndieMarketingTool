@@ -401,7 +401,7 @@ function AudiencesList({audiences, state, audiencePhrase}) {
         />}
       )}
       <div>
-        {audiencePhrase} <AudienceAdder/>
+        <AudienceAdder/>
       </div>
     </div>
   </div>
@@ -480,6 +480,9 @@ export class ProjectPage extends Component {
           <a id="Audiences" href={"/profile"}>Profile</a>
           <br/>
           <br/>
+          {audiencePhrase}
+          <br />
+          <br />
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
