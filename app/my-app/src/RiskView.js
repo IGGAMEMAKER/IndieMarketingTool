@@ -25,10 +25,11 @@ function RiskSolutionAdder({riskIndex}) {
 
 export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
   var id = risk.id;
+  var solutions = risk.solutions || []
 
   var renderer = onChange => {
-    var solutions = risk.solutions || []
     var solutionRenderer;
+
     if (solutions.length) {
       solutionRenderer = solutions.map(s => <li key={"risk." + id + ".solution" + s.id} className="text-secondary">
         <FieldPicker

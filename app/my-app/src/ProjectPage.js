@@ -32,13 +32,14 @@ const getDomain = link => {
   }
 }
 
-function AudienceAdder({}) {
+function AudienceAdder({placeholder}) {
   const [audienceName, onChangeName] = useState("");
 
   return (
     <div className="Audience-item">
       <textarea
         value={audienceName}
+        placeholder={placeholder}
         onChange={event => {
           var v = event.target.value
           console.log({v})
@@ -400,9 +401,9 @@ function AudiencesList({audiences, state, audiencePhrase}) {
           key={`audiencessss${a.id}`}
         />}
       )}
-      <div>
-        <AudienceAdder/>
-      </div>
+      {/*<div>*/}
+        <AudienceAdder placeholder={audiencePhrase} />
+      {/*</div>*/}
     </div>
   </div>
 }
