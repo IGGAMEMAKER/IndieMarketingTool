@@ -400,7 +400,9 @@ function AudiencesList({audiences, state, audiencePhrase}) {
           key={`audiencessss${a.id}`}
         />}
       )}
-      {audiencePhrase} <AudienceAdder/>
+      <div>
+        {audiencePhrase} <AudienceAdder/>
+      </div>
     </div>
   </div>
 }
