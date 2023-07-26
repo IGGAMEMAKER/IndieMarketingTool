@@ -146,7 +146,6 @@ function AudienceSourcesPanel({channels}) {
   return <div id="Sources" className="Panel">
     Where will you find your audience?
     <h6>User count will update in future releases</h6>
-    {/*<div className="Audience-Container">*/}
     <div className="Container">
       <ChannelList channels={channels} />
     </div>
@@ -365,43 +364,43 @@ function MonetizationPanel({plans, audiences}) {
 }
 
 
-function AudiencesList({audiences, state}) {
+function AudiencesList({audiences, state, audiencePhrase}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
   const {monetizationPlans, risks, channels, name, appType} = state;
 
   return <div>
     <div className="Audience-Container">
       {audiences.map((a, i) => {
-          var usages = [];
-          var isUsedInMonetizationPlans = false
-          monetizationPlans.forEach((m, i) => {
-            // console.log({m})
-            if (m.audiences.includes(a.id))
-              isUsedInMonetizationPlans = true
-          })
+        var usages = [];
+        var isUsedInMonetizationPlans = false
+        monetizationPlans.forEach((m, i) => {
+          // console.log({m})
+          if (m.audiences.includes(a.id))
+            isUsedInMonetizationPlans = true
+        })
 
-          if (isUsedInMonetizationPlans)
-            usages.push('monetization plans')
+        if (isUsedInMonetizationPlans)
+          usages.push('monetization plans')
 
-          if (a?.messages?.length)
-            usages.push('unique messaging')
+        if (a?.messages?.length)
+          usages.push('unique messaging')
 
-          return <Audience
-            onToggleFullInfo={() => {
-              setIsFullInfo(!isFullAudienceInfo)
-            }}
-            isFull={!isFullAudienceInfo}
+        return <Audience
+          onToggleFullInfo={() => {
+            setIsFullInfo(!isFullAudienceInfo)
+          }}
+          isFull={!isFullAudienceInfo}
 
-            name={a.name}
-            description={a.description}
-            strategy={a.strategy}
-            id={a.id}
-            usages={usages}
-            index={i}
-            key={`audiencessss${a.id}`}
-          />
-        }
+          name={a.name}
+          description={a.description}
+          strategy={a.strategy}
+          id={a.id}
+          usages={usages}
+          index={i}
+          key={`audiencessss${a.id}`}
+        />}
       )}
+      {audiencePhrase} <AudienceAdder/>
     </div>
   </div>
 }
@@ -479,10 +478,7 @@ export class ProjectPage extends Component {
           <a id="Audiences" href={"/profile"}>Profile</a>
           <br/>
           <br/>
-          {audiencePhrase} <AudienceAdder/>
-          <br/>
-          <br/>
-          <AudiencesList audiences={audiences} state={this.state}/>
+          <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
           <br/>
