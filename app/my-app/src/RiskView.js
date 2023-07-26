@@ -30,7 +30,7 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
     var solutions = risk.solutions || []
     var solutionRenderer;
     if (solutions.length) {
-      solutionRenderer = solutions.map(s => <li key={"risk." + id + ".solution" + s.id}>
+      solutionRenderer = solutions.map(s => <li key={"risk." + id + ".solution" + s.id} className="text-secondary">
         <FieldPicker
           value={s.name}
           placeholder={"Add possible solution"}

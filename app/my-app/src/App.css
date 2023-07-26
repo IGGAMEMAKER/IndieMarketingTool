@@ -150,6 +150,10 @@
   margin-top: 25px;
 }
 
+.text-secondary {
+  color: gray;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
