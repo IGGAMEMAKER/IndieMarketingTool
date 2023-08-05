@@ -60,20 +60,12 @@ const renderFeatureGoals = (project, it) => {
   var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
 
   return goals.map(gg => <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
-    {/*{JSON.stringify(gg)}*/}
-    {/*<FieldPicker*/}
-    {/*  value={gg.text}*/}
-    {/*  placeholder={"Features"}*/}
-    {/*  onRemove={onGoalRemove(it, gg)}*/}
-    {/*  onAction={val => {actions.editIterationGoal(it.id, gg.id, )}}*/}
-    {/*/>*/}
-    {/*#{gg.id} */}<b style={{color: gg.solved ? 'gold' : 'white'}}>{gg.text}</b>
+    <b className={gg.solved ? 'solved feature' : 'feature'} style={{color: gg.solved ? 'gold' : 'white'}}>{gg.text}</b>
     <input type={"checkbox"} checked={gg.solved} value={"Solve"} onChange={ev => {
       var v = ev.target.checked
       console.log(v)
       actions.solveIterationGoal(it.id, gg.id, !!v)
     }}/>
-    {/*{getByID(it.features, gg.featureId)?.name}*/}
   </li>)
 }
 

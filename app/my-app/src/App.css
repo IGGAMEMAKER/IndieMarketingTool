@@ -146,6 +146,16 @@
   grid-template-columns: auto auto auto;
 }
 
+.feature {
+  color: white;
+
+}
+.feature.solved {
+  text-decoration: line-through;
+  text-decoration-color: #282c34;
+}
+
+
 .Panel {
   margin-top: 25px;
 }
