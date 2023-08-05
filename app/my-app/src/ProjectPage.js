@@ -459,7 +459,7 @@ export class ProjectPage extends Component {
     var audiencePhrase = appType === APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your app?'
 
 
-    const menus = ["Audiences", "Monetization", "Goals", "Growth", "Sources", "Links", "Risks", "ITERATIONS"]
+    const menus = ["Audiences", "Monetization", "Goals", "Growth", "Risks", "ITERATIONS", "Sources", "Links"]
     return (
       <div className="App">
         <div>
@@ -490,10 +490,11 @@ export class ProjectPage extends Component {
           <br/>
           <BusinessPlanner project={this.state.project}/>
           <MarketingPlanner project={this.state}/>
-          <AudienceSourcesPanel channels={channels}/>
-          <UsefulLinks links={this.state.links}/>
           <RisksPanel risks={risks}/>
           <IterationPlanner project={this.state.project}/>
+
+          <AudienceSourcesPanel channels={channels}/>
+          <UsefulLinks links={this.state.links}/>
 
           <br/>
           <br/>
