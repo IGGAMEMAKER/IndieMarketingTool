@@ -382,7 +382,7 @@ function renderIteration(project, it, i, setChosenIterationId) {
   const moveRightButton = <button onClick={() => actions.changeIterationOrder(i, i + 1)}>{ARROW_RIGHT}</button>
   const editLink = <a href={"#editIteration"} onClick={() => setChosenIterationId(it.id)}>Edit</a>
 
-  const ideaIcon = <span style={{color: 'orange'}}>💡</span>
+  const ideaIcon = <span style={{color: 'orange'}}>?</span> // 💡
   const growthIcon = <span style={{color: 'green'}}>😄</span>
   const bigGrowthIcon = <span style={{color: 'green'}}>😄😄😄</span>
   const featureIcon = <span style={{color: 'red'}}>⚙︎</span>
