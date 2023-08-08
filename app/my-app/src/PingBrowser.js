@@ -4,6 +4,7 @@ const request = rrr.agent()
 // const FRONTEND = 'http://www.indiemarketingtool.com'
 const FRONTEND = 'https://releasefaster.com'
 
+
 const ping = (url, picker) => {
   var t0 = new Date();
 
