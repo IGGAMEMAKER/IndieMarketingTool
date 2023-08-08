@@ -504,7 +504,7 @@ export class ProjectPage extends Component {
           <br/>
           <br/>
           <br/>
-          <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
+          {/*<a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>*/}
         </header>
       </div>
     );

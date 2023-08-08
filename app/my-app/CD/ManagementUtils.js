@@ -171,10 +171,10 @@ const uploadConfigs = async (ssh, ip, check = {}) => {
   // hosts.json
   await uploadAndLog(ssh, './Configs/hosts.json', pathToConfigs + '/Configs/hosts.json', 'hosts.json')
 
-  await uploadAndLog(ssh, './Configs/releasefaster_com.crt', pathToConfigs + '/Configs/releasefaster_com.crt', 'releasefaster_com.crt')
-  await uploadAndLog(ssh, './Configs/releasefaster.com.key', pathToConfigs + '/Configs/releasefaster.com.key', 'releasefaster.com.key')
-  await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt', pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
-  await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle', pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
+  // await uploadAndLog(ssh, './Configs/releasefaster_com.crt', pathToConfigs + '/Configs/releasefaster_com.crt', 'releasefaster_com.crt')
+  // await uploadAndLog(ssh, './Configs/releasefaster.com.key', pathToConfigs + '/Configs/releasefaster.com.key', 'releasefaster.com.key')
+  // await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt', pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
+  // await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle', pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
 
   // Server IP
   const myHost = `./Configs/myHost-${ip}.js`;
