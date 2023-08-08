@@ -142,6 +142,10 @@
   /*color: orange*/
 }
 
+.project-link {
+  color: white;
+}
+
 #ITERATIONS.Audience-Container {
   grid-template-columns: auto auto auto;
 }
