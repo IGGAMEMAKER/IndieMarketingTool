@@ -161,7 +161,7 @@ function BusinessPlanner({project}) {
   var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
   // console.log({project})
 
-  return <div id="Goals" className="Panel">
+  return <div>
     <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} />
     <br/>
     <div className={"Audience-Container"}>
@@ -479,12 +479,10 @@ export class ProjectPage extends Component {
             onAction={val => {actions.editName(projectId, val)}}
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
-          <a id="Audiences" href={"/profile"} className="Panel">Profile</a>
-          <br/>
-          <br/>
-          {audiencePhrase}
-          <br />
-          <br />
+          {/*<a id="Audiences" href={"/profile"} className="Panel">Profile</a>*/}
+          <a href={"/profile"}>Profile</a>
+          <Panel id="Audiences" header={audiencePhrase} />
+          {/*{audiencePhrase}*/}
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
