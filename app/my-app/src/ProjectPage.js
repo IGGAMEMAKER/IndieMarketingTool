@@ -8,8 +8,8 @@ import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldAdder} from "./FieldAdder";
 import {renderIncomeGoal} from "./RenderIncomeGoal";
-import {RiskAdder} from "./RiskAdder";
-import {RiskList, RiskView} from "./RiskView";
+import {RiskList} from "./RiskView";
+import {Panel} from "./Panel";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -211,15 +211,6 @@ function BusinessPlanner({project}) {
     </div>
     <br/>
     <br/>
-  </div>
-}
-
-function Panel({id, header}) {
-  return <div id={id} className={"Panel"}>
-    <br />
-    <br />
-    <h2>{header}</h2>
-    <br />
   </div>
 }
 

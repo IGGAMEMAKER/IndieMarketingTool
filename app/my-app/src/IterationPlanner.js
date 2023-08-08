@@ -9,6 +9,7 @@ import {FieldAdder} from "./FieldAdder";
 import {RiskAdder} from "./RiskAdder";
 import {Iteration} from "./Iteration";
 import {RiskList, RiskView} from "./RiskView";
+import {Panel} from "./Panel";
 
 function RiskPicker({onPick, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
@@ -494,9 +495,9 @@ export function IterationPlanner({project}) {
   }
 
   // style={{gridTemplateColumns: 'auto auto auto'}}
-  return <div id="ITERATIONS" className="Panel">
-    <h1>Iteration Planner</h1>
-    <h2>Do the PROJECT, not just product</h2>
+  return <div>
+    <Panel id="ITERATIONS" header="Iteration Planner" />
+    <h3>Do the PROJECT, not just product</h3>
     {priorityMockup}
     <br/>
 
