@@ -8,6 +8,8 @@ var siteName = "releasefaster.com"
 var domain = 'http://releasefaster.com'
 const FROM = 'account@releasefaster.com'
 
+console.log({siteName, FROM, domain})
+
 const sendMail = (to, subject, html) => {
   request.post('https://api.elasticemail.com/v4/emails/transactional')
     .set('X-ElasticEmail-ApiKey', ELASTIC_MAIL_API_KEY)
