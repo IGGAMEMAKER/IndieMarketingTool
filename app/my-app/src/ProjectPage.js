@@ -144,8 +144,8 @@ function ChannelAdder({}) {
 }
 
 function AudienceSourcesPanel({channels}) {
-  return <div id="Sources" className="Panel">
-    Where will you find your audience?
+  return <div>
+    <Panel id="Sources" header="Where will you find your audience?" />
     <h6>User count will update in future releases</h6>
     <div className="Container">
       <ChannelList channels={channels} />
@@ -162,8 +162,7 @@ function BusinessPlanner({project}) {
   // console.log({project})
 
   return <div id="Goals" className="Panel">
-    <h2>{"Can you get these numbers?".toUpperCase()}</h2>
-    {/*Let's talk about business*/}
+    <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} />
     <br/>
     <div className={"Audience-Container"}>
       <table>
@@ -217,19 +216,16 @@ function BusinessPlanner({project}) {
 
 function Panel({id, header}) {
   return <div id={id} className={"Panel"}>
-    <h2>{header}</h2>
     <br />
+    <br />
+    <h2>{header}</h2>
     <br />
   </div>
 }
 
 function MarketingPlanner({project}) {
-  // return <div id="Growth" className="Panel">
   return <div>
     <Panel id="Growth" header="How will you grow" />
-    {/*How will you grow?*/}
-    {/*<br/>*/}
-    {/*<br/>*/}
     <div className="Container">
       <table>
         <thead>
@@ -340,8 +336,8 @@ function UsefulLinks({links}) {
     </div>
   </div>)
 
-  return <div id="Links" className="Panel">
-    Save useful links here
+  return <div>
+    <Panel id="Links" header="Save useful links here" />
     <div className="Container links">
       {list}
     </div>
@@ -349,10 +345,8 @@ function UsefulLinks({links}) {
 }
 
 function RisksPanel({risks}) {
-  return <div id="Risks" className="Panel">
-    What are your biggest risks / doubts / problems?
-    <br />
-    <br />
+  return <div>
+    <Panel id="Risks" header="What are your biggest risks / doubts / problems?" />
     <div className="Container">
       <RiskList risks={risks} />
     </div>
@@ -361,10 +355,9 @@ function RisksPanel({risks}) {
 
 
 function MonetizationPanel({plans, audiences}) {
-  return <div id="Monetization" className="Panel">
-    <br />
-    <br />
-    How will you make money? <MonetizationAdder />
+  var content = <div>How will you make money? <MonetizationAdder /></div>
+  return <div>
+    <Panel id="Monetization" header={content} />
     <h6>WHO WILL PAY & FOR WHAT?</h6>
     <br />
     <br />
