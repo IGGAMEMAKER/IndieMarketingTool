@@ -187,9 +187,9 @@
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 
-  .Panel {
-    margin-top: 75px;
-  }
+  /*.Panel {*/
+  /*  margin-top: 75px;*/
+  /*}*/
 }
 
 
