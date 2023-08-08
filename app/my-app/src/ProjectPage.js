@@ -215,11 +215,21 @@ function BusinessPlanner({project}) {
   </div>
 }
 
+function Panel({id, header}) {
+  return <div id={id} className={"Panel"}>
+    <h2>{header}</h2>
+    <br />
+    <br />
+  </div>
+}
+
 function MarketingPlanner({project}) {
-  return <div id="Growth" className="Panel">
-    How will you grow?
-    <br/>
-    <br/>
+  // return <div id="Growth" className="Panel">
+  return <div>
+    <Panel id="Growth" header="How will you grow" />
+    {/*How will you grow?*/}
+    {/*<br/>*/}
+    {/*<br/>*/}
     <div className="Container">
       <table>
         <thead>
@@ -351,7 +361,7 @@ function RisksPanel({risks}) {
 
 
 function MonetizationPanel({plans, audiences}) {
-  return <div id="Monetization">
+  return <div id="Monetization" className="Panel">
     <br />
     <br />
     How will you make money? <MonetizationAdder />
@@ -401,9 +411,7 @@ function AudiencesList({audiences, state, audiencePhrase}) {
           key={`audiencessss${a.id}`}
         />}
       )}
-      {/*<div>*/}
-        <AudienceAdder placeholder={audiencePhrase} />
-      {/*</div>*/}
+      <AudienceAdder placeholder={audiencePhrase} />
     </div>
   </div>
 }
@@ -478,7 +486,7 @@ export class ProjectPage extends Component {
             onAction={val => {actions.editName(projectId, val)}}
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
-          <a id="Audiences" href={"/profile"}>Profile</a>
+          <a id="Audiences" href={"/profile"} className="Panel">Profile</a>
           <br/>
           <br/>
           {audiencePhrase}
