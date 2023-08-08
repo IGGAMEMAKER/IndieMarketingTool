@@ -1,9 +1,12 @@
 const {ELASTIC_MAIL_API_KEY, MY_MAIL} = require("../CD/Configs");
 const request = require('superagent').agent()
 
-var domain = 'http://www.indiemarketingtool.com'
-var siteName = "indiemarketingtool.com"
-const FROM = 'IndieMarketingTool@www.indiemarketingtool.com'
+// var siteName = "indiemarketingtool.com"
+var siteName = "releasefaster.com"
+// const FROM = 'IndieMarketingTool@www.indiemarketingtool.com'
+// var domain = 'http://www.indiemarketingtool.com'
+var domain = 'http://releasefaster.com'
+const FROM = 'account@releasefaster.com'
 
 const sendMail = (to, subject, html) => {
   request.post('https://api.elasticemail.com/v4/emails/transactional')
@@ -21,7 +24,7 @@ const sendMail = (to, subject, html) => {
           }
         ],
         "Postback": "string",
-        "EnvelopeFrom": "Indie Marketing Tool",
+        "EnvelopeFrom": "Release Faster",
         "From": FROM,
         "Subject": subject,
       }
@@ -70,6 +73,7 @@ const sendResetPasswordEmail = (email, newPassword) => {
 }
 
 module.exports = {
+  sendMail,
   sendVerificationEmail,
   sendResetPasswordEmail,
   sendVerificationSuccess
