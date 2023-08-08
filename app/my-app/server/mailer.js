@@ -1,12 +1,13 @@
 const {ELASTIC_MAIL_API_KEY, MY_MAIL} = require("../CD/Configs");
 const request = require('superagent').agent()
 
-// var siteName = "indiemarketingtool.com"
-var siteName = "releasefaster.com"
 // const FROM = 'IndieMarketingTool@www.indiemarketingtool.com'
-// var domain = 'http://www.indiemarketingtool.com'
-var domain = 'http://releasefaster.com'
+// const siteName = "indiemarketingtool.com"
+// const domain = 'http://www.indiemarketingtool.com'
+
 const FROM = 'account@releasefaster.com'
+const siteName = "releasefaster.com"
+const domain = 'https://releasefaster.com'
 
 console.log({siteName, FROM, domain})
 
@@ -26,13 +27,14 @@ const sendMail = (to, subject, html) => {
           }
         ],
         "Postback": "string",
-        "EnvelopeFrom": "Release Faster",
+        // "EnvelopeFrom": "Release Faster",
+        "EnvelopeFrom": FROM,
         "From": FROM,
         "Subject": subject,
       }
     })
     .then(r => {
-      // console.log({r})
+      console.log({r})
     })
     .catch(err => {
       console.error({err})

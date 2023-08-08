@@ -58,4 +58,5 @@
 
 const {MY_MAIL} = require("../CD/Configs");
 const {sendVerificationSuccess} = require("../server/mailer");
+
 sendVerificationSuccess(MY_MAIL)
