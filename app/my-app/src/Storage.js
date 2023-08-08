@@ -56,7 +56,7 @@ import {LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
 
 const CE = 'CHANGE_EVENT';
-const domain = 'http://releasefaster.com'
+const domain = 'https://releasefaster.com'
 
 var projectId = ''
 
