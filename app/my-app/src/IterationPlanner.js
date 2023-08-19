@@ -255,9 +255,9 @@ function NumberGoalPicker({project, it}) {
   </div>
 
   var featurePicker = <div>
-    You will do this anyways, but don't feature creep
+    <h2>Don't feature creep</h2>
     <br />
-    Think, which problem will this feature solve?
+    Think, which problem will this feature solve? And is it a strongest pick in terms of time/money
     <br />
     <br />
     <ol>{renderFeatureGoals(project, it)}</ol>
