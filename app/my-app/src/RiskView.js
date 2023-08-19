@@ -91,8 +91,8 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
     )
   }
   catch (e) {
-    console.log('NO RISK', risk, index, it, goal, orderingAllowed)
+    console.error('NO RISK', risk, index, it, goal, orderingAllowed)
 
-    return <div>error in risk</div>
+    return <div></div>
   }
 }
