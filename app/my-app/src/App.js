@@ -274,7 +274,7 @@ class MainPage extends Component {
         {/*<Link to={"/pricing"}>Pricing</Link>*/}
 
 
-        {document.cookie}
+        {/*{document.cookie}*/}
 
         {authenticated ?
           <Link to={"/profile"}>Profile</Link>
