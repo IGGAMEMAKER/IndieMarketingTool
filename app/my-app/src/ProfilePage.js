@@ -7,20 +7,16 @@ import actions from "./actions";
 import {Link} from "react-router-dom";
 
 function ProjectAdder({appType, defaultState}) {
-  const refresh = () => window.location.reload(true)
-
   var defaultWord;
   if (appType === APP_TYPE_GAME)
-    defaultWord = "new Game"
+    defaultWord = "new GAME"
   else
-    defaultWord = "new App"
+    defaultWord = "new APP"
 
   return <FieldAdder
     onAdd={name => {
+      // WILL GO TO NEW PROJECT PAGE
       actions.addProject(name, appType)
-
-      // TODO GO TO NEW PROJECT PAGE
-      // setTimeout(refresh, 2500)
     }}
     placeholder={"add?"}
     defaultWord={defaultWord}
