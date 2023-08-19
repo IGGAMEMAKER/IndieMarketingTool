@@ -93,6 +93,6 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
   catch (e) {
     console.error('NO RISK', risk, index, it, goal, orderingAllowed)
 
-    return <div></div>
+    return <div>You accidentally removed risk:(</div>
   }
 }
