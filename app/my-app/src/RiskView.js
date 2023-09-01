@@ -53,6 +53,7 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
       const removeButton = <button style={{float: 'right'}} onClick={() => {
         actions.removeRisk(id)
       }}>x</button>
+
       var removeFromIterationButton;
       if (it) {
         removeFromIterationButton = <button style={{float: 'right'}} onClick={() => {
