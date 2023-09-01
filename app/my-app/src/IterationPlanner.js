@@ -378,8 +378,16 @@ function renderIteration(project, it, i, setChosenIterationId) {
     onClick={() => actions.addIteration(simplifiedIteration, {pasteBefore: it.id})}
   >+</button>
 
-  const moveLeftButton = <button onClick={() => actions.changeIterationOrder(i, i - 1)}>{ARROW_LEFT}</button>
-  const moveRightButton = <button onClick={() => actions.changeIterationOrder(i, i + 1)}>{ARROW_RIGHT}</button>
+  const moveLeftButton = <button onClick={ev => {
+    ev.preventDefault()
+    actions.changeIterationOrder(i, i - 1)
+  }}>{ARROW_LEFT}</button>
+
+  const moveRightButton = <button onClick={ev => {
+    ev.preventDefault()
+    actions.changeIterationOrder(i, i + 1)
+  }}>{ARROW_RIGHT}</button>
+
   const editLink = <a href={"#editIteration"} onClick={() => setChosenIterationId(it.id)}>Edit</a>
 
   const ideaIcon = <span style={{color: 'orange'}}>?</span> // 💡
