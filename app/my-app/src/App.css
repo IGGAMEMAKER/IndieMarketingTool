@@ -166,7 +166,7 @@
 }
 
 .text-secondary {
-  color: white;
+  color: lightgray;
 }
 
 @media (max-width: 420px) {
