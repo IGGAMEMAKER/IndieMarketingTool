@@ -441,12 +441,12 @@ function renderIteration(project, it, i, setChosenIterationId) {
             {it.description}
           </div>
 
-          <br />
-          {new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}
-          {new Array(ideaGoals.length).fill(<b>{ideaIcon}</b>)}
-          {new Array(userGoals.length).fill(<b>{growthIcon}</b>)}
-          {new Array(featureGoals.length).fill(<b>{featureIcon}</b>)}
-          <br/>
+          {/*<br />*/}
+          {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
+          {/*{new Array(ideaGoals.length).fill(<b>{ideaIcon}</b>)}*/}
+          {/*{new Array(userGoals.length).fill(<b>{growthIcon}</b>)}*/}
+          {/*{new Array(featureGoals.length).fill(<b>{featureIcon}</b>)}*/}
+          {/*<br/>*/}
           {/*{renderRiskGoals(project, it)}*/}
           {/*{renderUserGoals(project, it)}*/}
         </div>
