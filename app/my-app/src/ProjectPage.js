@@ -224,10 +224,15 @@ function MarketingPlanner({project}) {
   return <div>
     <Panel id="Growth" header="How will you grow" />
     88 {chosenAudience} 88
-    {project.audiences.map(a => <button
-      className={`toggle ${chosenAudience === a.id ? 'chosen' : ''}`}
-      onClick={() => {setChosenAudience(a.id)}}
-    >{a.name}</button>)}
+    {project.audiences.map(a => {
+      // const onChoose =
+      return <button
+        className={`toggle ${chosenAudience === a.id ? 'chosen' : ''}`}
+        onClick={() => {
+          setChosenAudience(a.id)
+        }}
+      >{a.name}</button>;
+    })}
 
     <div className="Container">
       <table>
