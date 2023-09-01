@@ -111,6 +111,7 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
   var it = getByID(project.iterations, chosenIterationId);
   var popupCloser = <div onClick={() => onChoose(-1)} className={"iteration-container"} />
 
+
   return <div id="editIteration" className={"edit-iteration"}>
     {popupCloser}
     <div>
