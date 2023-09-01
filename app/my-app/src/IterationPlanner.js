@@ -266,7 +266,6 @@ function NumberGoalPicker({project, it}) {
 
   var featurePicker = <div>
     <h2>Do less</h2>
-    <br />
     <h3>
       Which problem will this feature solve?
     </h3>
@@ -389,13 +388,20 @@ function renderIteration(project, it, i, setChosenIterationId) {
     onClick={() => actions.addIteration(simplifiedIteration, {pasteBefore: it.id})}
   >+</button>
 
+  const stopPropagation = e => {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  }
+
   const moveLeftButton = <button onClick={ev => {
-    ev.preventDefault()
+    stopPropagation(ev)
+    // ev.preventDefault()
     actions.changeIterationOrder(i, i - 1)
   }}>{ARROW_LEFT}</button>
 
   const moveRightButton = <button onClick={ev => {
-    ev.preventDefault()
+    // ev.preventDefault()
+    stopPropagation(ev)
     actions.changeIterationOrder(i, i + 1)
   }}>{ARROW_RIGHT}</button>
 
