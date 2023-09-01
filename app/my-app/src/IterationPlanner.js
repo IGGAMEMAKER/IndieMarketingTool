@@ -119,7 +119,10 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
       <FieldPicker
         value={it.description}
         onAction={val => actions.editIterationDescription(it.id, val)}
-        onRemove={() => actions.removeIteration(it.id)}
+        onRemove={() => {
+          onChoose(-1)
+          actions.removeIteration(it.id)
+        }}
         normalValueRenderer={onEdit => <h3 onClick={onEdit}><b>{it.description}</b></h3>}
       />
       {/*<div>{durationSelector}</div>*/}
@@ -407,13 +410,6 @@ function renderIteration(project, it, i, setChosenIterationId) {
 
     incomeGoal = <div className={"income-goal"} onClick={onGoalRemove(it, g)}>+${g.income}/mo</div>
   }
-
-  var iterationNameEditor =             <FieldPicker
-    value={it.description}
-    onAction={val => actions.editIterationDescription(it.id, val)}
-    onRemove={() => actions.removeIteration(it.id)}
-    normalValueRenderer={onEdit => <div onClick={onEdit}><b>{it.description}</b></div>}
-  />
 
   return <div className={"Audience-item"} key={it.id} onClick={() => setChosenIterationId(it.id)}>
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
