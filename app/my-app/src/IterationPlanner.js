@@ -120,8 +120,8 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
         value={it.description}
         onAction={val => actions.editIterationDescription(it.id, val)}
         onRemove={() => {
-          onChoose(-1)
           actions.removeIteration(it.id)
+          onChoose(-1)
         }}
         normalValueRenderer={onEdit => <h3 onClick={onEdit}><b>{it.description}</b></h3>}
       />
