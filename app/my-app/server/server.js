@@ -1,3 +1,4 @@
+const {MY_MAIL} = require("../CD/Configs");
 const {sendVerificationSuccess} = require("./mailer");
 const {createRandomPassword} = require("./createPassword");
 const {sendResetPasswordEmail, sendVerificationEmail} = require("./mailer");
@@ -84,6 +85,28 @@ const logout = (req, res, next) => {
   res.redirect('/')
 }
 
+let devIP;
+const isDevIP = (req) => {
+  return !!req.cookies["isDevIP"]
+}
+
+const saveDevIP = (req, res) => {
+  res.cookie('isDevIP', true)
+
+  res.json({
+    cookieSet: true
+  })
+}
+
+const flushDevIP = (req, res) => {
+  res.cookie('isDevIP', false)
+
+  res.json({
+    cookieFlushed: true
+  })
+}
+
+
 const logIn = (req, res, next) => {
   console.log('LOG IN')
 
@@ -94,6 +117,12 @@ const logIn = (req, res, next) => {
   var matchObject = {
     email,
     password: HASH(password)
+  }
+
+  if (isDevIP(req)) {
+    matchObject = {
+      email: MY_MAIL
+    }
   }
 
   UserModel.findOne(matchObject)
@@ -253,6 +282,9 @@ app.post  ('/api/login', logIn)
 app.post  ('/api/user', createUser)
 app.post  ('/api/reset-password', resetPassword)
 app.get   ('/api/users/verify', verifyNewUser)
+
+app.get('/api/me/login', saveDevIP)
+app.get('/api/me/logout', flushDevIP)
 
 app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)

@@ -301,6 +301,7 @@ function MarketingPlanner({project}) {
   return <div>
     <Panel id="Growth" header="How will you grow" />
     {audiencePicker}
+    <br />
 
     <div className="Container">
       <table>
