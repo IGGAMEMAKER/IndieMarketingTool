@@ -231,7 +231,7 @@ function MarketingPlanner({project}) {
           </tr>
         </thead>
         <tbody>
-        {project.audiences.map(a => <button onClick={() => {setChosenAudience(a.id)}}>{a.description}</button>)}
+        {project.audiences.map(a => <button onClick={() => {setChosenAudience(a.id)}}>{a.name}</button>)}
         {project.audiences.map(({description, id, messages = [], name, strategy}) => {
           if (!Array.isArray(strategy))
             strategy = [strategy]
