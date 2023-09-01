@@ -114,7 +114,13 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
   return <div id="editIteration" className={"edit-iteration"}>
     {popupCloser}
     <div>
-      <h3>{it.description}</h3>
+      {/*<h3>{it.description}</h3>*/}
+      <FieldPicker
+        value={it.description}
+        onAction={val => actions.editIterationDescription(it.id, val)}
+        onRemove={() => actions.removeIteration(it.id)}
+        normalValueRenderer={onEdit => <h3 onClick={onEdit}><b>{it.description}</b></h3>}
+      />
       {/*<div>{durationSelector}</div>*/}
       <NumberGoalPicker project={project} it={it} />
     </div>
@@ -393,20 +399,23 @@ function renderIteration(project, it, i, setChosenIterationId) {
     incomeGoal = <div className={"income-goal"} onClick={onGoalRemove(it, g)}>+${g.income}/mo</div>
   }
 
-  return <div className={"Audience-item"} key={it.id}>
+  var iterationNameEditor =             <FieldPicker
+    value={it.description}
+    onAction={val => actions.editIterationDescription(it.id, val)}
+    onRemove={() => actions.removeIteration(it.id)}
+    normalValueRenderer={onEdit => <div onClick={onEdit}><b>{it.description}</b></div>}
+  />
+
+  return <div className={"Audience-item"} key={it.id} onClick={() => setChosenIterationId(it.id)}>
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
     <div style={{display: 'grid', gridTemplateColumns: 'auto 25px'}}>
       {/*{simplifyButton}*/}
       <div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>
         <div>
-          <div>{moveLeftButton}{moveRightButton} {editLink}</div>
+          {/*<div>{moveLeftButton}{moveRightButton} {editLink}</div>*/}
+          <div>{moveLeftButton}{moveRightButton}</div>
           <div className={"iteration-title"}>
-            <FieldPicker
-              value={it.description}
-              onAction={val => actions.editIterationDescription(it.id, val)}
-              onRemove={() => actions.removeIteration(it.id)}
-              normalValueRenderer={onEdit => <div onClick={onEdit}><b>{it.description}</b></div>}
-            />
+            {it.description}
           </div>
 
           <br />
