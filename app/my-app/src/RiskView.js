@@ -63,8 +63,8 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
 
       return <div>
         <div>
-          <span onClick={() => onChange(true)}><b>{risk.name}</b></span>
           {movementBar}{removeFromIterationButton}
+          <span onClick={() => onChange(true)}><b>{risk.name}</b></span>
         </div>
         <ul>
           {solutionRenderer}
