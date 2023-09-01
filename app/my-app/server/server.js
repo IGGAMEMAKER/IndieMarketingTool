@@ -23,11 +23,20 @@ const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 
 
 
-const getCookies = req => {
-  return {
+const getCookies = async req => {
+  if (isDevIP(req)) {
+    var u = await UserModel.findOne({email: MY_MAIL});
+
+    return {
+      email: MY_MAIL,
+      sessionToken: u.sessionToken
+    }
+  }
+
+  return Promise.resolve({
     email: req.cookies["email"],
     sessionToken: req.cookies["sessionToken"]
-  }
+  })
 }
 const generateCookies = async (res, email, req) => {
   var token
@@ -71,8 +80,8 @@ const createVerificationLink = () => {
   return HASH(createRandomPassword(35))
 }
 
-const printCookies = (req, res) => {
-  var {email, sessionToken} = getCookies(req)
+const printCookies = async (req, res) => {
+  var {email, sessionToken} = await getCookies(req)
 
   console.log('printCookies', email, sessionToken)
 }
@@ -119,12 +128,12 @@ const flushDevIP = (req, res) => {
 }
 
 
-const logIn = (req, res, next) => {
+const logIn = async (req, res, next) => {
   console.log('LOG IN')
 
   var {email, password} = req.body;
   console.log('LOG IN', {email, password})
-  printCookies(req, res)
+  await printCookies(req, res)
 
   var matchObject = {
     email,
@@ -142,7 +151,7 @@ const logIn = (req, res, next) => {
       if (user) {
         console.log('logIn', {user})
         // if has OK cookies, maybe send existing ones?
-        printCookies(req, res)
+        await printCookies(req, res)
         await generateCookies(res, email, req)
 
         res.json({
@@ -158,10 +167,10 @@ const logIn = (req, res, next) => {
     })
 }
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   console.log('\nauthenticate')
-  var {email, sessionToken} = getCookies(req)
-  printCookies(req, res)
+  var {email, sessionToken} = await getCookies(req)
+  await printCookies(req, res)
 
   var match = {
     email,
