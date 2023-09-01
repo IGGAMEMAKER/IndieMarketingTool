@@ -429,6 +429,7 @@ export class ProjectPage extends Component {
     channels: [],
     risks: [],
     links: [],
+    loaded: false,
   }
 
   copyState = () => {
@@ -471,6 +472,7 @@ export class ProjectPage extends Component {
   render() {
     if (!this.state.loaded)
       return <div>Loading the project...</div>
+
 
     var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
     var projectId = this.getProjectId()
