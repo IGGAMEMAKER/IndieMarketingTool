@@ -221,9 +221,73 @@ function MarketingPlanner({project}) {
   var [chosenAudience, setChosenAudience] = useState(defaultId)
   // var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
 
+  const renderAudience = ({description, id, name, strategy, messages = []}) => {
+    if (!Array.isArray(strategy))
+      strategy = [strategy]
+
+    var messagePicker = <ol>
+      {messages.map(m => {
+          // TODO not i, but m.id
+          var messageId = m.id
+
+          return <li key={"messages-to-audience." + id + "." + messageId}>
+            <FieldPicker
+              value={m.name}
+              placeholder={"What will you tell them?"}
+              onAction={val => actions.editAudienceMessage(val, id, messageId)}
+              onRemove={() => actions.removeAudienceMessage(id, messageId)}
+            />
+          </li>
+        }
+      )}
+      <li>
+        <FieldAdder
+          onAdd={val => actions.addAudienceMessage(val, id)}
+          placeholder={"what will you tell them?"}
+        />
+      </li>
+    </ol>
+
+    var strategyPicker = <ol>
+      {strategy.map(s => {
+        var strategyId = s.id
+        // console.log(s.id, 'strategyPicker', {strategyId})
+
+        return <li key={"strategy." + id + "." + strategyId}>
+          <FieldPicker
+            value={s.name}
+            placeholder={"How will you reach them?"}
+            onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}
+            onRemove={() => actions.removeAudienceStrategy(id, strategyId)}
+          />
+        </li>
+      })}
+      <li>
+        <FieldAdder onAdd={val => actions.addAudienceStrategy(val, id)} placeholder={"add more ways"}/>
+      </li>
+    </ol>
+
+    return <tr key={"marketing-planner." + id} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
+      {/*<td>*/}
+      {/*  {a.name}*/}
+      {/*</td>*/}
+      <td>
+        <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>
+        <br />
+        <label style={{color: 'gray'}}>{description}</label>
+        <br />
+        {strategyPicker}
+      </td>
+      <td>
+        <b>What will you tell <span style={{color: 'green'}}>{name}</span>?</b>
+        {messagePicker}
+      </td>
+    </tr>
+  }
+
   return <div>
     <Panel id="Growth" header="How will you grow" />
-    88 {chosenAudience} 88
+    {chosenAudience}
     {project.audiences.map(a => {
       return <button
         className={`toggle ${chosenAudience === a?.id ? 'chosen' : ''}`}
@@ -247,69 +311,8 @@ function MarketingPlanner({project}) {
           </tr>
         </thead>
         <tbody>
-        {project.audiences.map(({description, id, name, strategy, messages = []}) => {
-          if (!Array.isArray(strategy))
-            strategy = [strategy]
-
-          var messagePicker = <ol>
-            {messages.map(m => {
-              // TODO not i, but m.id
-              var messageId = m.id
-
-              return <li key={"messages-to-audience." + id + "." + messageId}>
-                <FieldPicker
-                  value={m.name}
-                  placeholder={"What will you tell them?"}
-                  onAction={val => actions.editAudienceMessage(val, id, messageId)}
-                  onRemove={() => actions.removeAudienceMessage(id, messageId)}
-                />
-              </li>
-              }
-            )}
-            <li>
-              <FieldAdder
-                onAdd={val => actions.addAudienceMessage(val, id)}
-                placeholder={"what will you tell them?"}
-              />
-            </li>
-          </ol>
-
-          var strategyPicker = <ol>
-            {strategy.map(s => {
-              var strategyId = s.id
-              // console.log(s.id, 'strategyPicker', {strategyId})
-
-              return <li key={"strategy." + id + "." + strategyId}>
-                <FieldPicker
-                  value={s.name}
-                  placeholder={"How will you reach them?"}
-                  onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}
-                  onRemove={() => actions.removeAudienceStrategy(id, strategyId)}
-                />
-              </li>
-            })}
-            <li>
-              <FieldAdder onAdd={val => actions.addAudienceStrategy(val, id)} placeholder={"add more ways"}/>
-            </li>
-          </ol>
-
-          return <tr key={"marketing-planner." + id} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
-            {/*<td>*/}
-            {/*  {a.name}*/}
-            {/*</td>*/}
-            <td>
-              <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>
-              <br />
-              <label style={{color: 'gray'}}>{description}</label>
-              <br />
-              {strategyPicker}
-            </td>
-            <td>
-              <b>What will you tell <span style={{color: 'green'}}>{name}</span>?</b>
-              {messagePicker}
-            </td>
-          </tr>
-        })}
+        {chosenAudience ? renderAudience(chosenAudience) : ''}
+        {/*{project.audiences.map()}*/}
         </tbody>
       </table>
     </div>
