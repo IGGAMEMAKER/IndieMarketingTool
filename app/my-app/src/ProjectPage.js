@@ -219,7 +219,7 @@ function MarketingPlanner({project}) {
   var defaultId = -1; //project.audiences.length ? project.audiences[0].id : -1
 
   var [chosenAudience, setChosenAudience] = useState(defaultId)
-  // var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
+  var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
 
   const renderAudience = ({description, id, name, strategy, messages = []}) => {
     if (!Array.isArray(strategy))
@@ -287,7 +287,7 @@ function MarketingPlanner({project}) {
 
   return <div>
     <Panel id="Growth" header="How will you grow" />
-    {chosenAudience}
+    {/*{chosenAudience}*/}
     {project.audiences.map(a => {
       return <button
         className={`toggle ${chosenAudience === a?.id ? 'chosen' : ''}`}
@@ -311,7 +311,7 @@ function MarketingPlanner({project}) {
           </tr>
         </thead>
         <tbody>
-        {chosenAudience ? renderAudience(chosenAudience) : ''}
+        {audience ? renderAudience(audience) : ''}
         {/*{project.audiences.map()}*/}
         </tbody>
       </table>
