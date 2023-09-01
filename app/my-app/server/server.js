@@ -91,10 +91,14 @@ const isDevIP = (req) => {
 }
 
 const saveDevIP = (req, res) => {
-  res.cookie('isDevIP', true)
+  const ipAddresses = req.header('x-forwarded-for');
+  console.log({ipAddresses})
+
+  // res.cookie('isDevIP', true)
 
   res.json({
-    cookieSet: true
+    cookieSet: true,
+    ipAddresses
   })
 }
 
