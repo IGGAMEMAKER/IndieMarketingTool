@@ -86,13 +86,20 @@ const logout = (req, res, next) => {
 }
 
 let devIP;
+const getIP = (req) => {
+  const ipAddresses = req.header('x-forwarded-for');
+  return ipAddresses
+}
 const isDevIP = (req) => {
-  return !!req.cookies["isDevIP"]
+  return getIP(req) === devIP
+  // return !!req.cookies["isDevIP"]
 }
 
+
 const saveDevIP = (req, res) => {
-  const ipAddresses = req.header('x-forwarded-for');
+  const ipAddresses = getIP(req);
   console.log({ipAddresses})
+  devIP = ipAddresses
 
   // res.cookie('isDevIP', true)
 
@@ -103,7 +110,8 @@ const saveDevIP = (req, res) => {
 }
 
 const flushDevIP = (req, res) => {
-  res.cookie('isDevIP', false)
+  devIP = ''
+  // res.cookie('isDevIP', false)
 
   res.json({
     cookieFlushed: true
