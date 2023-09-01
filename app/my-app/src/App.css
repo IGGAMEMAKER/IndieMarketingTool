@@ -177,6 +177,8 @@
   .menu {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     height: 75px;
+    bottom: 0;
+    top: calc(100vh - 75px)
   }
 
   .Container.links {
