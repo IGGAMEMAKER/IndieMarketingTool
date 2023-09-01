@@ -304,13 +304,13 @@ function MarketingPlanner({project}) {
 
     <div className="Container">
       <table>
-        <thead>
-          <tr>
-            {/*<th>#</th>*/}
-            <th>How to reach them</th>
-            <th>Your message</th>
-          </tr>
-        </thead>
+        {/*<thead>*/}
+        {/*  <tr>*/}
+        {/*    /!*<th>#</th>*!/*/}
+        {/*    <th>How to reach them</th>*/}
+        {/*    <th>Your message</th>*/}
+        {/*  </tr>*/}
+        {/*</thead>*/}
         <tbody>
         {audience ? renderAudience(audience) : ''}
         </tbody>
