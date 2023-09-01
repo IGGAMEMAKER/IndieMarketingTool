@@ -216,20 +216,20 @@ function BusinessPlanner({project}) {
 }
 
 function MarketingPlanner({project}) {
-  var defaultId = project.audiences.length ? project.audiences[0].id : -1
+  var defaultId = -1; //project.audiences.length ? project.audiences[0].id : -1
 
   var {chosenAudience, setChosenAudience} = useState(defaultId)
-  var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
+  // var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
 
   return <div>
     <Panel id="Growth" header="How will you grow" />
     88 {chosenAudience} 88
     {project.audiences.map(a => {
       return <button
-        className={`toggle ${chosenAudience === a.id ? 'chosen' : ''}`}
+        className={`toggle ${chosenAudience === a?.id ? 'chosen' : ''}`}
         onClick={() => {
           try {
-            setChosenAudience(a.id)
+            setChosenAudience(a?.id)
           } catch (e) {
 
           }
