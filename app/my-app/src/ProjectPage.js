@@ -221,6 +221,8 @@ function MarketingPlanner({project}) {
 
   return <div>
     <Panel id="Growth" header="How will you grow" />
+    {project.audiences.map(a => <button className={`toggle ${chosenAudience === a.id ? 'chosen' : ''}`} onClick={() => {setChosenAudience(a.id)}}>{a.name}</button>)}
+
     <div className="Container">
       <table>
         <thead>
@@ -231,7 +233,6 @@ function MarketingPlanner({project}) {
           </tr>
         </thead>
         <tbody>
-        {project.audiences.map(a => <button onClick={() => {setChosenAudience(a.id)}}>{a.name}</button>)}
         {project.audiences.map(({description, id, messages = [], name, strategy}) => {
           if (!Array.isArray(strategy))
             strategy = [strategy]

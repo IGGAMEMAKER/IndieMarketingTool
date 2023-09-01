@@ -169,6 +169,13 @@
   /*color: lightgray;*/
 }
 
+button.toggle.chosen {
+  background-color: yellow;
+}
+button.toggle {
+  background-color: white;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));

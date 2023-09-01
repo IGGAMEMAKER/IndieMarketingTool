@@ -341,10 +341,12 @@ function NumberGoalPicker({project, it}) {
 
   const gt = (goalType1, name) => {
     var goals = Iteration.getGoalsByGoalType(goalType1)(it).length
+    var chosen = goalType === goalType1
 
     return <button
       onClick={() => setGoalType(goalType1)}
-      style={{backgroundColor: goalType === goalType1 ? 'yellow' : 'white'}}
+      className={`toggle ${chosen ? 'chosen' : ''}`}
+      // style={{backgroundColor: goalType === goalType1 ? 'yellow' : 'white'}}
     >{name}{goals ? ' (' + goals + ')' : ''}</button>
   }
 
