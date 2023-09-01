@@ -380,18 +380,22 @@ function renderIteration(project, it, i, setChosenIterationId) {
   const evolvedIteration = new Iteration("NEW ITERATION", [])
   const simplifiedIteration = new Iteration("NEW ITERATION", [])
 
-  const evolveButton = <button
-    onClick={() => actions.addIteration(evolvedIteration, {pasteAfter: it.id})}
-  >+</button>
-
-  const simplifyButton = <button
-    onClick={() => actions.addIteration(simplifiedIteration, {pasteBefore: it.id})}
-  >+</button>
-
   const stopPropagation = e => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
   }
+
+  const evolveButton = <button
+    onClick={ev => {
+      stopPropagation(ev)
+      actions.addIteration(evolvedIteration, {pasteAfter: it.id})
+    }}
+  >+</button>
+
+  const simplifyButton = <button
+    onClick={ev => actions.addIteration(simplifiedIteration, {pasteBefore: it.id})}
+  >+</button>
+
 
   const moveLeftButton = <button onClick={ev => {
     stopPropagation(ev)
