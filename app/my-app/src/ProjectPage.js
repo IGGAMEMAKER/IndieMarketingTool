@@ -218,7 +218,7 @@ function BusinessPlanner({project}) {
 function MarketingPlanner({project}) {
   var defaultId = -1; //project.audiences.length ? project.audiences[0].id : -1
 
-  var {chosenAudience, setChosenAudience} = useState(defaultId)
+  var [chosenAudience, setChosenAudience] = useState(defaultId)
   // var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
 
   return <div>
