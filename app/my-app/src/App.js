@@ -269,7 +269,7 @@ class MainPage extends Component {
         <h1>Stop wasting years on a game/app, that nobody needs</h1>
         <br />
         <h2>Bring ur project to market faster</h2>
-        <h2>Innovate without destroying ur mental health</h2>
+        <h2>Innovate without destroying yourself</h2>
         {/*<Link to={"/examples"}>Examples</Link>*/}
         {/*<Link to={"/pricing"}>Pricing</Link>*/}
 

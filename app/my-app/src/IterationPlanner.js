@@ -341,6 +341,7 @@ function NumberGoalPicker({project, it}) {
 
   const gt = (goalType1, name) => {
     var goals = Iteration.getGoalsByGoalType(goalType1)(it).length
+
     return <button
       onClick={() => setGoalType(goalType1)}
       style={{backgroundColor: goalType === goalType1 ? 'yellow' : 'white'}}

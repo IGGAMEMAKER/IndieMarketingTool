@@ -2,6 +2,7 @@ import {FieldPicker} from "./FieldPicker";
 import actions from "./actions";
 import {FieldAdder} from "./FieldAdder";
 import {RiskAdder} from "./RiskAdder";
+import {ARROW_DOWN, ARROW_UP} from "./constants/symbols";
 
 export function RiskList({risks}) {
   // key={"risk-list." + r.id}
@@ -44,8 +45,8 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
 
       var movementBar;
       if (orderingAllowed) {
-        var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>Up</button>
-        var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>Down</button>
+        var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>{ARROW_UP}</button>
+        var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>{ARROW_DOWN}</button>
 
         movementBar = <span>{up} {down}</span>
       }
