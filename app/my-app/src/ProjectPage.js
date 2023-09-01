@@ -10,6 +10,7 @@ import {FieldAdder} from "./FieldAdder";
 import {renderIncomeGoal} from "./RenderIncomeGoal";
 import {RiskList} from "./RiskView";
 import {Panel} from "./Panel";
+import {getByID} from "./utils";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -215,6 +216,9 @@ function BusinessPlanner({project}) {
 }
 
 function MarketingPlanner({project}) {
+  var {chosenAudience, setChosenAudience} = useState(project.audiences.length ? project.audiences[0].id : -1)
+  var audience = chosenAudience === -1 ? null : getByID(project.audiences, chosenAudience)
+
   return <div>
     <Panel id="Growth" header="How will you grow" />
     <div className="Container">
@@ -224,10 +228,10 @@ function MarketingPlanner({project}) {
             {/*<th>#</th>*/}
             <th>How to reach them</th>
             <th>Your message</th>
-            {/*<th>Message</th>*/}
           </tr>
         </thead>
         <tbody>
+        {project.audiences.map(a => <button onClick={() => {setChosenAudience(a.id)}}>{a.description}</button>)}
         {project.audiences.map(({description, id, messages = [], name, strategy}) => {
           if (!Array.isArray(strategy))
             strategy = [strategy]
