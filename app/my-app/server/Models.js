@@ -15,7 +15,9 @@ var UserSchema = new Schema({
 
 UserSchema.index({email: 1}, {unique: true})
 
+
 const UserModel = mongoose.model("users", UserSchema)
+
 
 var ProjectSchema = new Schema({
   name: String,
