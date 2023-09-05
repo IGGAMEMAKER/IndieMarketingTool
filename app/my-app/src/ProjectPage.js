@@ -481,6 +481,7 @@ export class ProjectPage extends Component {
     var audiencePhrase = appType === APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your app?'
 
 
+
     const menus = ["Audiences", "Monetization", "Goals", "Growth", "Risks", "ITERATIONS", "Sources", "Links"]
     return (
       <div className="App">
