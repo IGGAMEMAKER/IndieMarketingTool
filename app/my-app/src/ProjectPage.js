@@ -507,7 +507,7 @@ export class ProjectPage extends Component {
             value={this.state.project?.description || ""}
             placeholder={"What will you create?"}
             onAction={val => {actions.editDescription(projectId, val)}}
-            normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+            // normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
           <Panel id="Audiences" header={audiencePhrase} />
           {/*{audiencePhrase}*/}
