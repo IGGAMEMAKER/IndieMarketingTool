@@ -533,6 +533,7 @@ export default {
   loadProject,
   loadProfile,
 
+
   addProject,
   editName,
   editDescription,
