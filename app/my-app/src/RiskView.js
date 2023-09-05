@@ -3,6 +3,7 @@ import actions from "./actions";
 import {FieldAdder} from "./FieldAdder";
 import {RiskAdder} from "./RiskAdder";
 import {ARROW_DOWN, ARROW_UP} from "./constants/symbols";
+import {useState} from "react";
 
 export function RiskList({risks}) {
   // key={"risk-list." + r.id}
@@ -24,7 +25,109 @@ function RiskSolutionAdder({riskIndex}) {
   </li>
 }
 
+export function SolutionView({riskIndex, s, id, index }) {
+  const indexName = "solutionIndex"
+  var [isDragging, setDragging] = useState(false)
+  var [isDraggingTarget, setDraggingTarget] = useState(false)
+  var isCorrectTypeDrag = e => {
+    try {
+      var d = parseInt(e.dataTransfer.getData(indexName))
+      var resp = !isNaN(d)
+      console.log('d=', d, indexName, resp)
+
+      return true
+    } catch (err) {
+      console.error('error in drag', indexName)
+      return false
+    }
+  }
+
+  var onStartDragging = (e, dragging) => {
+    e.dataTransfer.setData(indexName, index)
+    setDragging(dragging)
+    setDraggingTarget(false)
+  }
+
+  var onDraggedUpon = (e, target) => {
+    e.preventDefault()
+
+    if (isCorrectTypeDrag(e))
+      setDraggingTarget(target)
+  }
+  var onDrop = e => {
+    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
+    // console.log(draggedOnMeId, typeof draggedOnMeId, index - 1)
+
+    var was = draggedOnMeId;
+    var next = index;
+
+    setDraggingTarget(false)
+    actions.changeSolutionOrder(riskIndex, was, next)
+  }
+
+  return <li
+    key={"risk." + id + ".solution" + s.id}
+    draggable
+    onDragStart={e => {onStartDragging(e, true)}}
+    onDragEnd={e => {onStartDragging(e, false)}}
+
+    onDragLeave={e => onDraggedUpon(e,false)}
+    onDragOver={e => onDraggedUpon(e, true)}
+
+    onDrop={e => {onDrop(e)}}
+
+    className={`text-secondary ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+    // className="text-secondary"
+  >
+    <FieldPicker
+      value={s.name}
+      placeholder={"Add possible solution"}
+      onAction={val => actions.editRiskSolution(id, s.id, val)}
+      onRemove={() => actions.removeRiskSolution(id, s.id)}
+    />
+  </li>
+}
+
 export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
+  const indexName = "riskIndex"
+  var [isDragging, setDragging] = useState(false)
+  var [isDraggingTarget, setDraggingTarget] = useState(false)
+  var isCorrectTypeDrag = e => {
+    try {
+      var d = parseInt(e.dataTransfer.getData(indexName))
+      var resp = !isNaN(d)
+      console.log('d=', d, indexName, resp)
+
+      return true
+    } catch (err) {
+      console.error('error in drag', indexName)
+      return false
+    }
+  }
+
+  var onStartDragging = (e, dragging) => {
+    e.dataTransfer.setData(indexName, index)
+    setDragging(dragging)
+    setDraggingTarget(false)
+  }
+
+  var onDraggedUpon = (e, target) => {
+    e.preventDefault()
+
+    if (isCorrectTypeDrag(e))
+      setDraggingTarget(target)
+  }
+  var onDrop = e => {
+    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
+    // console.log(draggedOnMeId, typeof draggedOnMeId, index - 1)
+
+    var was = draggedOnMeId;
+    var next = index;
+
+    setDraggingTarget(false)
+    actions.changeRiskOrder(was, next)
+  }
+
   try {
     var id = risk.id;
     var solutions = risk.solutions || []
@@ -33,22 +136,25 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
       var solutionRenderer;
 
       if (solutions.length) {
-        solutionRenderer = solutions.map(s => <li key={"risk." + id + ".solution" + s.id} className="text-secondary">
-          <FieldPicker
-            value={s.name}
-            placeholder={"Add possible solution"}
-            onAction={val => actions.editRiskSolution(id, s.id, val)}
-            onRemove={() => actions.removeRiskSolution(id, s.id)}
-          />
-        </li>)
+        // solutionRenderer = solutions.map(s => <li
+        //   key={"risk." + id + ".solution" + s.id} className="text-secondary"
+        // >
+        //   <FieldPicker
+        //     value={s.name}
+        //     placeholder={"Add possible solution"}
+        //     onAction={val => actions.editRiskSolution(id, s.id, val)}
+        //     onRemove={() => actions.removeRiskSolution(id, s.id)}
+        //   />
+        // </li>)
+        solutionRenderer = solutions.map((s, si) => <SolutionView riskIndex={id} id={id} s={s} index={si} />)
       }
 
       var movementBar;
       if (orderingAllowed) {
-        var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>{ARROW_UP}</button>
-        var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>{ARROW_DOWN}</button>
-
-        movementBar = <span>{up} {down}</span>
+        // var up = <button onClick={() => actions.changeRiskOrder(index, index - 1)}>{ARROW_UP}</button>
+        // var down = <button onClick={() => actions.changeRiskOrder(index, index + 1)}>{ARROW_DOWN}</button>
+        //
+        // movementBar = <span>{up} {down}</span>
       }
 
       const removeButton = <button style={{float: 'right'}} onClick={() => {
@@ -64,8 +170,21 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
       }
 
       return <div>
-        <div>
-          {movementBar}{removeFromIterationButton} <span onClick={() => onChange(true)}><b>{risk.name}</b></span>
+        <div
+          draggable={orderingAllowed}
+          onDragStart={e => {onStartDragging(e, true)}}
+          onDragEnd={e => {onStartDragging(e, false)}}
+
+          onDragLeave={e => onDraggedUpon(e,false)}
+          onDragOver={e => onDraggedUpon(e, true)}
+
+          onDrop={e => {onDrop(e)}}
+
+          // className={`Audience-item ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+          className={`${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+        >
+          {/*{movementBar}{removeFromIterationButton} <span onClick={() => onChange(true)}><b>{risk.name}</b></span>*/}
+          {removeFromIterationButton} <span onClick={() => onChange(true)}><b>{risk.name}</b></span>
         </div>
         <ul>
           {solutionRenderer}
@@ -87,7 +206,21 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
     />
 
     return (
-      <li className="Risk-item">
+      <li
+        // draggable={orderingAllowed}
+        // onDragStart={e => {onStartDragging(e, true)}}
+        // onDragEnd={e => {onStartDragging(e, false)}}
+        //
+        // onDragLeave={e => onDraggedUpon(e,false)}
+        // onDragOver={e => onDraggedUpon(e, true)}
+        //
+        // onDrop={e => {onDrop(e)}}
+
+        // className={`Audience-item ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+        // className={`Risk-item ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+
+        className="Risk-item"
+      >
         {content}
       </li>
     )

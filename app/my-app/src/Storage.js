@@ -37,7 +37,7 @@ import {
   MONETIZATION_ORDER_CHANGE,
   MONETIZATION_REMOVE, PROFILE_LOGIN,
   PROJECT_ADD,
-  PROJECT_EDIT_BURNOUT_TIME,
+  PROJECT_EDIT_BURNOUT_TIME, PROJECT_EDIT_DESCRIPTION,
   PROJECT_EDIT_DESIRED_PROFIT,
   PROJECT_EDIT_EXPENSES,
   PROJECT_LOAD,
@@ -48,7 +48,7 @@ import {
   RISK_ORDER_CHANGE,
   RISK_REMOVE,
   RISK_SOLUTION_ADD,
-  RISK_SOLUTION_EDIT,
+  RISK_SOLUTION_EDIT, RISK_SOLUTION_ORDER_CHANGE,
   RISK_SOLUTION_REMOVE
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
@@ -106,6 +106,43 @@ const swap = (i1, i2, array) => {
     array[i2] = r1
     array[i1] = r2
   }
+  return array
+}
+
+
+const swapTo = (from, destination, array) => {
+  // if (from !== to) {
+  // }
+  var movable = array[from];
+
+  if (from < destination) {
+    // moving right/down
+
+    array.splice(destination, 0, movable)
+    array.splice(from, 1)
+  }
+
+  if (from > destination) {
+    // moving left/up
+
+    array.splice(from, 1)
+    array.splice(destination, 0, movable)
+  }
+
+  // if (i1 < i2) {
+  //   for (var i = i1; i < i2; i++) {
+  //     array = swap(i, i + 1, array)
+  //   }
+  // }
+  //
+  // if (i1 > i2) {
+  //   console.log('BACKWARDS', i2, i1)
+  //   for (i = i1; i > i2; i--) {
+  //     console.log('will swap', i, i-1)
+  //     array = swap(i, i - 1, array)
+  //   }
+  // }
+
   return array
 }
 
@@ -305,6 +342,11 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break
 
+    case PROJECT_EDIT_DESCRIPTION:
+      project.description = p.description;
+      saveProjectChanges()
+      break
+
     case PROJECT_REMOVE:
       remove('/api/projects/' + p.projectId, {})
         .then(r => {
@@ -418,7 +460,7 @@ Dispatcher.register((p) => {
 
 
     case AUDIENCE_ORDER_CHANGE:
-      project.audiences = swap(p.audienceIndex1, p.audienceIndex2, project.audiences)
+      project.audiences = swapTo(p.audienceIndex1, p.audienceIndex2, project.audiences)
 
       saveProjectChanges();
       // refreshToFixIndexBug()
@@ -439,7 +481,7 @@ Dispatcher.register((p) => {
       break
 
     case MONETIZATION_ORDER_CHANGE:
-      project.monetizationPlans = swap(p.monetizationIndex1, p.monetizationIndex2, project.monetizationPlans)
+      project.monetizationPlans = swapTo(p.monetizationIndex1, p.monetizationIndex2, project.monetizationPlans)
 
       saveProjectChanges()
       // refreshToFixIndexBug()
@@ -569,11 +611,18 @@ Dispatcher.register((p) => {
 
 
 
+    case RISK_SOLUTION_ORDER_CHANGE:
+      ind = getIndexByID(project.risks, p.riskIndex)
+      var r = project.risks[ind]
+
+      r.solutions = swapTo(p.index1, p.index2, r.solutions)
+      saveProjectChanges()
+      break;
     case RISK_ORDER_CHANGE:
       var i1 = p.index1;
       var i2 = p.index2;
 
-      project.risks = swap(i1, i2, project.risks)
+      project.risks = swapTo(i1, i2, project.risks)
 
       saveProjectChanges()
       // refreshToFixIndexBug()
@@ -662,7 +711,7 @@ Dispatcher.register((p) => {
       break;
 
     case ITERATIONS_ORDER_CHANGE:
-      project.iterations = swap(p.index1, p.index2, project.iterations)
+      project.iterations = swapTo(p.index1, p.index2, project.iterations)
       saveProjectChanges()
       break;
 

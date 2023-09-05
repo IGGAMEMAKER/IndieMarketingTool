@@ -19,6 +19,7 @@ const UserModel = mongoose.model("users", UserSchema)
 
 var ProjectSchema = new Schema({
   name: String,
+  description: String,
   type: Number, // 1 - app, 2 - game
   ownerId: mongoose.ObjectId,
 

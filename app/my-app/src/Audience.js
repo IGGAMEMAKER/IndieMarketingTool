@@ -1,9 +1,49 @@
 import actions from "./actions";
 import {FieldPicker} from "./FieldPicker";
 import {ARROW_LEFT, ARROW_RIGHT} from "./constants/symbols";
+import {useState} from "react";
 
 
 export function Audience({name, description, id, index, usages=[], isFull = false}) {
+  const indexName = "audienceIndex"
+  var [isDragging, setDragging] = useState(false)
+  var [isDraggingTarget, setDraggingTarget] = useState(false)
+  var isCorrectTypeDrag = e => {
+    try {
+      var d = parseInt(e.dataTransfer.getData(indexName))
+      var resp = !isNaN(d)
+      console.log('d=', d, indexName, resp)
+
+      return true
+    } catch (err) {
+      console.error('error in drag', indexName)
+      return false
+    }
+  }
+
+  var onStartDragging = (e, dragging) => {
+    e.dataTransfer.setData(indexName, index)
+    setDragging(dragging)
+    setDraggingTarget(false)
+  }
+
+  var onDraggedUpon = (e, target) => {
+    e.preventDefault()
+
+    if (isCorrectTypeDrag(e))
+      setDraggingTarget(target)
+  }
+  var onDrop = e => {
+    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
+    // console.log(draggedOnMeId, typeof draggedOnMeId, index - 1)
+
+    var was = draggedOnMeId;
+    var next = index;
+
+    setDraggingTarget(false)
+    actions.changeAudienceOrder(was, next)
+  }
+
   var f = ''
   var left = <button onClick={() => {actions.changeAudienceOrder(index, index - 1)}}>{ARROW_LEFT}</button>
   var right = <button onClick={() => {actions.changeAudienceOrder(index, index + 1)}}>{ARROW_RIGHT}</button>
@@ -20,7 +60,7 @@ export function Audience({name, description, id, index, usages=[], isFull = fals
     value={name}
     placeholder={"Audience name"}
     normalValueRenderer={onEdit => <div className={"audience-title"}>
-      {left}{right}
+      {/*{left}{right}*/}
       <div><b onClick={onEdit}>{name}</b></div>
     </div>}
     onAction={newName => {actions.editAudienceName(newName, id)}}
@@ -50,7 +90,19 @@ export function Audience({name, description, id, index, usages=[], isFull = fals
   }
 
   return (
-    <div className="Audience-item" key={`audience${id}`}>
+    <div
+      draggable
+      onDragStart={e => {onStartDragging(e, true)}}
+      onDragEnd={e => {onStartDragging(e, false)}}
+
+      onDragLeave={e => onDraggedUpon(e,false)}
+      onDragOver={e => onDraggedUpon(e, true)}
+
+      onDrop={e => {onDrop(e)}}
+
+      className={`Audience-item ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+      key={`audience${id}`}
+    >
       {namePicker}
       {f}
     </div>

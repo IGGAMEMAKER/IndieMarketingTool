@@ -51,7 +51,12 @@ import {
   ITERATIONS_REMOVE,
   ITERATIONS_ORDER_CHANGE,
   AUDIENCE_MESSAGE_REMOVE,
-  ITERATIONS_GOAL_EDIT, ITERATIONS_GOAL_ADD, ITERATIONS_GOAL_REMOVE, ITERATIONS_GOAL_SOLVE, PROFILE_LOGIN
+  ITERATIONS_GOAL_EDIT,
+  ITERATIONS_GOAL_ADD,
+  ITERATIONS_GOAL_REMOVE,
+  ITERATIONS_GOAL_SOLVE,
+  PROFILE_LOGIN,
+  RISK_SOLUTION_ORDER_CHANGE, PROJECT_EDIT_DESCRIPTION
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -66,6 +71,14 @@ export function editName(projectId, name) {
     actionType: PROJECT_RENAME,
     projectId,
     name
+  })
+}
+
+export function editDescription(projectId, description) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_EDIT_DESCRIPTION,
+    projectId,
+    description
   })
 }
 
@@ -180,7 +193,7 @@ export function removeAudienceStrategy(audienceIndex, textIndex) {
 
 export function changeAudienceOrder(audienceIndex1, audienceIndex2) {
   Dispatcher.dispatch({
-    actionType: AUDIENCE_ORDER_CHANGE,
+    actionType: AUDIENCE_ORDER_CHANGE, // ID, no
     audienceIndex1,
     audienceIndex2
   })
@@ -325,6 +338,15 @@ export function editRiskSolution(riskIndex, solutionIndex, solution) {
 export function changeRiskOrder(index1, index2) {
   Dispatcher.dispatch({
     actionType: RISK_ORDER_CHANGE,
+    index1,
+    index2
+  })
+}
+
+export function changeSolutionOrder(riskIndex, index1, index2) {
+  Dispatcher.dispatch({
+    actionType: RISK_SOLUTION_ORDER_CHANGE,
+    riskIndex,
     index1,
     index2
   })
@@ -513,6 +535,7 @@ export default {
 
   addProject,
   editName,
+  editDescription,
   removeProject,
 
 
@@ -549,6 +572,7 @@ export default {
   editRiskSolution,
   editRiskName,
   changeRiskOrder,
+  changeSolutionOrder,
 
   addChannel,
   removeChannel,

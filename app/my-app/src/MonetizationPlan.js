@@ -21,6 +21,45 @@ function BenefitAdder({index}) {
 }
 
 export function MonetizationPlan({plan, index, audiences}) {
+  const indexName = "monetizationIndex"
+  var [isDragging, setDragging] = useState(false)
+  var [isDraggingTarget, setDraggingTarget] = useState(false)
+  var isCorrectTypeDrag = e => {
+    try {
+      var d = parseInt(e.dataTransfer.getData(indexName))
+      var resp = !isNaN(d)
+      console.log('d=', d, indexName, resp)
+
+      return true
+    } catch (err) {
+      console.error('error in drag', indexName)
+      return false
+    }
+  }
+
+  var onStartDragging = (e, dragging) => {
+    e.dataTransfer.setData(indexName, index)
+    setDragging(dragging)
+    setDraggingTarget(false)
+  }
+
+  var onDraggedUpon = (e, target) => {
+    if (isCorrectTypeDrag(e))
+      setDraggingTarget(target)
+
+    e.preventDefault()
+  }
+  var onDrop = e => {
+    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
+    // console.log(draggedOnMeId, typeof draggedOnMeId, index - 1)
+
+    var was = draggedOnMeId;
+    var next = index;
+
+    setDraggingTarget(false)
+    actions.changeMonetizationOrder(was, next)
+  }
+
   const LEFT = <button onClick={() => {actions.changeMonetizationOrder(index, index -1)}}>←</button>
   const RIGHT = <button onClick={() => {actions.changeMonetizationOrder(index, index +1)}}>→</button>
   var planId = plan.id
@@ -30,7 +69,8 @@ export function MonetizationPlan({plan, index, audiences}) {
     placeholder={"Monetization type name"}
     onAction={newValue => actions.editMonetizationName(planId, newValue)}
     onRemove={() => actions.removeMonetizationPlan(planId)}
-    normalValueRenderer={onChangeName => <div>{LEFT}<b onClick={() => onChangeName(true)}>{plan.name}</b>{RIGHT}</div>}
+    // normalValueRenderer={onChangeName => <div>{LEFT}<b onClick={() => onChangeName(true)}>{plan.name}</b>{RIGHT}</div>}
+    normalValueRenderer={onChangeName => <div><b onClick={() => onChangeName(true)}>{plan.name}</b></div>}
   />
 
   var descriptionPicker = <FieldPicker
@@ -84,7 +124,18 @@ export function MonetizationPlan({plan, index, audiences}) {
 
   var adder = <BenefitAdder index={planId} />
 
-  return <div className="Audience-item">
+  return <div
+    draggable
+    onDragStart={e => {onStartDragging(e, true)}}
+    onDragEnd={e => {onStartDragging(e, false)}}
+
+    onDragLeave={e => onDraggedUpon(e,false)}
+    onDragOver={e => onDraggedUpon(e, true)}
+
+    onDrop={e => {onDrop(e)}}
+
+    className={`Audience-item ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+  >
     {/*<div>{LEFT}{namePicker}{RIGHT}</div>*/}
     <div>{namePicker}</div>
     <div>{moneyPicker}</div>

@@ -1,6 +1,6 @@
 import {Component, useState} from "react";
 import storage from "./Storage";
-import actions from "./actions";
+import actions, {editDescription} from "./actions";
 import {APP_TYPE_GAME, LINK_TYPE_DOCS, LINK_TYPE_SIMILAR} from "./constants/constants";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {IterationPlanner} from "./IterationPlanner";
@@ -502,6 +502,13 @@ export class ProjectPage extends Component {
           />
           {/*<a id="Audiences" href={"/profile"} className="Panel">Profile</a>*/}
           <a href={"/profile"}>Profile</a>
+          <Panel id="Description" header={"What are you doing?"} />
+          <FieldPicker
+            value={this.state.project?.description || ""}
+            placeholder={"What will you create?"}
+            onAction={val => {actions.editDescription(projectId, val)}}
+            normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+          />
           <Panel id="Audiences" header={audiencePhrase} />
           {/*{audiencePhrase}*/}
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>

@@ -69,6 +69,15 @@
   background-color: #2196F3;
   color: #282c34;
 }
+.Iteration-Grid {
+  display: grid;
+
+  gap: 15px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  background-color: #2196F3;
+  color: #282c34;
+}
 
 .Channel-item {
   display: block;
@@ -91,6 +100,14 @@
   padding: 20px;
   font-size: 30px;
   text-align: center;
+}
+
+/*.Audience-item*/.dragging {
+  border-color: rgb(255, 0, 0);
+  border-width: 5px;
+}
+/*.Audience-item*/.dragging-target {
+  background-color: red;
 }
 
 .link-select {
@@ -120,6 +137,7 @@
 }
 .iteration-title {
   min-height: 60px;
+  font-weight: bold;
 }
 
 .income-goal {
@@ -176,8 +194,16 @@ button.toggle {
   background-color: white;
 }
 
+.left {
+  text-align: left;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .Iteration-Grid {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 

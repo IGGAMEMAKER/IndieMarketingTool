@@ -76,7 +76,7 @@ const renderUserGoals = (project, it) => {
   return goals.map(gg => {
     var audience = getByID(project.audiences, gg.userId)
 
-    return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)}>
+    return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)} className="left">
       Get {gg.amount} <span style={{color: 'green'}}>{audience?.name}</span>
     </div>
   })
@@ -376,7 +376,46 @@ function NumberGoalPicker({project, it}) {
   </div>
 }
 
-function renderIteration(project, it, i, setChosenIterationId) {
+function IterationView({project, it, index, setChosenIterationId}) {
+  const indexName = "iterationIndex"
+  var [isDragging, setDragging] = useState(false)
+  var [isDraggingTarget, setDraggingTarget] = useState(false)
+  var isCorrectTypeDrag = e => {
+    try {
+      var d = parseInt(e.dataTransfer.getData(indexName))
+      var resp = !isNaN(d)
+      console.log('d=', d, indexName, resp)
+
+      return true
+    } catch (err) {
+      console.error('error in drag', indexName)
+      return false
+    }
+  }
+
+  var onStartDragging = (e, dragging) => {
+    e.dataTransfer.setData(indexName, index)
+    setDragging(dragging)
+    setDraggingTarget(false)
+  }
+
+  var onDraggedUpon = (e, target) => {
+    e.preventDefault()
+
+    if (isCorrectTypeDrag(e))
+      setDraggingTarget(target)
+  }
+  var onDrop = e => {
+    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
+    // console.log(draggedOnMeId, typeof draggedOnMeId, index - 1)
+
+    var was = draggedOnMeId;
+    var next = index;
+
+    setDraggingTarget(false)
+    actions.changeIterationOrder(was, next)
+  }
+
   const evolvedIteration = new Iteration("NEW ITERATION", [])
   const simplifiedIteration = new Iteration("NEW ITERATION", [])
 
@@ -400,13 +439,13 @@ function renderIteration(project, it, i, setChosenIterationId) {
   const moveLeftButton = <button onClick={ev => {
     stopPropagation(ev)
     // ev.preventDefault()
-    actions.changeIterationOrder(i, i - 1)
+    actions.changeIterationOrder(index, index - 1)
   }}>{ARROW_LEFT}</button>
 
   const moveRightButton = <button onClick={ev => {
     // ev.preventDefault()
     stopPropagation(ev)
-    actions.changeIterationOrder(i, i + 1)
+    actions.changeIterationOrder(index, index + 1)
   }}>{ARROW_RIGHT}</button>
 
   const editLink = <a href={"#editIteration"} onClick={() => setChosenIterationId(it.id)}>Edit</a>
@@ -429,17 +468,37 @@ function renderIteration(project, it, i, setChosenIterationId) {
     incomeGoal = <div className={"income-goal"} onClick={onGoalRemove(it, g)}>+${g.income}/mo</div>
   }
 
-  return <div className={"Audience-item"} key={it.id} onClick={() => setChosenIterationId(it.id)}>
+  return <div
+    draggable
+    onDragStart={e => {onStartDragging(e, true)}}
+    onDragEnd={e => {onStartDragging(e, false)}}
+
+    onDragLeave={e => onDraggedUpon(e,false)}
+    onDragOver={e => onDraggedUpon(e, true)}
+
+    onDrop={e => {onDrop(e)}}
+
+    className={`Audience-item ${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+
+    key={it.id}
+    onClick={() => setChosenIterationId(it.id)}
+  >
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
     <div style={{display: 'grid', gridTemplateColumns: 'auto 25px'}}>
       {/*{simplifyButton}*/}
       <div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>
         <div>
           {/*<div>{moveLeftButton}{moveRightButton} {editLink}</div>*/}
-          <div>{moveLeftButton}{moveRightButton}</div>
+          {/*<div>{moveLeftButton}{moveRightButton}</div>*/}
           <div className={"iteration-title"}>
             {it.description}
           </div>
+
+          {/*{featureGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
+          {renderUserGoals(project, it)}
+          {/*{ideaGoals.map(g => <div className="left">{ideaIcon} {getByID(project.risks, g.id)?.name}</div>)}*/}
+          {/*{ideaGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
+          {featureGoals.map(g => <div className="left">{featureIcon} {g.text}</div>)}
 
           {/*<br />*/}
           {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
@@ -529,13 +588,13 @@ export function IterationPlanner({project}) {
   // style={{gridTemplateColumns: 'auto auto auto'}}
   return <div>
     <Panel id="ITERATIONS" header="Iteration Planner" />
-    <h3>Do the PROJECT, not just product</h3>
-    {priorityMockup}
+    {/*<h3>Do the PROJECT, not just product</h3>*/}
+    {/*{priorityMockup}*/}
     <br/>
 
-    <div className={"Audience-Container"}>
+    <div className={"Iteration-Grid"}>
       {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
-      {iterations.map((it, i) => renderIteration(project, it, i, setChosenIterationId))}
+      {iterations.map((it, i) => < IterationView project={project} it={it} index={i} setChosenIterationId={setChosenIterationId} />)}
     </div>
     <br/>
     <br/>
