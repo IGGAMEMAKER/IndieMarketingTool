@@ -13,6 +13,7 @@ var UserSchema = new Schema({
   // shown interest in (plan...)
 })
 
+
 UserSchema.index({email: 1}, {unique: true})
 
 
