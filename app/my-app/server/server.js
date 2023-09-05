@@ -167,6 +167,7 @@ const logIn = async (req, res, next) => {
     })
 }
 
+
 const authenticate = async (req, res, next) => {
   console.log('\nauthenticate')
   var {email, sessionToken} = await getCookies(req)
