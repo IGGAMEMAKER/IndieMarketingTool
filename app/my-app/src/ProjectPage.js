@@ -511,7 +511,6 @@ export class ProjectPage extends Component {
             // normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
           <Panel id="Audiences" header={audiencePhrase} />
-          {audiencePhrase}
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
