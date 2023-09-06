@@ -35,7 +35,7 @@ import {
   MONETIZATION_EDIT_NAME,
   MONETIZATION_EDIT_PRICE,
   MONETIZATION_ORDER_CHANGE,
-  MONETIZATION_REMOVE, NOTES_ADD, PROFILE_LOGIN,
+  MONETIZATION_REMOVE, NOTES_ADD, NOTES_EDIT, NOTES_ORDER_CHANGE, NOTES_REMOVE, PROFILE_LOGIN,
   PROJECT_ADD,
   PROJECT_EDIT_BURNOUT_TIME, PROJECT_EDIT_DESCRIPTION,
   PROJECT_EDIT_DESIRED_PROFIT,
@@ -361,9 +361,32 @@ Dispatcher.register((p) => {
       break;
 
     case NOTES_ADD:
+      if (!project.notes)
+        project.notes = []
+
       push(project.notes, {name: p.name}, 'note')
       saveProjectChanges()
       break;
+
+    case NOTES_EDIT:
+      var ind = getIndexByID(project.notes, p.id)
+
+      project.notes[ind].name = p.name;
+      saveProjectChanges()
+      break;
+
+    case NOTES_REMOVE:
+      removeById(project.notes, p.id)
+
+      saveProjectChanges()
+      break;
+
+    case NOTES_ORDER_CHANGE:
+      project.notes = swapTo(p.index1, p.index2, project.notes)
+
+      saveProjectChanges()
+      break;
+
 
     case AUDIENCE_ADD:
       var obj = {
@@ -387,7 +410,6 @@ Dispatcher.register((p) => {
       // audienceIndex is .id now
       removeById(project.audiences, p.audienceIndex)
       saveProjectChanges()
-      // refresh()
       break;
 
     case AUDIENCE_DESCRIPTION_EDIT:

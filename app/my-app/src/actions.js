@@ -56,7 +56,12 @@ import {
   ITERATIONS_GOAL_REMOVE,
   ITERATIONS_GOAL_SOLVE,
   PROFILE_LOGIN,
-  RISK_SOLUTION_ORDER_CHANGE, PROJECT_EDIT_DESCRIPTION, AUDIENCE_MESSAGE_ORDER_CHANGE, NOTES_ADD
+  RISK_SOLUTION_ORDER_CHANGE,
+  PROJECT_EDIT_DESCRIPTION,
+  AUDIENCE_MESSAGE_ORDER_CHANGE,
+  NOTES_ADD,
+  NOTES_REMOVE,
+  NOTES_EDIT, NOTES_ORDER_CHANGE
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -116,6 +121,29 @@ export function addNote(name) {
     name
   })
 }
+
+export function editNote(id, name) {
+  Dispatcher.dispatch({
+    actionType: NOTES_EDIT,
+    id, name
+  })
+}
+
+export function removeNote(id) {
+  Dispatcher.dispatch({
+    actionType: NOTES_REMOVE,
+    id
+  })
+}
+
+export function changeNoteOrder(index1, index2) {
+  Dispatcher.dispatch({
+    actionType: NOTES_ORDER_CHANGE,
+    index1, index2
+  })
+}
+
+
 
 export function addAudience(name) {
   Dispatcher.dispatch({
@@ -556,6 +584,9 @@ export default {
   removeProject,
 
   addNote,
+  editNote,
+  removeNote,
+  changeNoteOrder,
 
   addAudience,
   removeAudience,

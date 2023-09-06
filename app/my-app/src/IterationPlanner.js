@@ -484,7 +484,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
     onClick={() => setChosenIterationId(it.id)}
   >
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
-    <div style={{display: 'grid', gridTemplateColumns: 'auto 25px'}}>
+    <div style={{display: 'grid', gridTemplateColumns: 'auto {/*25px*/}'}}>
       {/*{simplifyButton}*/}
       {/*<div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>*/}
       <div style={{display: 'grid', gridTemplateRows: '250px'}}>

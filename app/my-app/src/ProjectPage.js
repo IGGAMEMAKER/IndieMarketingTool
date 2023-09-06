@@ -138,7 +138,6 @@ function ChannelAdder({}) {
   return <FieldAdder
     placeholder={"audience source link"}
     onAdd={val => {
-      // alert(val)
       actions.addChannel(val)
     }}
   />
@@ -155,19 +154,38 @@ function AudienceSourcesPanel({channels}) {
 }
 
 function NotesList({project}) {
-  var notes = project.notes || ["blah"]
-  const openNotePopup = () => {}
+  var [isPopupOpened, setOpenedPopup] = useState(false)
+
+  var notes = project.notes || []
+  const openNotePopup = () => {
+    setOpenedPopup(true)
+  }
+
+  if (isPopupOpened) {
+
+  }
 
   return <div>
     <Panel id={"Notes"} header={"Notes"} />
     <h3>Save minds quickly here</h3>
 
     <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} />
+    <br />
+    <br />
     <div>
       {notes.map((n, i) => {
         return <div
           key={"note" + i}
-        >{n} <button className={"right"} onClick={openNotePopup}>Convert To..</button></div>
+        >
+          <FieldPicker
+            autoFocus
+            value={n.name}
+            placeholder={"type your mind"}
+            onAction={val => actions.editNote(n.id, val)}
+            onRemove={() => {actions.removeNote(n.id)}}
+          />
+          <button className={"right"} onClick={openNotePopup}>Convert To..</button>
+        </div>
       })}
     </div>
   </div>
