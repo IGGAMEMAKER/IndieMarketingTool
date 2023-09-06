@@ -69,11 +69,14 @@
   background-color: #2196F3;
   color: #282c34;
 }
+
 .Iteration-Grid {
   display: grid;
 
-  gap: 15px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  row-gap: 15px;
+  /*gap: 15px;*/
+  /*grid-template-columns: repeat(4, minmax(0, 1fr));*/
+  grid-template-columns: repeat(4, minmax(0, 1fr) 35px);
 
   background-color: #2196F3;
   color: #282c34;
@@ -136,8 +139,17 @@
   background-color: red;
 }
 .iteration-title {
-  min-height: 60px;
+  /*min-height: 60px;*/
+  height: 72px;
   font-weight: bold;
+  /*overflow-y: hidden;*/
+  text-overflow: ellipsis;
+  /*text-overflow: ellipsis;*/
+  /*overflow: hidden;*/
+  /*height: 1.2em;*/
+  /*width: 250px;*/
+  /*font-weight: bold;*/
+  /*white-space: nowrap;*/
 }
 
 .income-goal {
@@ -204,7 +216,9 @@ button.toggle {
   }
 
   .Iteration-Grid {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-columns: repeat(1, minmax(0, 1fr) 35px);
+    /*grid-template-rows: repeat(1, minmax(0, 1fr) 25px);*/
+    row-gap: 25px;
   }
 
   .menu {

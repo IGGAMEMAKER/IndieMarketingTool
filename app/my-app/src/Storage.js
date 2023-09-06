@@ -4,7 +4,7 @@ import {
   AUDIENCE_ADD,
   AUDIENCE_DESCRIPTION_EDIT,
   AUDIENCE_MESSAGE_ADD,
-  AUDIENCE_MESSAGE_EDIT,
+  AUDIENCE_MESSAGE_EDIT, AUDIENCE_MESSAGE_ORDER_CHANGE,
   AUDIENCE_MESSAGE_REMOVE,
   AUDIENCE_NAME_EDIT,
   AUDIENCE_ORDER_CHANGE,
@@ -415,6 +415,17 @@ Dispatcher.register((p) => {
       project.audiences[ind].messages[ind2].name = p.message
 
       saveProjectChanges();
+      break;
+
+    case AUDIENCE_MESSAGE_ORDER_CHANGE:
+      ind = getIndexByID(project.audiences, p.audienceId)
+
+      console.log({ind})
+
+      var messages = project.audiences[ind].messages;
+      messages = swapTo(p.index1, p.index2, messages);
+
+      saveProjectChanges()
       break;
 
     case AUDIENCE_MESSAGE_REMOVE:

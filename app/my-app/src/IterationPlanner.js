@@ -3,7 +3,7 @@ import actions, {solveIterationGoal} from "./actions";
 import {ARROW_LEFT, ARROW_RIGHT} from "./constants/symbols";
 import {GOAL_TYPE_FEATURES, GOAL_TYPE_INCOME, GOAL_TYPE_RISK, GOAL_TYPE_USERS} from "./constants/constants";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
-import {getByID} from "./utils";
+import {getByID, getNextID} from "./utils";
 import {AudiencePicker} from "./AudiencePicker";
 import {FieldAdder} from "./FieldAdder";
 import {RiskAdder} from "./RiskAdder";
@@ -486,13 +486,15 @@ function IterationView({project, it, index, setChosenIterationId}) {
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
     <div style={{display: 'grid', gridTemplateColumns: 'auto 25px'}}>
       {/*{simplifyButton}*/}
-      <div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>
+      {/*<div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>*/}
+      <div style={{display: 'grid', gridTemplateRows: '250px'}}>
         <div>
           {/*<div>{moveLeftButton}{moveRightButton} {editLink}</div>*/}
           {/*<div>{moveLeftButton}{moveRightButton}</div>*/}
           <div className={"iteration-title"}>
             {it.description}
           </div>
+          <br />
 
           {/*{featureGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
           {renderUserGoals(project, it)}
@@ -513,7 +515,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
           {incomeGoal}
         </div>
       </div>
-      {evolveButton}
+      {/*{evolveButton}*/}
     </div>
   </div>
 }
@@ -585,6 +587,44 @@ export function IterationPlanner({project}) {
     })
   }
 
+  const insertIterationOnDoubleClick = pasteAfter => e => {
+    if (e.detail === 2) {
+      e.preventDefault()
+      // alert('add iteration ' + pasteAfter)
+      actions.addIteration(new Iteration(), {pasteAfter})
+    }
+  }
+  const onPostInsert = () => {
+    if (iterations.length) {
+      return insertIterationOnDoubleClick(iterations.slice(-1)[0].id)
+    }
+
+    return () => {}
+  }
+
+  const stopPropagation = e => {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  }
+
+  var mappedIterations = []
+  for (var i = 0; i < iterations.length; i++) {
+    const it = iterations[i];
+    const pasteAfter = it.id;
+
+    mappedIterations.push(<IterationView project={project} it={it} index={i} setChosenIterationId={setChosenIterationId} />)
+    mappedIterations.push(<button
+      onClick={ev => {
+        stopPropagation(ev)
+        var next = getNextID(iterations)
+        actions.addIteration(new Iteration(), {pasteAfter})
+
+        setChosenIterationId(next)
+      }}
+    >+</button>)
+    // mappedIterations.push(<div onClick={insertIterationOnDoubleClick(pasteAfter)}/>)
+  }
+
   // style={{gridTemplateColumns: 'auto auto auto'}}
   return <div>
     <Panel id="ITERATIONS" header="Iteration Planner" />
@@ -594,7 +634,8 @@ export function IterationPlanner({project}) {
 
     <div className={"Iteration-Grid"}>
       {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
-      {iterations.map((it, i) => < IterationView project={project} it={it} index={i} setChosenIterationId={setChosenIterationId} />)}
+      {mappedIterations}
+      {/*{iterations.map((it, i) => <IterationView project={project} it={it} index={i} setChosenIterationId={setChosenIterationId} />)}*/}
     </div>
     <br/>
     <br/>

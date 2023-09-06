@@ -215,6 +215,69 @@ function BusinessPlanner({project}) {
   </div>
 }
 
+
+
+function AudienceMessageView({index, messageId, id, m})  {
+  const indexName = "audienceMessageIndex"
+  var [isDragging, setDragging] = useState(false)
+  var [isDraggingTarget, setDraggingTarget] = useState(false)
+  var isCorrectTypeDrag = e => {
+    try {
+      var d = parseInt(e.dataTransfer.getData(indexName))
+      var resp = !isNaN(d)
+      console.log('d=', d, indexName, resp)
+
+      return true
+    } catch (err) {
+      console.error('error in drag', indexName)
+      return false
+    }
+  }
+
+  var onStartDragging = (e, dragging) => {
+    e.dataTransfer.setData(indexName, index)
+    setDragging(dragging)
+    setDraggingTarget(false)
+  }
+
+  var onDraggedUpon = (e, target) => {
+    e.preventDefault()
+
+    if (isCorrectTypeDrag(e))
+      setDraggingTarget(target)
+  }
+  var onDrop = e => {
+    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
+
+    var was = draggedOnMeId;
+    var next = index;
+
+    setDraggingTarget(false)
+    actions.changeAudienceMessageOrder(id, was, next)
+  }
+
+  return <li
+    draggable
+    onDragStart={e => {onStartDragging(e, true)}}
+    onDragEnd={e => {onStartDragging(e, false)}}
+
+    onDragLeave={e => onDraggedUpon(e,false)}
+    onDragOver={e => onDraggedUpon(e, true)}
+
+    onDrop={e => {onDrop(e)}}
+
+    className={`${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
+
+    key={"messages-to-audience." + id + "." + messageId}
+  >
+    <FieldPicker
+      value={m.name}
+      placeholder={"What will you tell them?"}
+      onAction={val => actions.editAudienceMessage(val, id, messageId)}
+      onRemove={() => actions.removeAudienceMessage(id, messageId)}
+    />
+  </li>
+}
 function MarketingPlanner({project}) {
   var defaultId = project.audiences.length ? project.audiences[0].id : -1
 
@@ -231,7 +294,7 @@ function MarketingPlanner({project}) {
 
         }
       }}
-    >{a.name}</button>;
+    >{a.name} ({a.messages.length})</button>;
   })
 
   const renderAudience = ({description, id, name, strategy, messages = []}) => {
@@ -239,18 +302,11 @@ function MarketingPlanner({project}) {
       strategy = [strategy]
 
     var messagePicker = <ol>
-      {messages.map(m => {
-          // TODO not i, but m.id
-          var messageId = m.id
+      {messages.map((m, mi) => {
+        // TODO not i, but m.id
+        var messageId = m.id
 
-          return <li key={"messages-to-audience." + id + "." + messageId}>
-            <FieldPicker
-              value={m.name}
-              placeholder={"What will you tell them?"}
-              onAction={val => actions.editAudienceMessage(val, id, messageId)}
-              onRemove={() => actions.removeAudienceMessage(id, messageId)}
-            />
-          </li>
+        return <AudienceMessageView index={mi} m={m} messageId={messageId} id={id} />
         }
       )}
       <li>
@@ -284,22 +340,25 @@ function MarketingPlanner({project}) {
       {/*<td>*/}
       {/*  {a.name}*/}
       {/*</td>*/}
-      <td>
-        <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>
-        <br />
-        <label style={{color: 'gray'}}>{description}</label>
-        <br />
-        {strategyPicker}
-      </td>
+      {/*<td>*/}
+      {/*  <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>*/}
+      {/*  <br />*/}
+      {/*  <label style={{color: 'gray'}}>{description}</label>*/}
+      {/*  <br />*/}
+      {/*  {strategyPicker}*/}
+      {/*</td>*/}
       <td>
         <b>What will you tell <span style={{color: 'green'}}>{name}</span>?</b>
+        <br />
+        <label style={{color: 'gray'}}>{description}</label>
         {messagePicker}
       </td>
     </tr>
   }
 
   return <div>
-    <Panel id="Growth" header="How will you grow" />
+    <Panel id="Growth" header="Your message" />
+    <h3>Most important part of the project</h3>
     {audiencePicker}
     <br />
 

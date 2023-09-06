@@ -56,7 +56,7 @@ import {
   ITERATIONS_GOAL_REMOVE,
   ITERATIONS_GOAL_SOLVE,
   PROFILE_LOGIN,
-  RISK_SOLUTION_ORDER_CHANGE, PROJECT_EDIT_DESCRIPTION
+  RISK_SOLUTION_ORDER_CHANGE, PROJECT_EDIT_DESCRIPTION, AUDIENCE_MESSAGE_ORDER_CHANGE
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -196,6 +196,15 @@ export function changeAudienceOrder(audienceIndex1, audienceIndex2) {
     actionType: AUDIENCE_ORDER_CHANGE, // ID, no
     audienceIndex1,
     audienceIndex2
+  })
+}
+
+export function changeAudienceMessageOrder(audienceId, index1, index2) {
+  Dispatcher.dispatch({
+    actionType: AUDIENCE_MESSAGE_ORDER_CHANGE, // ID, no
+    audienceId,
+    index1,
+    index2
   })
 }
 
@@ -549,6 +558,7 @@ export default {
   removeAudienceStrategy,
   addAudienceStrategy,
   changeAudienceOrder,
+  changeAudienceMessageOrder,
   addAudienceMessage,
   removeAudienceMessage,
   editAudienceMessage,

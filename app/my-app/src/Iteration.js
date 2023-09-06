@@ -7,7 +7,7 @@ import {
 } from "./constants/constants";
 
 export class Iteration {
-  constructor(description, goals) {
+  constructor(description="New Iteration", goals=[]) {
     this.description = description
     this.goals = goals;
 
