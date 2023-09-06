@@ -184,7 +184,7 @@ function NotesList({project}) {
             onAction={val => actions.editNote(n.id, val)}
             onRemove={() => {actions.removeNote(n.id)}}
           />
-          <button className={"right"} onClick={openNotePopup}>Convert To..</button>
+          {/*<button className={"right"} onClick={openNotePopup}>Convert To..</button>*/}
         </div>
       })}
     </div>
@@ -204,45 +204,45 @@ function BusinessPlanner({project}) {
     <div className={"Audience-Container"}>
       <table>
         <tbody>
-          <tr className={"Audience-item"}>
-            <td>
-              How much do you want to earn?
-              <NumberPicker
-                value={desiredProfit}
-                placeholder={"Type your desired profit"}
-                onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
-                defaultState={true}
-              />
-              <div>monthly</div>
-            </td>
-            <td>{renderIncomeGoal(project, desiredProfit)}</td>
-          </tr>
-          <tr className={"Audience-item"}>
-            <td>
-              Your monthly expenses?
-              <NumberPicker
-                value={monthlyExpenses}
-                placeholder={"What are ur expenses"}
-                onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
-                defaultState={true}
-              />
-            </td>
-            <td>{renderIncomeGoal(project, monthlyExpenses, 'become sustainable')}</td>
-          </tr>
-          <tr className={"Audience-item"}>
-            <td>
-              {/*How much time do you have until you run out of cash?*/}
-              Time till money burnout
-              <NumberPicker
-                value={timeTillBurnout}
-                placeholder={"How many months can you spend on that venture?"}
-                onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
-                defaultState={true}
-              />
-              <div>months</div>
-            </td>
-            <td>{renderIncomeGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
-          </tr>
+        <tr className={"Audience-item"}>
+          <td>
+            How much do you want to earn?
+            <NumberPicker
+              value={desiredProfit}
+              placeholder={"Type your desired profit"}
+              onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
+              defaultState={true}
+            />
+            <div>monthly</div>
+          </td>
+          <td>{renderIncomeGoal(project, desiredProfit)}</td>
+        </tr>
+        <tr className={"Audience-item"}>
+          <td>
+            Your monthly expenses?
+            <NumberPicker
+              value={monthlyExpenses}
+              placeholder={"What are ur expenses"}
+              onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
+              defaultState={true}
+            />
+          </td>
+          <td>{renderIncomeGoal(project, monthlyExpenses, 'become sustainable')}</td>
+        </tr>
+        <tr className={"Audience-item"}>
+          <td>
+            {/*How much time do you have until you run out of cash?*/}
+            Time till money burnout
+            <NumberPicker
+              value={timeTillBurnout}
+              placeholder={"How many months can you spend on that venture?"}
+              onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
+              defaultState={true}
+            />
+            <div>months</div>
+          </td>
+          <td>{renderIncomeGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -339,10 +339,10 @@ function MarketingPlanner({project}) {
 
     var messagePicker = <ol>
       {messages.map((m, mi) => {
-        // TODO not i, but m.id
-        var messageId = m.id
+          // TODO not i, but m.id
+          var messageId = m.id
 
-        return <AudienceMessageView index={mi} m={m} messageId={messageId} id={id} />
+          return <AudienceMessageView index={mi} m={m} messageId={messageId} id={id} />
         }
       )}
       <li>
