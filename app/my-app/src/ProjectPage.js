@@ -154,6 +154,24 @@ function AudienceSourcesPanel({channels}) {
   </div>
 }
 
+function NotesList({project}) {
+  var notes = project.notes || ["blah"]
+  const openNotePopup = () => {}
+
+  return <div>
+    <Panel id={"Notes"} header={"Notes"} />
+    <h3>Save minds quickly here</h3>
+
+    <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} />
+    <div>
+      {notes.map((n, i) => {
+        return <div
+          key={"note" + i}
+        >{n} <button className={"right"} onClick={openNotePopup}>Convert To..</button></div>
+      })}
+    </div>
+  </div>
+}
 
 function BusinessPlanner({project}) {
   // var [desiredProfit, setDesiredProfit] = useState(project.desiredProfit || 10000)
@@ -537,11 +555,11 @@ export class ProjectPage extends Component {
     var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
     var projectId = this.getProjectId()
 
-    var audiencePhrase = appType === APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your app?'
+    var audiencePhrase = appType === APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your service?'
 
+    var project = this.state?.project
 
-
-    const menus = ["Audiences", "Monetization", "Goals", "Growth", "Risks", "ITERATIONS", "Sources", "Links"]
+    const menus = ["Notes", "Audiences", "Monetization", "Goals", "Growth", "Risks", "ITERATIONS", "Sources", "Links"]
     return (
       <div className="App">
         <div>
@@ -555,7 +573,7 @@ export class ProjectPage extends Component {
           <br />
           <br />
           <FieldPicker
-            value={this.state.project?.name}
+            value={project?.name}
             placeholder={"name the project"}
             onAction={val => {actions.editName(projectId, val)}}
             normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
@@ -571,6 +589,7 @@ export class ProjectPage extends Component {
           />
           <Panel id="Audiences" header={audiencePhrase} />
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
+          <NotesList project={project} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
           <br/>

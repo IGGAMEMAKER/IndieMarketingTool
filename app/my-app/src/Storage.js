@@ -35,7 +35,7 @@ import {
   MONETIZATION_EDIT_NAME,
   MONETIZATION_EDIT_PRICE,
   MONETIZATION_ORDER_CHANGE,
-  MONETIZATION_REMOVE, PROFILE_LOGIN,
+  MONETIZATION_REMOVE, NOTES_ADD, PROFILE_LOGIN,
   PROJECT_ADD,
   PROJECT_EDIT_BURNOUT_TIME, PROJECT_EDIT_DESCRIPTION,
   PROJECT_EDIT_DESIRED_PROFIT,
@@ -67,7 +67,9 @@ var projectMock = {
   audiences: [],
   monetizationPlans: [],
   channels: [],
-  risks: []
+  risks: [],
+  notes: [],
+  features: [],
 }
 
 var project = projectMock
@@ -358,6 +360,10 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break;
 
+    case NOTES_ADD:
+      push(project.notes, {name: p.name}, 'note')
+      saveProjectChanges()
+      break;
 
     case AUDIENCE_ADD:
       var obj = {

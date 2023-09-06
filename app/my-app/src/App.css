@@ -16,7 +16,7 @@
 .menu {
   display: grid;
   background-color: orange;
-  grid-template-columns: auto auto auto auto auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto auto auto auto auto;
   position: fixed;
   height: 5vh;
   width: 100%;

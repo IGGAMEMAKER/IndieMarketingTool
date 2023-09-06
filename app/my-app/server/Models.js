@@ -32,6 +32,8 @@ var ProjectSchema = new Schema({
   risks: Array,
   channels: Array,
   links: Array,
+  features: Array,
+  notes: Array,
 
   marketingPlans: Array,
 
