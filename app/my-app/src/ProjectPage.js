@@ -221,6 +221,7 @@ function FeatureList({project}) {
         return <div
           key={"feature" + f.id}
         >
+          <b>{f.id}</b>
           <FieldPicker
             autoFocus
             value={f.name}
@@ -338,7 +339,6 @@ function AudienceMessageView({index, messageId, id, m})  {
   }
 
   return <li
-    key={`audience-message-${id}-${messageId}`}
     draggable
     onDragStart={e => {onStartDragging(e, true)}}
     onDragEnd={e => {onStartDragging(e, false)}}
@@ -350,7 +350,7 @@ function AudienceMessageView({index, messageId, id, m})  {
 
     className={`${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
 
-    key={"messages-to-audience." + id + "." + messageId}
+    key={`audience-message-${id}-${messageId}`}
   >
     <FieldPicker
       value={m.name}

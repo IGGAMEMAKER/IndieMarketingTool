@@ -176,7 +176,7 @@ const patchWithIDs = (list, tagName = '', printOnly = true) => {
   }
 
   if (undefinedCount > 0) {
-    console.log('pushed to ', {tagName}, undefinedCount)
+    // console.log('pushed to ', {tagName}, undefinedCount)
   }
 
   return undefinedCount
@@ -257,22 +257,43 @@ const fixProject = () => {
       patches += patchWithIDs(r.solutions, 'risks.' + r.id + '.solutions', printOnly)
     })
     patches += patchWithIDs(project.iterations, 'iterations', printOnly)
+
     console.log('FEATURES', project.iterations);
-    project.iterations.forEach(it => {
-      // it.goals.forEach(gg => {
-      //   if (gg.goalType === GOAL_TYPE_FEATURES) {
-      //     console.log('FEATURE!!!!', gg)
-      //     if (!gg.featureId) {
-      //       var featureId = getNextID(project.features);
-      //
-      //       // actions.addFeature(gg.text)
-      //       // actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, gg.text))
-      //
-      //       // var featureId = project.features.slice(-1)[0].id;
-      //       // actions.addFeature(it)
-      //     }
-      //   }
-      // })
+    var resetFeatures = false
+
+    const flushFeatures = () => {
+      project.features = [];
+      project.iterations.forEach(it => {
+        it.goals.forEach(gg => {
+          if (gg.goalType === GOAL_TYPE_FEATURES)
+            delete gg.featureId
+        })
+      })
+    }
+
+    if (resetFeatures) {
+      flushFeatures()
+    }
+
+    project.iterations.forEach((it, iterationIndex) => {
+      it.goals.forEach((gg, goalIndex) => {
+        if (gg.goalType === GOAL_TYPE_FEATURES) {
+          console.log('FEATURE!!!!', gg)
+
+          if (!gg.featureId) {
+            var featureId = getNextID(project.features);
+            console.log('will get id ', featureId)
+
+            // actions.addFeature(gg.text)
+            push(project.features, {name: gg.text}, 'feature')
+            project.iterations[iterationIndex].goals[goalIndex].featureId = featureId
+
+            patches += 1
+          } else {
+            console.log('already got featureId', gg.featureId)
+          }
+        }
+      })
     })
   } catch (e) {
     console.error('CANNOT FIX PROJECT', e)

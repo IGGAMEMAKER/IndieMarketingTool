@@ -61,7 +61,7 @@ const renderFeatureGoals = (project, it) => {
   var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
 
   return goals.map(gg => <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
-    <b className={`${gg.solved ? 'solved' : ''} feature`} style={{color: gg.solved ? 'gold' : 'white'}}>{gg.text}</b>
+    <b className={`${gg.solved ? 'solved' : ''} feature`} style={{color: gg.solved ? 'gold' : 'white'}}><b>{gg.featureId}</b>{gg.text}</b>
     <input type={"checkbox"} checked={gg.solved} value={"Solve"} onChange={ev => {
       var v = ev.target.checked
       console.log(v)
@@ -500,7 +500,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
           {renderUserGoals(project, it)}
           {/*{ideaGoals.map(g => <div className="left">{ideaIcon} {getByID(project.risks, g.id)?.name}</div>)}*/}
           {/*{ideaGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
-          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon} {g.text}</div>)}
+          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon}<b>{g.featureId}</b> {g.text}</div>)}
 
           {/*<br />*/}
           {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
