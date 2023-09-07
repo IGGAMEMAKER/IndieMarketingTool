@@ -160,28 +160,37 @@ const uploadAndLog = async (ssh, local, remote, filename) => {
     });
 }
 
+const uploadCertificates = false
+const uploadDefaultFiles = false
+
 const uploadConfigs = async (ssh, ip, check = {}) => {
   var pathToConfigs = gitPath + '/app/my-app/CD'
+
   // Main Configs
-  await uploadAndLog(ssh, './Configs/confs.json', pathToConfigs + '/Configs/confs.json', 'confs.json')
+  if (uploadDefaultFiles) {
+    await uploadAndLog(ssh, './Configs/confs.json', pathToConfigs + '/Configs/confs.json', 'confs.json')
 
-  // Passwords.js
-  await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js', 'Passwords.js')
+    // Passwords.js
+    await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js', 'Passwords.js')
 
-  // hosts.json
-  await uploadAndLog(ssh, './Configs/hosts.json', pathToConfigs + '/Configs/hosts.json', 'hosts.json')
+    // hosts.json
+    await uploadAndLog(ssh, './Configs/hosts.json', pathToConfigs + '/Configs/hosts.json', 'hosts.json')
 
-  await uploadAndLog(ssh, './Configs/releasefaster_com.crt', pathToConfigs + '/Configs/releasefaster_com.crt', 'releasefaster_com.crt')
-  await uploadAndLog(ssh, './Configs/releasefaster.com.key', pathToConfigs + '/Configs/releasefaster.com.key', 'releasefaster.com.key')
-  await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt', pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
-  await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle', pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
 
-  // Server IP
-  const myHost = `./Configs/myHost-${ip}.js`;
-  const content = `module.exports = { ip: "${ip}" };` // module.exports = { ip: 'http://localhost' };
-  fs.writeFileSync(myHost, content)
+    // Server IP
+    const myHost = `./Configs/myHost-${ip}.js`;
+    const content = `module.exports = { ip: "${ip}" };` // module.exports = { ip: 'http://localhost' };
+    fs.writeFileSync(myHost, content)
 
-  await uploadAndLog(ssh, myHost, pathToConfigs + '/Configs/myHost.js', 'myHost.js')
+    await uploadAndLog(ssh, myHost, pathToConfigs + '/Configs/myHost.js', 'myHost.js')
+  }
+
+  if (uploadCertificates) {
+    await uploadAndLog(ssh, './Configs/releasefaster_com.crt', pathToConfigs + '/Configs/releasefaster_com.crt', 'releasefaster_com.crt')
+    await uploadAndLog(ssh, './Configs/releasefaster.com.key', pathToConfigs + '/Configs/releasefaster.com.key', 'releasefaster.com.key')
+    await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt', pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
+    await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle', pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
+  }
 }
 
 const gitPull = async (ssh, ip, updateNPMLibs = false, check = {}) => {
