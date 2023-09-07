@@ -284,7 +284,7 @@ const fixProject = () => {
             var featureId = getNextID(project.features);
             console.log('will get id ', featureId)
 
-            // actions.addFeature(gg.text)
+            actions.addFeature(gg.text)
             push(project.features, {name: gg.text}, 'feature')
             project.iterations[iterationIndex].goals[goalIndex].featureId = featureId
 
