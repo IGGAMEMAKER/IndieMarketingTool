@@ -26,5 +26,5 @@ export class Iteration {
   static createMonetizationGoal = (project, planId, amount) => ({goalType: GOAL_TYPE_MONETIZATION, planId, amount})
   static createFeatureGoal = (project, text)                => ({goalType: GOAL_TYPE_FEATURES, text})
 
-  static getGoalsByGoalType = goalType => (it) => it.goals.filter(gg => gg.goalType === goalType)
+  static getGoalsByGoalType = goalType => (it) => it.goals.filter(gg => gg?.goalType === goalType)
 }

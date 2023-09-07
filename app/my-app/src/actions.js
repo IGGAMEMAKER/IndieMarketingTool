@@ -61,7 +61,13 @@ import {
   AUDIENCE_MESSAGE_ORDER_CHANGE,
   NOTES_ADD,
   NOTES_REMOVE,
-  NOTES_EDIT, NOTES_ORDER_CHANGE
+  NOTES_EDIT,
+  NOTES_ORDER_CHANGE,
+  FEATURES_ADD,
+  FEATURES_EDIT,
+  FEATURES_REMOVE,
+  FEATURES_ORDER_CHANGE,
+  FEATURES_EDIT_TIME_COST
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -115,6 +121,9 @@ export function saveProject(project) {
   })
 }
 
+
+
+
 export function addNote(name) {
   Dispatcher.dispatch({
     actionType: NOTES_ADD,
@@ -140,6 +149,43 @@ export function changeNoteOrder(index1, index2) {
   Dispatcher.dispatch({
     actionType: NOTES_ORDER_CHANGE,
     index1, index2
+  })
+}
+
+
+
+export function addFeature(name) {
+  Dispatcher.dispatch({
+    actionType: FEATURES_ADD,
+    name
+  })
+}
+
+export function editFeatureName(id, name) {
+  Dispatcher.dispatch({
+    actionType: FEATURES_EDIT,
+    id, name
+  })
+}
+
+export function removeFeature(id) {
+  Dispatcher.dispatch({
+    actionType: FEATURES_REMOVE,
+    id
+  })
+}
+
+export function changeFeatureOrder(index1, index2) {
+  Dispatcher.dispatch({
+    actionType: FEATURES_ORDER_CHANGE,
+    index1, index2
+  })
+}
+
+export function changeFeatureTimeCost(id, timeCost) {
+  Dispatcher.dispatch({
+    actionType: FEATURES_EDIT_TIME_COST,
+    id, timeCost
   })
 }
 
@@ -587,6 +633,12 @@ export default {
   editNote,
   removeNote,
   changeNoteOrder,
+
+  addFeature,
+  editFeatureName,
+  removeFeature,
+  changeFeatureOrder,
+  changeFeatureTimeCost,
 
   addAudience,
   removeAudience,

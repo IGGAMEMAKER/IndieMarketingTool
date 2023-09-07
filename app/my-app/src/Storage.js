@@ -4,7 +4,8 @@ import {
   AUDIENCE_ADD,
   AUDIENCE_DESCRIPTION_EDIT,
   AUDIENCE_MESSAGE_ADD,
-  AUDIENCE_MESSAGE_EDIT, AUDIENCE_MESSAGE_ORDER_CHANGE,
+  AUDIENCE_MESSAGE_EDIT,
+  AUDIENCE_MESSAGE_ORDER_CHANGE,
   AUDIENCE_MESSAGE_REMOVE,
   AUDIENCE_NAME_EDIT,
   AUDIENCE_ORDER_CHANGE,
@@ -15,10 +16,16 @@ import {
   CHANNELS_ADD,
   CHANNELS_NAME_EDIT,
   CHANNELS_REMOVE,
+  FEATURES_ADD,
+  FEATURES_EDIT, FEATURES_EDIT_BENEFIT,
+  FEATURES_EDIT_TIME_COST,
+  FEATURES_ORDER_CHANGE,
+  FEATURES_REMOVE,
   ITERATIONS_ADD,
   ITERATIONS_DESCRIPTION_EDIT,
   ITERATIONS_GOAL_ADD,
-  ITERATIONS_GOAL_REMOVE, ITERATIONS_GOAL_SOLVE,
+  ITERATIONS_GOAL_REMOVE,
+  ITERATIONS_GOAL_SOLVE,
   ITERATIONS_ORDER_CHANGE,
   ITERATIONS_REMOVE,
   LINKS_ADD,
@@ -35,9 +42,15 @@ import {
   MONETIZATION_EDIT_NAME,
   MONETIZATION_EDIT_PRICE,
   MONETIZATION_ORDER_CHANGE,
-  MONETIZATION_REMOVE, NOTES_ADD, NOTES_EDIT, NOTES_ORDER_CHANGE, NOTES_REMOVE, PROFILE_LOGIN,
+  MONETIZATION_REMOVE,
+  NOTES_ADD,
+  NOTES_EDIT,
+  NOTES_ORDER_CHANGE,
+  NOTES_REMOVE,
+  PROFILE_LOGIN,
   PROJECT_ADD,
-  PROJECT_EDIT_BURNOUT_TIME, PROJECT_EDIT_DESCRIPTION,
+  PROJECT_EDIT_BURNOUT_TIME,
+  PROJECT_EDIT_DESCRIPTION,
   PROJECT_EDIT_DESIRED_PROFIT,
   PROJECT_EDIT_EXPENSES,
   PROJECT_LOAD,
@@ -48,12 +61,15 @@ import {
   RISK_ORDER_CHANGE,
   RISK_REMOVE,
   RISK_SOLUTION_ADD,
-  RISK_SOLUTION_EDIT, RISK_SOLUTION_ORDER_CHANGE,
+  RISK_SOLUTION_EDIT,
+  RISK_SOLUTION_ORDER_CHANGE,
   RISK_SOLUTION_REMOVE
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
-import {LINK_TYPE_DOCS} from "./constants/constants";
+import {GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
+import actions from "./actions";
+import {Iteration} from "./Iteration";
 
 const CE = 'CHANGE_EVENT';
 const domain = 'https://releasefaster.com'
@@ -206,8 +222,8 @@ const fixProject = () => {
   try {
     patches += patchWithIDs(project.audiences, 'audiences', printOnly)
     project.audiences.forEach(a => {
-      if (!a.messages)
-        a.messages = []
+      // if (!a.messages)
+      //   a.messages = []
 
       a.messages = a.messages.map(namify)
       patches += patchWithIDs(a.messages, 'audiences.' + a.id + '.messages', printOnly)
@@ -234,23 +250,30 @@ const fixProject = () => {
 
     patches += patchWithIDs(project.risks, 'risks', printOnly)
     project.risks.forEach(r => {
-      if (!r.solutions)
-        r.solutions = []
+      // if (!r.solutions)
+      //   r.solutions = []
 
       r.solutions = r.solutions.map(namify)
       patches += patchWithIDs(r.solutions, 'risks.' + r.id + '.solutions', printOnly)
     })
     patches += patchWithIDs(project.iterations, 'iterations', printOnly)
-    // project.iterations.forEach(it => {
-    //   if (it.features) {
-    //     delete it.features
-    //     // it.features = []
-    //   }
-    //
-    //   console.log('IT.FEATURES', it.features)
-    //   // it.features = it.features.map(namify)
-    //   // patches += patchWithIDs(it.features, 'features.' + it.id, printOnly)
-    // })
+    console.log('FEATURES', project.iterations);
+    project.iterations.forEach(it => {
+      // it.goals.forEach(gg => {
+      //   if (gg.goalType === GOAL_TYPE_FEATURES) {
+      //     console.log('FEATURE!!!!', gg)
+      //     if (!gg.featureId) {
+      //       var featureId = getNextID(project.features);
+      //
+      //       // actions.addFeature(gg.text)
+      //       // actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, gg.text))
+      //
+      //       // var featureId = project.features.slice(-1)[0].id;
+      //       // actions.addFeature(it)
+      //     }
+      //   }
+      // })
+    })
   } catch (e) {
     console.error('CANNOT FIX PROJECT', e)
     console.error('CANNOT FIX PROJECT', e)
@@ -360,6 +383,7 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break;
 
+
     case NOTES_ADD:
       if (!project.notes)
         project.notes = []
@@ -386,6 +410,47 @@ Dispatcher.register((p) => {
 
       saveProjectChanges()
       break;
+
+
+    case FEATURES_ADD:
+      if (!project.features)
+        project.features = []
+
+      push(project.features, {name: p.name}, 'feature')
+      saveProjectChanges()
+      break;
+
+    case FEATURES_EDIT:
+      var ind = getIndexByID(project.features, p.id)
+
+      project.features[ind].name = p.name;
+      saveProjectChanges()
+      break;
+
+    case FEATURES_REMOVE:
+      removeById(project.features, p.id)
+
+      saveProjectChanges()
+      break;
+
+    case FEATURES_ORDER_CHANGE:
+      project.features = swapTo(p.index1, p.index2, project.features)
+
+      saveProjectChanges()
+      break;
+    case FEATURES_EDIT_TIME_COST:
+      var ind = getIndexByID(project.features, p.id)
+
+      project.features[ind].timeCost = p.timeCost
+      saveProjectChanges()
+      break;
+    case FEATURES_EDIT_BENEFIT:
+      var ind = getIndexByID(project.features, p.id)
+
+      project.features[ind].benefit = p.benefit
+      saveProjectChanges()
+      break;
+
 
 
     case AUDIENCE_ADD:

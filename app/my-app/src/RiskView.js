@@ -8,10 +8,10 @@ import {useState} from "react";
 export function RiskList({risks}) {
   // key={"risk-list." + r.id}
   return (
-    <ul>
+    <ol>
       {risks.map((r, index) => <RiskView risk={r} index={index} />)}
       <li><RiskAdder /></li>
-    </ul>
+    </ol>
   )
 }
 

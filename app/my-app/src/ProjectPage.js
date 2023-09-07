@@ -175,7 +175,7 @@ function NotesList({project}) {
     <div>
       {notes.map((n, i) => {
         return <div
-          key={"note" + i}
+          key={"note" + n.id}
         >
           <FieldPicker
             autoFocus
@@ -184,6 +184,51 @@ function NotesList({project}) {
             onAction={val => actions.editNote(n.id, val)}
             onRemove={() => {actions.removeNote(n.id)}}
           />
+          {/*<button className={"right"} onClick={openNotePopup}>Convert To..</button>*/}
+        </div>
+      })}
+    </div>
+  </div>
+}
+
+function FeatureList({project}) {
+  var features = project.features || []
+
+  return <div>
+    <Panel id={"Features"} header={"Features"} />
+    <h4>You won't be able to use them if you won't specify implementation time</h4>
+    <FieldAdder placeholder={"feature"} onAdd={val => actions.addFeature(val)} />
+    <br />
+    <br />
+    <div>
+      {features.map((f, i) => {
+        const timeB = (t) => {
+          var descr;
+
+          if (t < 60)
+            descr = t + 'min'
+          else if (t < 8 * 60) {
+            descr = t / 60 + 'Hr'
+          } /*else {
+            descr = t / 8 / 60 + ' Days'
+          }*/
+
+          return <button className={`toggle ${f.timeCost === t ? 'chosen' : ''}`} onClick={() => {
+            actions.changeFeatureTimeCost(f.id, t)
+          }}>{descr}</button>
+        }
+
+        return <div
+          key={"feature" + f.id}
+        >
+          <FieldPicker
+            autoFocus
+            value={f.name}
+            placeholder={"type your mind"}
+            onAction={val => actions.editFeatureName(f.id, val)}
+            onRemove={() => {actions.removeFeature(f.id)}}
+          />
+          {timeB(15)} {timeB(60)} {timeB(3 * 60)}
           {/*<button className={"right"} onClick={openNotePopup}>Convert To..</button>*/}
         </div>
       })}
@@ -293,6 +338,7 @@ function AudienceMessageView({index, messageId, id, m})  {
   }
 
   return <li
+    key={`audience-message-${id}-${messageId}`}
     draggable
     onDragStart={e => {onStartDragging(e, true)}}
     onDragEnd={e => {onStartDragging(e, false)}}
@@ -608,6 +654,7 @@ export class ProjectPage extends Component {
           <Panel id="Audiences" header={audiencePhrase} />
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <NotesList project={project} />
+          <FeatureList project={project} />
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
           <br/>
