@@ -11,6 +11,8 @@ import {renderIncomeGoal} from "./RenderIncomeGoal";
 import {RiskList} from "./RiskView";
 import {Panel} from "./Panel";
 import {getByID} from "./utils";
+import {getEstimateDescription} from "./utils/getEstimateDescription";
+import {sortFeatures} from "./utils/sortFeatures";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -193,47 +195,65 @@ function NotesList({project}) {
 
 function FeatureList({project}) {
   var features = project.features || []
+  var [chosenTimerId, setTimerId] = useState(-1)
 
+  var totalHours = features.filter(f => !f.solved).map(f => f.timeCost || 0).reduce((p, c) => p + c, 0)
   return <div>
     <Panel id={"Features"} header={"Features"} />
     <h4>You won't be able to use them if you won't specify implementation time</h4>
     <FieldAdder placeholder={"feature"} onAdd={val => actions.addFeature(val)} />
     <br />
     <br />
-    <div>
-      {features.map((f, i) => {
-        const timeB = (t) => {
-          var descr;
+    <b>Total: {getEstimateDescription(totalHours)}</b>
+    <br />
+    <br />
+    <table>
+      {features
+        .sort(sortFeatures)
+        .map(f => {
+        var dayDurationHours = 8;
 
-          if (t < 60)
-            descr = t + 'min'
-          else if (t < 8 * 60) {
-            descr = t / 60 + 'Hr'
-          } /*else {
-            descr = t / 8 / 60 + ' Days'
-          }*/
-
-          return <button className={`toggle ${f.timeCost === t ? 'chosen' : ''}`} onClick={() => {
+        const timeB = (t) =>
+          <button className={`toggle ${f.timeCost === t ? 'chosen' : ''}`} onClick={() => {
             actions.changeFeatureTimeCost(f.id, t)
-          }}>{descr}</button>
+            setTimerId(-1)
+          }}>{getEstimateDescription(t)}</button>
+
+        var onPick = () => {setTimerId(f.id)}
+        var timePicker = isNaN(f.timeCost) ?
+          <button onClick={onPick}>Set Estimates</button>
+          :
+          <span className={"editable"} onClick={onPick}>{getEstimateDescription(f.timeCost)}</span>
+
+        if (chosenTimerId === f.id) {
+          timePicker = <div>
+            {timeB(15)} {timeB(60)} {timeB(4 * 60)} {timeB(dayDurationHours * 60)} {timeB(dayDurationHours * 3 * 60)} {timeB(dayDurationHours * 7 * 60)}
+            <br />
+          </div>
         }
 
-        return <div
+        return <tr
           key={"feature" + f.id}
         >
-          <b>{f.id}</b>
-          <FieldPicker
-            autoFocus
-            value={f.name}
-            placeholder={"type your mind"}
-            onAction={val => actions.editFeatureName(f.id, val)}
-            onRemove={() => {actions.removeFeature(f.id)}}
-          />
-          {timeB(15)} {timeB(60)} {timeB(3 * 60)}
-          {/*<button className={"right"} onClick={openNotePopup}>Convert To..</button>*/}
-        </div>
+          {/*<td>*/}
+          {/*  <b>{f.id}</b>*/}
+          {/*</td>*/}
+          <td className={"left"}>
+            <FieldPicker
+              autoFocus
+              value={f.name}
+              placeholder={"type your mind"}
+              onAction={val => actions.editFeatureName(f.id, val)}
+              onRemove={() => {actions.removeFeature(f.id)}}
+              normalValueRenderer={onEdit => <div onClick={onEdit} className={`feature ${f.solved ? 'solved' : ''}`}>{f.name}</div>}
+            />
+          </td>
+          <td>
+            {timePicker}
+          </td>
+        </tr>
       })}
-    </div>
+    </table>
   </div>
 }
 

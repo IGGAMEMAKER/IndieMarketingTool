@@ -10,6 +10,7 @@ import {RiskAdder} from "./RiskAdder";
 import {Iteration} from "./Iteration";
 import {RiskList, RiskView} from "./RiskView";
 import {Panel} from "./Panel";
+import {getEstimateDescription} from "./utils/getEstimateDescription";
 
 function RiskPicker({onPick, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
@@ -61,7 +62,7 @@ const renderFeatureGoals = (project, it) => {
   var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
 
   return goals.map(gg => <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
-    <b className={`${gg.solved ? 'solved' : ''} feature`} style={{color: gg.solved ? 'gold' : 'white'}}><b>{gg.featureId}</b>{gg.text}</b>
+    <b className={`feature ${gg.solved ? 'solved' : ''}`}>{/*<b>{gg.featureId}</b>*/}{getByID(project.features, gg.featureId)?.name}</b>
     <input type={"checkbox"} checked={gg.solved} value={"Solve"} onChange={ev => {
       var v = ev.target.checked
       console.log(v)
@@ -126,7 +127,7 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
         normalValueRenderer={onEdit => <h3 onClick={onEdit}><b>{it.description}</b></h3>}
       />
       {/*<div>{durationSelector}</div>*/}
-      <NumberGoalPicker project={project} it={it} />
+      <IterationGoalPicker project={project} it={it} />
     </div>
     {popupCloser}
   </div>
@@ -234,7 +235,7 @@ function renderIncomeSection(project, it, income, planId, setMonetizationPlan) {
   </div>
 }
 
-function NumberGoalPicker({project, it}) {
+function IterationGoalPicker({project, it}) {
   var [goalType, setGoalType] = useState(-1)
   var [users, setDesiredUsers] = useState(0)
   var [income, setDesiredIncome] = useState(0)
@@ -266,17 +267,41 @@ function NumberGoalPicker({project, it}) {
 
   var featurePicker = <div>
     <h2>Do less</h2>
-    <h3>
-      Which problem will this feature solve?
-    </h3>
-    <h4>
-      Is it a strongest pick in terms of time/money
-    </h4>
+    <h3>Which problem will this feature solve?</h3>
+    <h4>Is it a strongest pick in terms of time/money</h4>
     <br />
     <br />
     <ol>{renderFeatureGoals(project, it)}</ol>
     <br />
     <br />
+    <select value={-1} onChange={event => {
+      var val = event.target.value
+      console.log(val)
+
+      if (val >= 0)
+        actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, parseInt(val)))
+    }}>
+      <option disabled value={-1}> -- select feature --</option>
+      {project.features
+        // .sort((f1, f2) => {
+        //   var t1 = f1.timeCost || 1000000
+        //   var t2 = f2.timeCost || 1000000
+        //
+        //   return t1 - t2
+        // })
+        .filter(f => !f.solved)
+        .map((f,fi) => {
+          var disabled = !f.timeCost
+          var description = f.name;
+          if (disabled) {
+            description = `(No execution time) ${description}`
+          } else {
+            description = `(${getEstimateDescription(f.timeCost)}) ${description}`
+          }
+
+          return <option value={f.id} disabled={disabled}>{description}</option>
+        })}
+    </select>
     <FieldAdder
       placeholder={"Add new feature"}
       onAdd={val => {
@@ -500,7 +525,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
           {renderUserGoals(project, it)}
           {/*{ideaGoals.map(g => <div className="left">{ideaIcon} {getByID(project.risks, g.id)?.name}</div>)}*/}
           {/*{ideaGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
-          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon}<b>{g.featureId}</b> {g.text}</div>)}
+          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon}<b>{g.featureId}</b> {getByID(project.features, g.featureId)?.name}</div>)}
 
           {/*<br />*/}
           {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
@@ -560,8 +585,6 @@ export function IterationPlanner({project}) {
   const onAutoGenerate = () => {
     var mockIterations = [
       new Iteration('Who needs this app more?', [
-        // Iteration.getRiskGoal(project, 0),
-        // Iteration.getRiskGoal(project, 1),
         Iteration.createMonetizationGoal(project, 0, 1000)
       ]),
       new Iteration('Do they find value and want to pay for it?', [
@@ -593,13 +616,6 @@ export function IterationPlanner({project}) {
       // alert('add iteration ' + pasteAfter)
       actions.addIteration(new Iteration(), {pasteAfter})
     }
-  }
-  const onPostInsert = () => {
-    if (iterations.length) {
-      return insertIterationOnDoubleClick(iterations.slice(-1)[0].id)
-    }
-
-    return () => {}
   }
 
   const stopPropagation = e => {

@@ -88,7 +88,7 @@ var projectMock = {
   features: [],
 }
 
-var project = projectMock
+var project; // = projectMock
 
 class Storage extends EventEmitter {
   addChangeListener(c) {
@@ -275,26 +275,26 @@ const fixProject = () => {
       flushFeatures()
     }
 
-    project.iterations.forEach((it, iterationIndex) => {
-      it.goals.forEach((gg, goalIndex) => {
-        if (gg.goalType === GOAL_TYPE_FEATURES) {
-          console.log('FEATURE!!!!', gg)
-
-          if (!gg.featureId) {
-            var featureId = getNextID(project.features);
-            console.log('will get id ', featureId)
-
-            actions.addFeature(gg.text)
-            push(project.features, {name: gg.text}, 'feature')
-            project.iterations[iterationIndex].goals[goalIndex].featureId = featureId
-
-            patches += 1
-          } else {
-            console.log('already got featureId', gg.featureId)
-          }
-        }
-      })
-    })
+    // project.iterations.forEach((it, iterationIndex) => {
+    //   it.goals.forEach((gg, goalIndex) => {
+    //     if (gg.goalType === GOAL_TYPE_FEATURES) {
+    //       console.log('FEATURE!!!!', gg)
+    //
+    //       if (!gg.featureId) {
+    //         var featureId = getNextID(project.features);
+    //         console.log('will get id ', featureId)
+    //
+    //         actions.addFeature(gg.text)
+    //         push(project.features, {name: gg.text}, 'feature')
+    //         project.iterations[iterationIndex].goals[goalIndex].featureId = featureId
+    //
+    //         patches += 1
+    //       } else {
+    //         console.log('already got featureId', gg.featureId)
+    //       }
+    //     }
+    //   })
+    // })
   } catch (e) {
     console.error('CANNOT FIX PROJECT', e)
     console.error('CANNOT FIX PROJECT', e)
@@ -898,7 +898,13 @@ Dispatcher.register((p) => {
       ind      = getIndexByID(project.iterations,            p.id)
       var ind2 = getIndexByID(project.iterations[ind].goals, p.goalIndex)
 
+      var g = project.iterations[ind].goals[ind2]
+      if (g.goalType === GOAL_TYPE_FEATURES) {
+        var featureIndex = getIndexByID(project.features, g.featureId)
+        project.features[featureIndex].solved = p.solved
+      }
       project.iterations[ind].goals[ind2].solved = p.solved
+
       console.log(ITERATIONS_GOAL_SOLVE, {p})
 
       saveProjectChanges()
