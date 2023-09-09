@@ -183,12 +183,15 @@
 
 .feature {
   color: white;
-
 }
+
 .feature.solved {
   text-decoration: line-through;
   text-decoration-color: red;
   color: gold;
+}
+.feature.used {
+  color: gray;
 }
 
 

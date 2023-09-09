@@ -13,6 +13,8 @@ import {Panel} from "./Panel";
 import {getByID} from "./utils";
 import {getEstimateDescription} from "./utils/getEstimateDescription";
 import {sortFeatures} from "./utils/sortFeatures";
+import {getFeatureIterationId} from "./utils/getFeatureIterationId";
+import {getAudienceUsageCount, getFeatureUsageCount} from "./utils/getEntityUsageCount";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -194,17 +196,25 @@ function NotesList({project}) {
 }
 
 function FeatureList({project}) {
-  var features = project.features || []
   var [chosenTimerId, setTimerId] = useState(-1)
 
-  var totalHours = features.filter(f => !f.solved).map(f => f.timeCost || 0).reduce((p, c) => p + c, 0)
+  var features = project.features || []
+
+  var countableFeatures = features.filter(f => !f.solved)
+  var totalHours = countableFeatures
+    .map(f => f.timeCost || 0)
+    .reduce((p, c) => p + c, 0)
+  var scheduledHours = countableFeatures.filter(f => !!getFeatureIterationId(project, f.id))
+    .map(f => f.timeCost || 0)
+    .reduce((p, c) => p + c, 0)
+
   return <div>
     <Panel id={"Features"} header={"Features"} />
     <h4>You won't be able to use them if you won't specify implementation time</h4>
     <FieldAdder placeholder={"feature"} onAdd={val => actions.addFeature(val)} />
     <br />
     <br />
-    <b>Total: {getEstimateDescription(totalHours)}</b>
+    <b>Planned: {getEstimateDescription(scheduledHours)}, Total: {getEstimateDescription(totalHours)}</b>
     <br />
     <br />
     <table>
@@ -244,8 +254,16 @@ function FeatureList({project}) {
               value={f.name}
               placeholder={"type your mind"}
               onAction={val => actions.editFeatureName(f.id, val)}
-              onRemove={() => {actions.removeFeature(f.id)}}
-              normalValueRenderer={onEdit => <div onClick={onEdit} className={`feature ${f.solved ? 'solved' : ''}`}>{f.name}</div>}
+              onRemove={() => {
+                var usages = getFeatureUsageCount(project, f.id)
+
+                if (usages.length) {
+                  alert(`Can't remove this feature, cause it's used in\n\n${usages.join('\n')}`)
+                } else {
+                  actions.removeFeature(f.id)
+                }
+              }}
+              normalValueRenderer={onEdit => <div onClick={onEdit} className={`feature ${f.solved ? 'solved' : ''} ${getFeatureIterationId(project, f.id) ? 'used': ''}`}>{f.name}</div>}
             />
           </td>
           <td>
@@ -550,19 +568,7 @@ function AudiencesList({audiences, state, audiencePhrase}) {
   return <div>
     <div className="Audience-Container">
       {audiences.map((a, i) => {
-        var usages = [];
-        var isUsedInMonetizationPlans = false
-        monetizationPlans.forEach((m, i) => {
-          // console.log({m})
-          if (m.audiences.includes(a.id))
-            isUsedInMonetizationPlans = true
-        })
-
-        if (isUsedInMonetizationPlans)
-          usages.push('monetization plans')
-
-        if (a?.messages?.length)
-          usages.push('unique messaging')
+        var usages = getAudienceUsageCount(monetizationPlans, a)
 
         return <Audience
           onToggleFullInfo={() => {

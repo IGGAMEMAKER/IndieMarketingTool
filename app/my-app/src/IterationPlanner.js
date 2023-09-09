@@ -11,6 +11,7 @@ import {Iteration} from "./Iteration";
 import {RiskList, RiskView} from "./RiskView";
 import {Panel} from "./Panel";
 import {getEstimateDescription} from "./utils/getEstimateDescription";
+import {getFeatureIterationId} from "./utils/getFeatureIterationId";
 
 function RiskPicker({onPick, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
@@ -62,9 +63,10 @@ const renderFeatureGoals = (project, it) => {
   var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
 
   return goals.map(gg => <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
-    <b className={`feature ${gg.solved ? 'solved' : ''}`}>{/*<b>{gg.featureId}</b>*/}{getByID(project.features, gg.featureId)?.name}</b>
+    <b className={`feature ${gg.solved ? 'solved' : ''}`}>{getByID(project.features, gg.featureId)?.name}</b>
     <input type={"checkbox"} checked={gg.solved} value={"Solve"} onChange={ev => {
       var v = ev.target.checked
+
       console.log(v)
       actions.solveIterationGoal(it.id, gg.id, !!v)
     }}/>
@@ -265,49 +267,46 @@ function IterationGoalPicker({project, it}) {
     {renderUserGoals(project, it)}
   </div>
 
-  var featurePicker = <div>
-    <h2>Do less</h2>
-    <h3>Which problem will this feature solve?</h3>
-    <h4>Is it a strongest pick in terms of time/money</h4>
-    <br />
-    <br />
-    <ol>{renderFeatureGoals(project, it)}</ol>
-    <br />
-    <br />
-    <select value={-1} onChange={event => {
+  var chooseFromBacklog = <select
+    value={-1}
+    onChange={event => {
       var val = event.target.value
       console.log(val)
 
       if (val >= 0)
         actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, parseInt(val)))
-    }}>
-      <option disabled value={-1}> -- select feature --</option>
-      {project.features
-        // .sort((f1, f2) => {
-        //   var t1 = f1.timeCost || 1000000
-        //   var t2 = f2.timeCost || 1000000
-        //
-        //   return t1 - t2
-        // })
-        .filter(f => !f.solved)
-        .map((f,fi) => {
-          var disabled = !f.timeCost
-          var description = f.name;
-          if (disabled) {
-            description = `(No execution time) ${description}`
-          } else {
-            description = `(${getEstimateDescription(f.timeCost)}) ${description}`
-          }
+    }}
+  >
+    <option disabled value={-1}> -- select feature --</option>
+    {project.features
+      .filter(f => !(f.solved || getFeatureIterationId(project, f.id)))
+      .map((f,fi) => {
+        var disabled = !f.timeCost
+        var description = f.name;
 
-          return <option value={f.id} disabled={disabled}>{description}</option>
-        })}
-    </select>
+        if (disabled) {
+          description = `(No execution time) ${description}`
+        } else {
+          description = `(${getEstimateDescription(f.timeCost)}) ${description}`
+        }
+
+        return <option value={f.id} disabled={disabled}>{description}</option>
+      })}
+  </select>
+  var featurePicker = <div>
+    <h2>Do less</h2>
+    <h3>Which problem will this feature solve?</h3>
+    <h4>Is it a strongest pick in terms of time/money</h4>
+    {chooseFromBacklog}
+    <br />
     <FieldAdder
       placeholder={"Add new feature"}
       onAdd={val => {
         actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, val))
       }}
     />
+    <br />
+    <ol>{renderFeatureGoals(project, it)}</ol>
   </div>
 
   // if (goalType === -1)
@@ -394,7 +393,7 @@ function IterationGoalPicker({project, it}) {
     {/*  /!*<option value={GOAL_TYPE_MONETIZATION}>Sell X Plans</option>*!/*/}
     {/*  <option value={GOAL_TYPE_FEATURES}>Features</option>*/}
     {/*</select>*/}
-    <br />
+    {/*<br />*/}
     {/*<br />*/}
     {goalPicker}
     {/*{renderUserGoals(project, it)}*/}
@@ -493,6 +492,18 @@ function IterationView({project, it, index, setChosenIterationId}) {
     incomeGoal = <div className={"income-goal"} onClick={onGoalRemove(it, g)}>+${g.income}/mo</div>
   }
 
+  // var features = project.features || []
+  //
+  // var countableFeatures = features.filter(f => {
+  //
+  // })
+  // var totalHours = countableFeatures
+  //   .map(f => f.timeCost || 0)
+  //   .reduce((p, c) => p + c, 0)
+  // var scheduledHours = countableFeatures.filter(f => !!getFeatureIterationId(project, f.id))
+  //   .map(f => f.timeCost || 0)
+  //   .reduce((p, c) => p + c, 0)
+
   return <div
     draggable
     onDragStart={e => {onStartDragging(e, true)}}
@@ -525,7 +536,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
           {renderUserGoals(project, it)}
           {/*{ideaGoals.map(g => <div className="left">{ideaIcon} {getByID(project.risks, g.id)?.name}</div>)}*/}
           {/*{ideaGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
-          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon}<b>{g.featureId}</b> {getByID(project.features, g.featureId)?.name}</div>)}
+          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon} {getByID(project.features, g.featureId)?.name}</div>)}
 
           {/*<br />*/}
           {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
