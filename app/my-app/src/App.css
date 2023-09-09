@@ -193,6 +193,12 @@
 .feature.used {
   color: gray;
 }
+.feature.needsEstimates {
+  color: red;
+}
+.feature.nearest {
+  color: green;
+}
 
 
 .Panel {

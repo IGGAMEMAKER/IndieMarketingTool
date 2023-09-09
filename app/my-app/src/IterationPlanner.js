@@ -12,6 +12,7 @@ import {RiskList, RiskView} from "./RiskView";
 import {Panel} from "./Panel";
 import {getEstimateDescription} from "./utils/getEstimateDescription";
 import {getFeatureIterationId} from "./utils/getFeatureIterationId";
+import {renderTimeButton} from "./utils/renderTimeButton";
 
 function RiskPicker({onPick, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
@@ -59,18 +60,40 @@ const renderRiskGoals = (project, it, showSolutions = false) => {
   })
 }
 
-const renderFeatureGoals = (project, it) => {
+function RenderFeatureGoals ({project, it}) {
+  var [chosenTimerId, setTimerId] = useState(-1)
   var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
 
-  return goals.map(gg => <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
-    <b className={`feature ${gg.solved ? 'solved' : ''}`}>{getByID(project.features, gg.featureId)?.name}</b>
-    <input type={"checkbox"} checked={gg.solved} value={"Solve"} onChange={ev => {
+  return goals.map(gg => {
+    var feature = getByID(project.features, gg.featureId)
+    var needsEstimates = !feature?.timeCost
+    const completionCheckbox = <input type="checkbox" checked={gg.solved} value="Solve" onChange={ev => {
       var v = ev.target.checked
 
       console.log(v)
       actions.solveIterationGoal(it.id, gg.id, !!v)
     }}/>
-  </li>)
+
+    var estimate;
+    if (needsEstimates) {
+      var timeButton = t => renderTimeButton(t, feature, () => {
+        setTimerId(-1)
+      })
+      var dayDurationHours = 8
+
+      estimate = <div>{timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}</div>
+    } else {
+      estimate = completionCheckbox
+    }
+
+    var solved = gg.solved ? 'solved' : ''
+    needsEstimates = needsEstimates ? 'needsEstimates': ''
+
+    return <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
+      <b className={`feature ${solved} ${needsEstimates}`}>{feature?.name}</b>
+      {estimate}
+    </li>
+  })
 }
 
 const renderUserGoals = (project, it) => {
@@ -302,11 +325,16 @@ function IterationGoalPicker({project, it}) {
     <FieldAdder
       placeholder={"Add new feature"}
       onAdd={val => {
-        actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, val))
+        var nextId = getNextID(project.features);
+
+        actions.addFeature(val)
+        actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, nextId))
       }}
     />
     <br />
-    <ol>{renderFeatureGoals(project, it)}</ol>
+    <ol>
+      <RenderFeatureGoals project={project} it={it} />
+    </ol>
   </div>
 
   // if (goalType === -1)

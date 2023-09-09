@@ -1,7 +1,7 @@
 import {Component, useState} from "react";
 import storage from "./Storage";
 import actions, {editDescription} from "./actions";
-import {APP_TYPE_GAME, LINK_TYPE_DOCS, LINK_TYPE_SIMILAR} from "./constants/constants";
+import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS, LINK_TYPE_SIMILAR} from "./constants/constants";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {IterationPlanner} from "./IterationPlanner";
 import {Audience} from "./Audience";
@@ -15,6 +15,7 @@ import {getEstimateDescription} from "./utils/getEstimateDescription";
 import {sortFeatures} from "./utils/sortFeatures";
 import {getFeatureIterationId} from "./utils/getFeatureIterationId";
 import {getAudienceUsageCount, getFeatureUsageCount} from "./utils/getEntityUsageCount";
+import {renderTimeButton} from "./utils/renderTimeButton";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -208,69 +209,91 @@ function FeatureList({project}) {
     .map(f => f.timeCost || 0)
     .reduce((p, c) => p + c, 0)
 
+  var firstIterationWithFeatures = project.iterations.find(it => {
+    if (it.goals.find(g => g.goalType === GOAL_TYPE_FEATURES))
+      return true
+    return false
+  })
+
   return <div>
-    <Panel id={"Features"} header={"Features"} />
-    <h4>You won't be able to use them if you won't specify implementation time</h4>
-    <FieldAdder placeholder={"feature"} onAdd={val => actions.addFeature(val)} />
-    <br />
-    <br />
-    <b>Planned: {getEstimateDescription(scheduledHours)}, Total: {getEstimateDescription(totalHours)}</b>
-    <br />
-    <br />
+    <Panel id={"Features"} header={"Features"}/>
+    {/*<h4>You won't be able to use them if you won't specify implementation time</h4>*/}
+    <FieldAdder placeholder={"feature"} onAdd={val => actions.addFeature(val)}/>
+    <br/>
+    <br/>
+    <p>
+      <b>Planned: {getEstimateDescription(scheduledHours)}, Total: {getEstimateDescription(totalHours)}</b>
+    </p>
+    <p>
+      if you work 8 Hours / day
+    </p>
+    <br/>
+    <br/>
     <table>
       {features
         .sort(sortFeatures)
         .map(f => {
-        var dayDurationHours = 8;
-
-        const timeB = (t) =>
-          <button className={`toggle ${f.timeCost === t ? 'chosen' : ''}`} onClick={() => {
-            actions.changeFeatureTimeCost(f.id, t)
+          var dayDurationHours = 8;
+          var timeButton = t => renderTimeButton(t, f, () => {
             setTimerId(-1)
-          }}>{getEstimateDescription(t)}</button>
+          })
 
-        var onPick = () => {setTimerId(f.id)}
-        var timePicker = isNaN(f.timeCost) ?
-          <button onClick={onPick}>Set Estimates</button>
-          :
-          <span className={"editable"} onClick={onPick}>{getEstimateDescription(f.timeCost)}</span>
 
-        if (chosenTimerId === f.id) {
-          timePicker = <div>
-            {timeB(15)} {timeB(60)} {timeB(4 * 60)} {timeB(dayDurationHours * 60)} {timeB(dayDurationHours * 3 * 60)} {timeB(dayDurationHours * 7 * 60)}
-            <br />
-          </div>
-        }
+          var onPick = () => {
+            setTimerId(f.id)
+          }
+          var timePicker = isNaN(f.timeCost) ?
+            <button onClick={onPick}>Set Estimates</button>
+            :
+            <span className={"editable"} onClick={onPick}>{getEstimateDescription(f.timeCost)}</span>
 
-        return <tr
-          key={"feature" + f.id}
-        >
-          {/*<td>*/}
-          {/*  <b>{f.id}</b>*/}
-          {/*</td>*/}
-          <td className={"left"}>
-            <FieldPicker
-              autoFocus
-              value={f.name}
-              placeholder={"type your mind"}
-              onAction={val => actions.editFeatureName(f.id, val)}
-              onRemove={() => {
-                var usages = getFeatureUsageCount(project, f.id)
+          if (chosenTimerId === f.id) {
+            timePicker = <div>
+              {timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}
+              <br/>
+            </div>
+          }
 
-                if (usages.length) {
-                  alert(`Can't remove this feature, cause it's used in\n\n${usages.join('\n')}`)
-                } else {
-                  actions.removeFeature(f.id)
-                }
-              }}
-              normalValueRenderer={onEdit => <div onClick={onEdit} className={`feature ${f.solved ? 'solved' : ''} ${getFeatureIterationId(project, f.id) ? 'used': ''}`}>{f.name}</div>}
-            />
-          </td>
-          <td>
-            {timePicker}
-          </td>
-        </tr>
-      })}
+          return <tr
+            key={"feature" + f.id}
+          >
+            {/*<td>*/}
+            {/*  <b>{f.id}</b>*/}
+            {/*</td>*/}
+            <td className={"left"}>
+              <FieldPicker
+                autoFocus
+                value={f.name}
+                placeholder={"type your mind"}
+                onAction={val => actions.editFeatureName(f.id, val)}
+                onRemove={() => {
+                  var usages = getFeatureUsageCount(project, f.id)
+
+                  if (usages.length) {
+                    alert(`Can't remove this feature, cause it's used in\n\n${usages.join('\n')}`)
+                  } else {
+                    actions.removeFeature(f.id)
+                  }
+                }}
+                normalValueRenderer={onEdit => {
+                  var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
+
+                  var solved = f.solved ? 'solved' : ''
+                  var used = getFeatureIterationId(project, f.id) ? 'used' : ''
+                  var isNearestFeature = isPartOfFirstIteration && !f.solved ? 'nearest' : ''
+
+                  return <div
+                    onClick={onEdit}
+                    className={`feature ${solved} ${used} ${isNearestFeature}`}
+                  >{f.name}</div>
+                }}
+              />
+            </td>
+            <td>
+              {timePicker}
+            </td>
+          </tr>
+        })}
     </table>
   </div>
 }
