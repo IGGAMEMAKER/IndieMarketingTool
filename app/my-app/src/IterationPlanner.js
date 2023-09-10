@@ -60,7 +60,7 @@ const renderRiskGoals = (project, it, showSolutions = false) => {
   })
 }
 
-function RenderFeatureGoals ({project, it}) {
+function RenderPickableFeatureGoals ({project, it}) {
   var [chosenTimerId, setTimerId] = useState(-1)
   var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
 
@@ -74,24 +74,29 @@ function RenderFeatureGoals ({project, it}) {
       actions.solveIterationGoal(it.id, gg.id, !!v)
     }}/>
 
-    var estimate;
+    var setEstimate;
     if (needsEstimates) {
       var timeButton = t => renderTimeButton(t, feature, () => {
         setTimerId(-1)
       })
       var dayDurationHours = 8
 
-      estimate = <div>{timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}</div>
+      setEstimate = <div>{timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}</div>
     } else {
-      estimate = completionCheckbox
+      setEstimate = completionCheckbox
     }
+
+    var estimate;
+    if (!needsEstimates)
+      estimate = getEstimateDescription(feature.timeCost)
+
 
     var solved = gg.solved ? 'solved' : ''
     needsEstimates = needsEstimates ? 'needsEstimates': ''
 
-    return <li key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
-      <b className={`feature ${solved} ${needsEstimates}`}>{feature?.name}</b>
-      {estimate}
+    return <li className="left" key={"featureG." + gg.id} onClick={onGoalRemove(it, gg)}>
+      {estimate} <b className={`left feature ${solved} ${needsEstimates}`}>{feature?.name}</b>
+      {setEstimate}
     </li>
   })
 }
@@ -103,7 +108,7 @@ const renderUserGoals = (project, it) => {
     var audience = getByID(project.audiences, gg.userId)
 
     return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)} className="left">
-      Get {gg.amount} <span style={{color: 'green'}}>{audience?.name}</span>
+      +{gg.amount} <span style={{color: 'green'}}>{audience?.name}</span>
     </div>
   })
 }
@@ -141,7 +146,6 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
   return <div id="editIteration" className={"edit-iteration"}>
     {popupCloser}
     <div>
-      {/*<h3>{it.description}</h3>*/}
       <FieldPicker
         value={it.description}
         onAction={val => actions.editIterationDescription(it.id, val)}
@@ -333,7 +337,7 @@ function IterationGoalPicker({project, it}) {
     />
     <br />
     <ol>
-      <RenderFeatureGoals project={project} it={it} />
+      <RenderPickableFeatureGoals project={project} it={it} />
     </ol>
   </div>
 
@@ -520,17 +524,19 @@ function IterationView({project, it, index, setChosenIterationId}) {
     incomeGoal = <div className={"income-goal"} onClick={onGoalRemove(it, g)}>+${g.income}/mo</div>
   }
 
-  // var features = project.features || []
-  //
-  // var countableFeatures = features.filter(f => {
-  //
-  // })
-  // var totalHours = countableFeatures
-  //   .map(f => f.timeCost || 0)
-  //   .reduce((p, c) => p + c, 0)
-  // var scheduledHours = countableFeatures.filter(f => !!getFeatureIterationId(project, f.id))
-  //   .map(f => f.timeCost || 0)
-  //   .reduce((p, c) => p + c, 0)
+  var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
+  var features = project.features || []
+
+  var countableFeatures = features.filter(f => {
+    return goals.find(g => f.id === g.featureId)
+  })
+
+  var totalHours = countableFeatures
+    .map(f => f.timeCost || 0)
+    .reduce((p, c) => p + c, 0)
+  var remainingHours = countableFeatures.filter(f => !f.solved)
+    .map(f => f.timeCost || 0)
+    .reduce((p, c) => p + c, 0)
 
   return <div
     draggable
@@ -555,10 +561,9 @@ function IterationView({project, it, index, setChosenIterationId}) {
         <div>
           {/*<div>{moveLeftButton}{moveRightButton} {editLink}</div>*/}
           {/*<div>{moveLeftButton}{moveRightButton}</div>*/}
-          <div className={"iteration-title"}>
-            {it.description}
-          </div>
-          <br />
+          <div className="iteration-title">{it.description}</div>
+          <div className="iteration-estimate">{getEstimateDescription(remainingHours)}</div>
+
 
           {/*{featureGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
           {renderUserGoals(project, it)}
@@ -690,7 +695,6 @@ export function IterationPlanner({project}) {
     <div className={"Iteration-Grid"}>
       {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
       {mappedIterations}
-      {/*{iterations.map((it, i) => <IterationView project={project} it={it} index={i} setChosenIterationId={setChosenIterationId} />)}*/}
     </div>
     <br/>
     <br/>

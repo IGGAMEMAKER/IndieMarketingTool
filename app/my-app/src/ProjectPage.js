@@ -148,10 +148,57 @@ function ChannelAdder({}) {
   />
 }
 
-function AudienceSourcesPanel({channels}) {
+function AudienceSourcesPanel({channels, audiences}) {
+  const renderAudienceStrats = ({description, id, name, strategy, messages = []}) => {
+    if (!Array.isArray(strategy))
+      strategy = [strategy]
+
+    var strategyPicker = <ol>
+      {strategy.map(s => {
+        var strategyId = s.id
+        // console.log(s.id, 'strategyPicker', {strategyId})
+
+        return <li key={"strategy." + id + "." + strategyId}>
+          <FieldPicker
+            value={s.name}
+            placeholder={"How will you reach them?"}
+            onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}
+            onRemove={() => actions.removeAudienceStrategy(id, strategyId)}
+          />
+        </li>
+      })}
+      <li>
+        <FieldAdder onAdd={val => actions.addAudienceStrategy(val, id)} placeholder={"add more ways"}/>
+      </li>
+    </ol>
+
+    return <tr className="Audience-item" key={"marketing-planner." + id} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
+      {/*<td>*/}
+      {/*  {a.name}*/}
+      {/*</td>*/}
+      <td>
+        <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>
+        <br />
+        <label className="audience-description">{description}</label>
+        <br />
+        {strategyPicker}
+      </td>
+      {/*<td>*/}
+      {/*  <b>What will you tell <span style={{color: 'green'}}>{name}</span>?</b>*/}
+      {/*  <br />*/}
+      {/*  <label style={{color: 'gray'}}>{description}</label>*/}
+      {/*  {messagePicker}*/}
+      {/*</td>*/}
+    </tr>
+  }
+
   return <div>
-    <Panel id="Sources" header="Where will you find your audience?" />
-    <h6>User count will update in future releases</h6>
+    <Panel id="GROWTH" header="Growth strategy" />
+    <div className="Audience-Container">
+      {audiences.map(a => renderAudienceStrats(a))}
+    </div>
+    <h3>Where will you find your audience?</h3>
+    {/*<h6>User count will update in future releases</h6>*/}
     <div className="Container">
       <ChannelList channels={channels} />
     </div>
@@ -201,13 +248,10 @@ function FeatureList({project}) {
 
   var features = project.features || []
 
+  var sum = list => list.map(f => f.timeCost || 0).reduce((p, c) => p + c, 0)
   var countableFeatures = features.filter(f => !f.solved)
-  var totalHours = countableFeatures
-    .map(f => f.timeCost || 0)
-    .reduce((p, c) => p + c, 0)
-  var scheduledHours = countableFeatures.filter(f => !!getFeatureIterationId(project, f.id))
-    .map(f => f.timeCost || 0)
-    .reduce((p, c) => p + c, 0)
+  var totalHours     = sum(countableFeatures)
+  var scheduledHours = sum(countableFeatures.filter(f => !!getFeatureIterationId(project, f.id)))
 
   var firstIterationWithFeatures = project.iterations.find(it => {
     if (it.goals.find(g => g.goalType === GOAL_TYPE_FEATURES))
@@ -222,7 +266,7 @@ function FeatureList({project}) {
     <br/>
     <br/>
     <p>
-      <b>Planned: {getEstimateDescription(scheduledHours)}, Total: {getEstimateDescription(totalHours)}</b>
+      <b>Remaining: {getEstimateDescription(scheduledHours)}{/*, +Not assigned: {getEstimateDescription(totalHours)}*/}</b>
     </p>
     <p>
       if you work 8 Hours / day
@@ -460,25 +504,6 @@ function MarketingPlanner({project}) {
       </li>
     </ol>
 
-    var strategyPicker = <ol>
-      {strategy.map(s => {
-        var strategyId = s.id
-        // console.log(s.id, 'strategyPicker', {strategyId})
-
-        return <li key={"strategy." + id + "." + strategyId}>
-          <FieldPicker
-            value={s.name}
-            placeholder={"How will you reach them?"}
-            onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}
-            onRemove={() => actions.removeAudienceStrategy(id, strategyId)}
-          />
-        </li>
-      })}
-      <li>
-        <FieldAdder onAdd={val => actions.addAudienceStrategy(val, id)} placeholder={"add more ways"}/>
-      </li>
-    </ol>
-
     return <tr key={"marketing-planner." + id} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
       {/*<td>*/}
       {/*  {a.name}*/}
@@ -500,7 +525,7 @@ function MarketingPlanner({project}) {
   }
 
   return <div>
-    <Panel id="Growth" header="Your message" />
+    <Panel id="Message" header="Your message" />
     <h3>Most important part of the project</h3>
     {audiencePicker}
     <br />
@@ -518,6 +543,11 @@ function MarketingPlanner({project}) {
         {audience ? renderAudience(audience) : ''}
         </tbody>
       </table>
+      {/*<table>*/}
+      {/*  <tbody>*/}
+      {/*  {audience ? renderAudienceStrats(audience) : ''}*/}
+      {/*  </tbody>*/}
+      {/*</table>*/}
     </div>
   </div>
 }
@@ -672,7 +702,7 @@ export class ProjectPage extends Component {
 
     var project = this.state?.project
 
-    const menus = ["Notes", "Audiences", "Monetization", "Goals", "Growth", "Risks", "ITERATIONS", "Sources", "Links"]
+    const menus = ["Notes", "Audiences", "Monetization", "Goals", "Message", "Risks", "GROWTH", "ITERATIONS", "Links"]
     return (
       <div className="App">
         <div>
@@ -710,9 +740,9 @@ export class ProjectPage extends Component {
           <BusinessPlanner project={this.state.project}/>
           <MarketingPlanner project={this.state}/>
           <RisksPanel risks={risks}/>
+          <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
           <IterationPlanner project={this.state.project}/>
 
-          <AudienceSourcesPanel channels={channels}/>
           <UsefulLinks links={this.state.links}/>
 
           <br/>
