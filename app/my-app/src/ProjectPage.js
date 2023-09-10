@@ -83,7 +83,7 @@ function Channel({channel}) {
   return (
     // <div className="Channel-item">
     <tr style={{textAlign: 'left', backgroundColor: isDangerous ? 'red': 'white'}}>
-      <td>{users}</td>
+      {/*<td>{users}</td>*/}
       <td>
         <a href={link} target={"_blank"}>{l}</a>
         <br />

@@ -231,6 +231,11 @@ button.toggle {
   color: gray;
 }
 
+.field-picker {
+  min-width: 250px;
+  min-height: 120px;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));

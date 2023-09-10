@@ -31,6 +31,7 @@ export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=t
 
   return <div key={value}>
     <textarea
+      className="field-picker"
       autoFocus={autoFocus}
       value={newValue}
       placeholder={placeholder}
