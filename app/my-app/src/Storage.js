@@ -27,7 +27,7 @@ import {
   ITERATIONS_GOAL_REMOVE,
   ITERATIONS_GOAL_SOLVE,
   ITERATIONS_ORDER_CHANGE,
-  ITERATIONS_REMOVE,
+  ITERATIONS_REMOVE, ITERATIONS_SOLVE,
   LINKS_ADD,
   LINKS_NOTES_EDIT,
   LINKS_REMOVE,
@@ -894,6 +894,12 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break;
 
+    case ITERATIONS_SOLVE:
+      ind      = getIndexByID(project.iterations,            p.id)
+
+      project.iterations[ind].solved = p.solved
+      saveProjectChanges()
+      break;
     case ITERATIONS_GOAL_SOLVE:
       ind      = getIndexByID(project.iterations,            p.id)
       var ind2 = getIndexByID(project.iterations[ind].goals, p.goalIndex)

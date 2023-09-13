@@ -20,11 +20,11 @@ export class Iteration {
     return this;
   }
 
-  static createRiskGoal = (project, riskId)                 => ({goalType: GOAL_TYPE_RISK, riskId})
-  static createIncomeGoal = (project, income)               => ({goalType: GOAL_TYPE_INCOME, income})
-  static createUserGoal = (project, audienceID, amount)     => ({goalType: GOAL_TYPE_USERS, userId: audienceID, amount})
-  static createMonetizationGoal = (project, planId, amount) => ({goalType: GOAL_TYPE_MONETIZATION, planId, amount})
-  static createFeatureGoal = (project, featureId)                => ({goalType: GOAL_TYPE_FEATURES, featureId})
+  static createRiskGoal = (project, riskId)                       => ({goalType: GOAL_TYPE_RISK, riskId})
+  static createIncomeGoal = (project, income)                     => ({goalType: GOAL_TYPE_INCOME, income})
+  static createUserGoal = (project, audienceID, amount)           => ({goalType: GOAL_TYPE_USERS, userId: audienceID, amount})
+  static createMonetizationGoal = (project, planId, amount)       => ({goalType: GOAL_TYPE_MONETIZATION, planId, amount})
+  static createFeatureGoal = (project, featureId)                 => ({goalType: GOAL_TYPE_FEATURES, featureId})
 
   static getGoalsByGoalType = goalType => (it) => it.goals.filter(gg => gg?.goalType === goalType)
 }

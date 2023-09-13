@@ -139,6 +139,15 @@
   padding-right: 20%;
   background-color: red;
 }
+.iteration-solve {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+.iteration-secondary-text {
+  color: gray;
+  font-size: 20px
+}
 .iteration-title {
   /*min-height: 60px;*/
   height: 72px;
@@ -184,6 +193,10 @@
 
 #ITERATIONS.Audience-Container {
   grid-template-columns: auto auto auto;
+}
+
+.feature-tab {
+  max-width: 450px;
 }
 
 .feature {

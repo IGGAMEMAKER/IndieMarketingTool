@@ -107,7 +107,7 @@ const renderUserGoals = (project, it) => {
   return goals.map(gg => {
     var audience = getByID(project.audiences, gg.userId)
 
-    return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)} className="left">
+    return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)} className="left iteration-secondary-text">
       +{gg.amount} <span style={{color: 'green'}}>{audience?.name}</span>
     </div>
   })
@@ -294,7 +294,18 @@ function IterationGoalPicker({project, it}) {
     {renderUserGoals(project, it)}
   </div>
 
+  var addNewFeature = <FieldAdder
+    defaultState={true}
+    placeholder={"Add new feature"}
+    onAdd={val => {
+      var nextId = getNextID(project.features);
+
+      actions.addFeature(val)
+      actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, nextId))
+    }}
+  />
   var chooseFromBacklog = <select
+    style={{width: '150px'}}
     value={-1}
     onChange={event => {
       var val = event.target.value
@@ -324,19 +335,32 @@ function IterationGoalPicker({project, it}) {
     <h2>Do less</h2>
     <h3>Which problem will this feature solve?</h3>
     <h4>Is it a strongest pick in terms of time/money</h4>
-    {chooseFromBacklog}
-    <br />
-    <FieldAdder
-      placeholder={"Add new feature"}
-      onAdd={val => {
-        var nextId = getNextID(project.features);
 
-        actions.addFeature(val)
-        actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, nextId))
-      }}
-    />
-    <br />
+    {/*<br />*/}
+    {/*<br />*/}
+    {/*<ul>*/}
+
+    {/*<li>*/}
+      <table style={{marginLeft: '15px'}}>
+        <tr>
+          <td>
+            {chooseFromBacklog}
+          </td>
+          <td>
+            /
+          </td>
+          <td>
+            {addNewFeature}
+          </td>
+        </tr>
+      </table>
+    {/*</li>*/}
+    {/*</ul>*/}
     <ol>
+      {/*<li>*/}
+      {/*  {chooseFromBacklog} / {addNewFeature}*/}
+      {/*</li>*/}
+      {/*<li></li>*/}
       <RenderPickableFeatureGoals project={project} it={it} />
     </ol>
   </div>
@@ -472,39 +496,10 @@ function IterationView({project, it, index, setChosenIterationId}) {
     actions.changeIterationOrder(was, next)
   }
 
-  const evolvedIteration = new Iteration("NEW ITERATION", [])
-  const simplifiedIteration = new Iteration("NEW ITERATION", [])
-
   const stopPropagation = e => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
   }
-
-  const evolveButton = <button
-    onClick={ev => {
-      stopPropagation(ev)
-      actions.addIteration(evolvedIteration, {pasteAfter: it.id})
-    }}
-  >+</button>
-
-  const simplifyButton = <button
-    onClick={ev => actions.addIteration(simplifiedIteration, {pasteBefore: it.id})}
-  >+</button>
-
-
-  const moveLeftButton = <button onClick={ev => {
-    stopPropagation(ev)
-    // ev.preventDefault()
-    actions.changeIterationOrder(index, index - 1)
-  }}>{ARROW_LEFT}</button>
-
-  const moveRightButton = <button onClick={ev => {
-    // ev.preventDefault()
-    stopPropagation(ev)
-    actions.changeIterationOrder(index, index + 1)
-  }}>{ARROW_RIGHT}</button>
-
-  const editLink = <a href={"#editIteration"} onClick={() => setChosenIterationId(it.id)}>Edit</a>
 
   const ideaIcon = <span style={{color: 'orange'}}>?</span> // 💡
   const growthIcon = <span style={{color: 'green'}}>😄</span>
@@ -512,7 +507,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
   const featureIcon = <span style={{color: 'red'}}>⚙︎</span>
   const incomeIcon = bigGrowthIcon
 
-  var ideaGoals     = Iteration.getGoalsByGoalType(GOAL_TYPE_RISK)(it)
+  var ideaGoals     = Iteration.getGoalsByGoalType(GOAL_TYPE_RISK)(it).filter(g => getByID(project.risks, g.riskId)?.name?.length)
   var userGoals     = Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it)
   var featureGoals  = Iteration.getGoalsByGoalType(GOAL_TYPE_FEATURES)(it)
   var incomeGoals   = Iteration.getGoalsByGoalType(GOAL_TYPE_INCOME)(it)
@@ -538,6 +533,10 @@ function IterationView({project, it, index, setChosenIterationId}) {
     .map(f => f.timeCost || 0)
     .reduce((p, c) => p + c, 0)
 
+  var minimize = name => {
+    return name.substr(0, 20) + (name.length > 20 ? '...' : '')
+  }
+
   return <div
     draggable
     onDragStart={e => {onStartDragging(e, true)}}
@@ -555,21 +554,22 @@ function IterationView({project, it, index, setChosenIterationId}) {
   >
     {/*<div style={{display: 'grid', gridTemplateColumns: '25px 175px 25px'}}>*/}
     <div style={{display: 'grid', gridTemplateColumns: 'auto {/*25px*/}'}}>
-      {/*{simplifyButton}*/}
       {/*<div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>*/}
       <div style={{display: 'grid', gridTemplateRows: '250px'}}>
-        <div>
-          {/*<div>{moveLeftButton}{moveRightButton} {editLink}</div>*/}
-          {/*<div>{moveLeftButton}{moveRightButton}</div>*/}
+        <div style={{position: 'relative'}}>
+          {/*<div className="iteration-solve"><input type="checkbox" onInput={ev => {*/}
+          {/*  stopPropagation(ev)*/}
+          {/*  // ev.preventDefault()*/}
+          {/*  actions.solveIteration(it.id, ev.target.checked)}*/}
+          {/*}/></div>*/}
           <div className="iteration-title">{it.description}</div>
-          <div className="iteration-estimate">{getEstimateDescription(remainingHours)}</div>
+          <div className="iteration-estimate">{remainingHours ? getEstimateDescription(remainingHours) : ''}</div>
 
 
-          {/*{featureGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
           {renderUserGoals(project, it)}
-          {/*{ideaGoals.map(g => <div className="left">{ideaIcon} {getByID(project.risks, g.id)?.name}</div>)}*/}
-          {/*{ideaGoals.map(g => <div>{JSON.stringify(g, null, 2)}</div>)}*/}
-          {featureGoals.filter(g=> !g.solved).map(g => <div className="left">{featureIcon} {getByID(project.features, g.featureId)?.name}</div>)}
+          {/*{renderRiskGoals(project, it)}*/}
+          {ideaGoals.map(g => <div className="left iteration-secondary-text">{ideaIcon} {g.riskId} {getByID(project.risks, g.riskId)?.name}</div>)}
+          {featureGoals.filter(g=> !g.solved).map(g => <div className="left iteration-secondary-text">{featureIcon} {minimize(getByID(project.features, g.featureId)?.name)}</div>)}
 
           {/*<br />*/}
           {/*{new Array(incomeGoals.length).fill(<b>{incomeIcon}</b>)}*/}
@@ -577,14 +577,12 @@ function IterationView({project, it, index, setChosenIterationId}) {
           {/*{new Array(userGoals.length).fill(<b>{growthIcon}</b>)}*/}
           {/*{new Array(featureGoals.length).fill(<b>{featureIcon}</b>)}*/}
           {/*<br/>*/}
-          {/*{renderRiskGoals(project, it)}*/}
           {/*{renderUserGoals(project, it)}*/}
         </div>
         <div>
           {incomeGoal}
         </div>
       </div>
-      {/*{evolveButton}*/}
     </div>
   </div>
 }

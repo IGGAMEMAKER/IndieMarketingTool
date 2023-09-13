@@ -97,12 +97,17 @@ const createProject = async (req, res) => {
     ]
   } else {
     risks = [
-      {name: "Won't be interested enough"},
+      {name: "Won't be interested"},
       {name: "Won't understand"},
       {name: "Won't buy it"},
       {name: "Won't like it"},
       {name: "Won't recommend it"},
     ]
+  }
+
+  for (var i = 0; i < risks.length; i++) {
+    risks[i].id = i + 1;
+    risks[i].solutions = []
   }
 
   var project = new ProjectModel({

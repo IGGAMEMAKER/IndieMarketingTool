@@ -136,16 +136,6 @@ export function RiskView({risk, index, it, goal, orderingAllowed = true}) {
       var solutionRenderer;
 
       if (solutions.length) {
-        // solutionRenderer = solutions.map(s => <li
-        //   key={"risk." + id + ".solution" + s.id} className="text-secondary"
-        // >
-        //   <FieldPicker
-        //     value={s.name}
-        //     placeholder={"Add possible solution"}
-        //     onAction={val => actions.editRiskSolution(id, s.id, val)}
-        //     onRemove={() => actions.removeRiskSolution(id, s.id)}
-        //   />
-        // </li>)
         solutionRenderer = solutions.map((s, si) => <SolutionView riskIndex={id} id={id} s={s} index={si} />)
       }
 

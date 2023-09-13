@@ -276,6 +276,17 @@ function FeatureList({project}) {
     <table>
       {features
         .sort(sortFeatures)
+        .filter(f => {
+          var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
+          if (f.solved)
+            return false
+
+          if (f.solved && !isPartOfFirstIteration) {
+            return false
+          }
+
+          return true;
+        })
         .map(f => {
           var dayDurationHours = 8;
           var timeButton = t => renderTimeButton(t, f, () => {
@@ -304,7 +315,7 @@ function FeatureList({project}) {
             {/*<td>*/}
             {/*  <b>{f.id}</b>*/}
             {/*</td>*/}
-            <td className={"left"}>
+            <td className={"left feature-tab"}>
               <FieldPicker
                 autoFocus
                 value={f.name}
@@ -343,60 +354,68 @@ function FeatureList({project}) {
 }
 
 function BusinessPlanner({project}) {
-  // var [desiredProfit, setDesiredProfit] = useState(project.desiredProfit || 10000)
-  // var [monthlyExpenses, setMonthlyExpenses] = useState(project.monthlyExpenses || 500)
-  // var [timeTillBurnout, setTimeTillBurnout] = useState(project.timeTillBurnout || 1)
   var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
-  // console.log({project})
+
+  var desiredProfitPicker = <NumberPicker
+    value={desiredProfit}
+    placeholder={"Type your desired profit"}
+    onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
+    defaultState={true}
+  />
+
+  var monthlyExpensesPicker = <NumberPicker
+    value={monthlyExpenses}
+    placeholder={"What are ur expenses"}
+    onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
+    defaultState={true}
+  />
+
+  var timeTillBurnoutPicker = <NumberPicker
+    value={timeTillBurnout}
+    placeholder={"How many months can you spend on that venture?"}
+    onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
+    defaultState={true}
+  />
 
   return <div>
     <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} />
     <br/>
-    <div className={"Audience-Container"}>
-      <table>
-        <tbody>
-        <tr className={"Audience-item"}>
-          <td>
-            How much do you want to earn?
-            <NumberPicker
-              value={desiredProfit}
-              placeholder={"Type your desired profit"}
-              onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
-              defaultState={true}
-            />
-            <div>monthly</div>
-          </td>
-          <td>{renderIncomeGoal(project, desiredProfit)}</td>
-        </tr>
-        <tr className={"Audience-item"}>
-          <td>
-            Your monthly expenses?
-            <NumberPicker
-              value={monthlyExpenses}
-              placeholder={"What are ur expenses"}
-              onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
-              defaultState={true}
-            />
-          </td>
-          <td>{renderIncomeGoal(project, monthlyExpenses, 'become sustainable')}</td>
-        </tr>
-        <tr className={"Audience-item"}>
-          <td>
-            {/*How much time do you have until you run out of cash?*/}
-            Time till money burnout
-            <NumberPicker
-              value={timeTillBurnout}
-              placeholder={"How many months can you spend on that venture?"}
-              onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
-              defaultState={true}
-            />
-            <div>months</div>
-          </td>
-          <td>{renderIncomeGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+    <p>How much do you want to earn? {desiredProfitPicker}</p>
+    <p>Your monthly expenses? {monthlyExpensesPicker}</p>
+    <p>Time till money burnout {timeTillBurnoutPicker}</p>
+    {renderIncomeGoal(project, 1, '??', [
+      {goal: desiredProfit, name: 'Dream', color: 'green'},
+      {goal: monthlyExpenses, name: 'Sustainable', color: 'orange'},
+      {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},
+      ])}
+
+    {/*<div className={"Audience-Container"}>*/}
+    {/*  <table>*/}
+    {/*    <tbody>*/}
+    {/*    <tr className={"Audience-item"}>*/}
+    {/*      <td>*/}
+    {/*        How much do you want to earn?*/}
+    {/*        {desiredProfitPicker}*/}
+    {/*        <div>monthly</div>*/}
+    {/*      </td>*/}
+    {/*      <td>*/}
+    {/*        Your monthly expenses?*/}
+    {/*        {monthlyExpensesPicker}*/}
+    {/*      </td>*/}
+    {/*      <td>*/}
+    {/*        Time till money burnout*/}
+    {/*        {timeTillBurnoutPicker}*/}
+    {/*        <div>months</div>*/}
+    {/*      </td>*/}
+    {/*    </tr>*/}
+    {/*    <tr className={"Audience-item"}>*/}
+    {/*      <td>{renderIncomeGoal(project, desiredProfit)}</td>*/}
+    {/*      <td>{renderIncomeGoal(project, monthlyExpenses, 'become sustainable')}</td>*/}
+    {/*      <td>{renderIncomeGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>*/}
+    {/*    </tr>*/}
+    {/*    </tbody>*/}
+    {/*  </table>*/}
+    {/*</div>*/}
     <br/>
     <br/>
   </div>

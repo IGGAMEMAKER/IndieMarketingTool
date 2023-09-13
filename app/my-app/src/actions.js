@@ -67,7 +67,7 @@ import {
   FEATURES_EDIT,
   FEATURES_REMOVE,
   FEATURES_ORDER_CHANGE,
-  FEATURES_EDIT_TIME_COST
+  FEATURES_EDIT_TIME_COST, ITERATIONS_SOLVE
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -611,6 +611,13 @@ export function solveIterationGoal(id, goalIndex, solved = true) {
   })
 }
 
+export function solveIteration(id, solved = true) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_SOLVE,
+    id, solved
+  })
+}
+
 export function logIn(email, password) {
   Dispatcher.dispatch({
     actionType: PROFILE_LOGIN,
@@ -698,6 +705,7 @@ export default {
   editIterationGoal,
   addIterationGoal,
   removeIterationGoal,
-  solveIterationGoal
+  solveIterationGoal,
+  solveIteration
 }
 
