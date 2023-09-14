@@ -484,6 +484,17 @@ function AudienceMessageView({index, messageId, id, m})  {
     />
   </li>
 }
+
+function GlobalStrategyPlanner({project}) {
+  return <div>
+    <Panel id="Strategy" header="Your strategy" />
+    <FieldPicker
+      value={project?.strategy || ''}
+      placeholder={"who you will test first, who will you get second, e.t.c. which features will you add before/after"}
+      onAction={val => actions.editStrategy(val)}
+    />
+  </div>
+}
 function MarketingPlanner({project}) {
   var defaultId = project.audiences.length ? project.audiences[0].id : -1
 
@@ -758,8 +769,11 @@ export class ProjectPage extends Component {
           <br/>
           <BusinessPlanner project={this.state.project}/>
           <MarketingPlanner project={this.state}/>
-          <RisksPanel risks={risks}/>
           <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
+          <GlobalStrategyPlanner project={this.state.project}/>
+
+          <RisksPanel risks={risks}/>
+
           <IterationPlanner project={this.state.project}/>
 
           <UsefulLinks links={this.state.links}/>

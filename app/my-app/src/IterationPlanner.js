@@ -556,7 +556,7 @@ function IterationView({project, it, index, setChosenIterationId}) {
     <div style={{display: 'grid', gridTemplateColumns: 'auto {/*25px*/}'}}>
       {/*<div style={{display: 'grid', gridTemplateRows: '250px 50px'}}>*/}
       <div style={{display: 'grid', gridTemplateRows: '250px'}}>
-        <div style={{position: 'relative'}}>
+        <div>
           {/*<div className="iteration-solve"><input type="checkbox" onInput={ev => {*/}
           {/*  stopPropagation(ev)*/}
           {/*  // ev.preventDefault()*/}

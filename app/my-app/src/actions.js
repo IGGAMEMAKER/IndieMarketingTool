@@ -67,7 +67,7 @@ import {
   FEATURES_EDIT,
   FEATURES_REMOVE,
   FEATURES_ORDER_CHANGE,
-  FEATURES_EDIT_TIME_COST, ITERATIONS_SOLVE
+  FEATURES_EDIT_TIME_COST, ITERATIONS_SOLVE, STRATEGY_EDIT
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -80,16 +80,14 @@ export function loadProject(projectId) {
 export function editName(projectId, name) {
   Dispatcher.dispatch({
     actionType: PROJECT_RENAME,
-    projectId,
-    name
+    projectId, name
   })
 }
 
 export function editDescription(projectId, description) {
   Dispatcher.dispatch({
     actionType: PROJECT_EDIT_DESCRIPTION,
-    projectId,
-    description
+    projectId, description
   })
 }
 
@@ -103,8 +101,7 @@ export function removeProject(projectId) {
 export function addProject(name, appType) {
   Dispatcher.dispatch({
     actionType: PROJECT_ADD,
-    name,
-    appType
+    name, appType
   })
 }
 
@@ -208,49 +205,42 @@ export function removeAudience(audienceIndex) {
 export function editAudienceName(name, audienceIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_NAME_EDIT,
-    name,
-    audienceIndex
+    name, audienceIndex
   });
 }
 
 export function editAudienceDescription(description, audienceIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_DESCRIPTION_EDIT,
-    description,
-    audienceIndex
+    description, audienceIndex
   })
 }
 
 export function addAudienceMessage(message, audienceIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_MESSAGE_ADD,
-    message,
-    audienceIndex,
+    message, audienceIndex,
   })
 }
 
 export function removeAudienceMessage(audienceIndex, messageIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_MESSAGE_REMOVE,
-    messageIndex,
-    audienceIndex,
+    messageIndex, audienceIndex,
   })
 }
 
 export function editAudienceMessage(message, audienceIndex, messageIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_MESSAGE_EDIT,
-    messageIndex,
-    audienceIndex,
-    message
+    messageIndex, audienceIndex, message
   })
 }
 
 export function addAudienceStrategy(strategy, audienceIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_STRATEGY_ADD,
-    strategy,
-    audienceIndex,
+    strategy, audienceIndex,
   })
 }
 
@@ -258,34 +248,28 @@ export function editAudienceStrategy(strategy, audienceIndex, textIndex) {
   console.log({strategy, audienceIndex, textIndex})
   Dispatcher.dispatch({
     actionType: AUDIENCE_STRATEGY_EDIT,
-    strategy,
-    audienceIndex,
-    textIndex
+    strategy, audienceIndex, textIndex
   })
 }
 
 export function removeAudienceStrategy(audienceIndex, textIndex) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_STRATEGY_REMOVE,
-    audienceIndex,
-    textIndex
+    audienceIndex, textIndex
   })
 }
 
 export function changeAudienceOrder(audienceIndex1, audienceIndex2) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_ORDER_CHANGE, // ID, no
-    audienceIndex1,
-    audienceIndex2
+    audienceIndex1, audienceIndex2
   })
 }
 
 export function changeAudienceMessageOrder(audienceId, index1, index2) {
   Dispatcher.dispatch({
     actionType: AUDIENCE_MESSAGE_ORDER_CHANGE, // ID, no
-    audienceId,
-    index1,
-    index2
+    audienceId, index1, index2
   })
 }
 
@@ -306,41 +290,35 @@ export function removeMonetizationPlan(monetizationIndex) {
 export function editMonetizationName(monetizationIndex, name) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_EDIT_NAME,
-    monetizationIndex,
-    name
+    monetizationIndex, name
   })
 }
 
 export function editMonetizationBenefit(monetizationIndex, benefitIndex, benefit) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_EDIT_BENEFIT,
-    monetizationIndex,
-    benefitIndex,
-    benefit
+    monetizationIndex, benefitIndex, benefit
   })
 }
 
 export function editMonetizationDescription(monetizationIndex, description) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_EDIT_DESCRIPTION,
-    monetizationIndex,
-    description
+    monetizationIndex, description
   })
 }
 
 export function removeBenefitFromMonetizationPlan(monetizationIndex, benefitIndex) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_BENEFIT_REMOVE,
-    monetizationIndex,
-    benefitIndex
+    monetizationIndex, benefitIndex
   })
 }
 
 export function addBenefitToMonetizationPlan(monetizationIndex, benefit) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_BENEFIT_ADD,
-    monetizationIndex,
-    benefit
+    monetizationIndex, benefit
   })
 }
 
@@ -355,34 +333,30 @@ export function editMonetizationPrice(monetizationIndex, price) {
 export function attachAudienceToMonetizationPlan(audienceIndex, monetizationIndex) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_AUDIENCE_ADD,
-    audienceIndex,
-    monetizationIndex
+    audienceIndex, monetizationIndex
   })
 }
 
 export function detachAudienceFromMonetizationPlan(audienceID, monetizationIndex) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_AUDIENCE_REMOVE,
-    audienceID,
-    monetizationIndex
+    audienceID, monetizationIndex
   })
 }
 
 export function changeMonetizationOrder(monetizationIndex1, monetizationIndex2) {
   Dispatcher.dispatch({
     actionType: MONETIZATION_ORDER_CHANGE,
-    monetizationIndex1,
-    monetizationIndex2
+    monetizationIndex1, monetizationIndex2
   })
 }
 
 
 
-export function editRiskName(index, name) {
+export function editRiskName(riskIndex, name) {
   Dispatcher.dispatch({
     actionType: RISK_EDIT_NAME,
-    riskIndex: index,
-    name
+    riskIndex, name
   })
 }
 
@@ -403,42 +377,35 @@ export function removeRisk(riskIndex) {
 export function removeRiskSolution(riskIndex, solutionIndex) {
   Dispatcher.dispatch({
     actionType: RISK_SOLUTION_REMOVE,
-    riskIndex,
-    solutionIndex
+    riskIndex, solutionIndex
   })
 }
 
 export function addRiskSolution(riskIndex, solution) {
   Dispatcher.dispatch({
     actionType: RISK_SOLUTION_ADD,
-    riskIndex,
-    solution
+    riskIndex, solution
   })
 }
 
 export function editRiskSolution(riskIndex, solutionIndex, solution) {
   Dispatcher.dispatch({
     actionType: RISK_SOLUTION_EDIT,
-    riskIndex,
-    solutionIndex,
-    solution
+    riskIndex, solutionIndex, solution
   })
 }
 
 export function changeRiskOrder(index1, index2) {
   Dispatcher.dispatch({
     actionType: RISK_ORDER_CHANGE,
-    index1,
-    index2
+    index1, index2
   })
 }
 
 export function changeSolutionOrder(riskIndex, index1, index2) {
   Dispatcher.dispatch({
     actionType: RISK_SOLUTION_ORDER_CHANGE,
-    riskIndex,
-    index1,
-    index2
+    riskIndex, index1, index2
   })
 }
 
@@ -460,8 +427,7 @@ export function removeChannel(channelIndex) {
 export function editChannelName(channelIndex, name) {
   Dispatcher.dispatch({
     actionType: CHANNELS_NAME_EDIT,
-    channelIndex,
-    name
+    channelIndex, name
   })
 }
 
@@ -484,41 +450,35 @@ export function removeLink(linkIndex) {
 export function editLinkNotes(linkIndex, note) {
   Dispatcher.dispatch({
     actionType: LINKS_NOTES_EDIT,
-    linkIndex,
-    note
+    linkIndex, note
   })
 }
 
 export function editLinkType(linkIndex, linkType) {
   Dispatcher.dispatch({
     actionType: LINKS_TYPE_EDIT,
-    linkIndex,
-    linkType
+    linkIndex, linkType
   })
 }
 
 export function addMarketingCampaign(audienceIndex, message, approach) {
   Dispatcher.dispatch({
     actionType: MARKETING_CAMPAIGN_ADD,
-    audienceIndex,
-    message,
-    approach
+    audienceIndex, message, approach
   })
 }
 
 export function editMarketingCampaignAudience(campaignID, audienceIndex) {
   Dispatcher.dispatch({
     actionType: MARKETING_CAMPAIGN_AUDIENCE_EDIT,
-    audienceIndex,
-    campaignID
+    audienceIndex, campaignID
   })
 }
 
 export function editMarketingCampaignMessage(campaignID, audienceIndex) {
   Dispatcher.dispatch({
     actionType: MARKETING_CAMPAIGN_AUDIENCE_EDIT,
-    audienceIndex,
-    campaignID
+    audienceIndex, campaignID
   })
 }
 
@@ -551,9 +511,7 @@ export function addIteration(iteration, {pasteAfter = -1, pasteBefore = -1}) {
   // index: will paste to iterations[index]
   Dispatcher.dispatch({
     actionType: ITERATIONS_ADD,
-    iteration,
-    pasteAfter,
-    pasteBefore
+    iteration, pasteAfter, pasteBefore
   })
 }
 
@@ -567,33 +525,28 @@ export function removeIteration(id) {
 export function changeIterationOrder(index1, index2) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_ORDER_CHANGE,
-    index1,
-    index2
+    index1, index2
   })
 }
 
 export function editIterationDescription(id, description) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_DESCRIPTION_EDIT,
-    id,
-    description
+    id, description
   })
 }
 
 export function editIterationGoal(id, numberGoalId, goal) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_GOAL_EDIT,
-    id,
-    numberGoalId,
-    goal
+    id, numberGoalId, goal
   })
 }
 
 export function addIterationGoal(id, goal) {
   Dispatcher.dispatch({
     actionType: ITERATIONS_GOAL_ADD,
-    id,
-    goal
+    id, goal
   })
 }
 
@@ -618,12 +571,20 @@ export function solveIteration(id, solved = true) {
   })
 }
 
+export function editStrategy(description) {
+  Dispatcher.dispatch({
+    actionType: STRATEGY_EDIT,
+    description
+  })
+}
+
 export function logIn(email, password) {
   Dispatcher.dispatch({
     actionType: PROFILE_LOGIN,
     email, password
   })
 }
+
 
 export default {
   logIn,
@@ -635,6 +596,7 @@ export default {
   editName,
   editDescription,
   removeProject,
+  editStrategy,
 
   addNote,
   editNote,
@@ -706,6 +668,6 @@ export default {
   addIterationGoal,
   removeIterationGoal,
   solveIterationGoal,
-  solveIteration
+  solveIteration,
 }
 

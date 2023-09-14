@@ -63,7 +63,7 @@ import {
   RISK_SOLUTION_ADD,
   RISK_SOLUTION_EDIT,
   RISK_SOLUTION_ORDER_CHANGE,
-  RISK_SOLUTION_REMOVE
+  RISK_SOLUTION_REMOVE, STRATEGY_EDIT
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 import {GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
@@ -913,6 +913,10 @@ Dispatcher.register((p) => {
 
       console.log(ITERATIONS_GOAL_SOLVE, {p})
 
+      saveProjectChanges()
+      break;
+    case STRATEGY_EDIT:
+      project.strategy = p.description;
       saveProjectChanges()
       break;
 
