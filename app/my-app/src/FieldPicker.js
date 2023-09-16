@@ -1,5 +1,6 @@
 import {useState} from "react";
 
+
 export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=true, normalValueRenderer}) {
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
@@ -47,10 +48,10 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer,
 
   if (!editName) {
     if (normalValueRenderer)
-      return <div className="editable">{normalValueRenderer(onChangeName)}</div>
+      return <div className="editable wavy">{normalValueRenderer(onChangeName)}</div>
 
 
-    return <label className="editable" onClick={() => onChangeName(true)}>{value}</label>
+    return <label className="editable wavy" onClick={() => onChangeName(true)}>{value}</label>
   }
 
   var saveButton = ''

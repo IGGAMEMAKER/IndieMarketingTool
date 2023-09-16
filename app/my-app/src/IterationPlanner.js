@@ -1,6 +1,5 @@
 import {useState} from "react";
-import actions, {solveIterationGoal} from "./actions";
-import {ARROW_LEFT, ARROW_RIGHT} from "./constants/symbols";
+import actions from "./actions";
 import {GOAL_TYPE_FEATURES, GOAL_TYPE_INCOME, GOAL_TYPE_RISK, GOAL_TYPE_USERS} from "./constants/constants";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {getByID, getNextID} from "./utils";
@@ -8,24 +7,25 @@ import {AudiencePicker} from "./AudiencePicker";
 import {FieldAdder} from "./FieldAdder";
 import {RiskAdder} from "./RiskAdder";
 import {Iteration} from "./Iteration";
-import {RiskList, RiskView} from "./RiskView";
+import {RiskView} from "./RiskView";
 import {Panel} from "./Panel";
 import {getEstimateDescription} from "./utils/getEstimateDescription";
-import {getFeatureIterationId} from "./utils/getFeatureIterationId";
+import {getFeatureIterationId, getRiskIterationId} from "./utils/getFeatureIterationId";
 import {renderTimeButton} from "./utils/renderTimeButton";
 
-function RiskPicker({onPick, defaultRisk=-1, risks=[], excluded=[]}) {
+function RiskPicker({onPick, project, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
 
-  const riskContainer = risks.map((r, i) => <option key={"rp." + r.id} value={r.id}>{r.name}</option>)
+  const freeRisks = risks
+    .filter(r => !getRiskIterationId(project, r.id))
 
   return <select style={{width: '100%'}} value={r} onChange={ev => {
     var v = parseInt(ev.target.value)
-    setR(v)
+    setR(-1)
     onPick(v)
   }}>
     <option disabled selected value={-1}> -- select a risk --</option>
-    {riskContainer}
+    {freeRisks.map((r, i) => <option key={"rp." + r.id} value={r.id}>{r.name}</option>)}
   </select>
 }
 
@@ -113,31 +113,39 @@ const renderUserGoals = (project, it) => {
   })
 }
 
+const renderUserGoalsMax = (project, it) => {
+  var goals = Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it)
+
+  var mappedGoals = goals.map(gg => {
+    var audience = getByID(project.audiences, gg.userId)
+
+    return <div key={"userG." + gg.id} onClick={onGoalRemove(it, gg)} className="left">
+      <div className="iteration-secondary-text">
+        +{gg.amount} <span style={{color: 'green'}}>{audience?.name}</span> {/*({audience?.strategy?.map(m => <span>{m.name}, </span>)})*/}
+      </div>
+      {/*<div>{JSON.stringify(audience?.messages, null, 2)}</div>*/}
+      {/*<div>{JSON.stringify(audience?.strategy, null, 2)}</div>*/}
+      <div className="iteration-audiences">
+        {audience?.strategy?.map(m => <div>{m.name}</div>)}
+      </div>
+      <div className="iteration-audiences">
+        {audience?.messages?.map(m => <div>{m.name}</div>)}
+      </div>
+    </div>
+  })
+
+  // iterations-audiences-tab
+  return <div className="scrollable-goal-wrapper small">
+    <h4>Sources of clients</h4>
+    {project.channels.map(c => <a style={{marginRight: '15px'}} href={c.link} target="_blank">{c.name}</a>)}
+    <br />
+    {mappedGoals}
+  </div>
+}
+
 function IterationPopup({project, chosenIterationId, onChoose}) {
-  // APPS/SERVICES
-  // REDUCE RISKS
-  // GROW / EARN
-  // POLISH
-
-  // GAMES
-  // REDUCE RISKS
-  // GROW
-  // POLISH
-  // EARN
-  // POLISH MORE
-
-  var [sprintLength, setSprintLength] = useState(7)
-
   if (chosenIterationId === -1)
     return ''
-
-  const durationSelector = <select value={sprintLength} onChange={ev => setSprintLength(ev.target.value)}>
-    <option disabled selected value={-1}> -- select sprint duration --</option>
-    <option value={1}>1 Day</option>
-    <option value={7}>7 Days (Recommended)</option>
-    <option value={14}>14 Days</option>
-    <option value={30}>Month</option>
-  </select>
 
   var it = getByID(project.iterations, chosenIterationId);
   var popupCloser = <div onClick={() => onChoose(-1)} className={"iteration-container"} />
@@ -155,8 +163,7 @@ function IterationPopup({project, chosenIterationId, onChoose}) {
         }}
         normalValueRenderer={onEdit => <h3 onClick={onEdit}><b>{it.description}</b></h3>}
       />
-      {/*<div>{durationSelector}</div>*/}
-      <IterationGoalPicker project={project} it={it} />
+      <IterationGoalsView project={project} it={it} />
     </div>
     {popupCloser}
   </div>
@@ -264,36 +271,24 @@ function renderIncomeSection(project, it, income, planId, setMonetizationPlan) {
   </div>
 }
 
-function IterationGoalPicker({project, it}) {
-  var [goalType, setGoalType] = useState(-1)
-  var [users, setDesiredUsers] = useState(0)
-  var [income, setDesiredIncome] = useState(0)
-  var [audienceType, setAudienceType] = useState(-1)
-  var [monetizationPlan, setMonetizationPlan] = useState(-1)
-  var [risk, setRisk] = useState(-1)
-  var [goals, setGoals] = useState([])
+const renderRiskTab = (project, it) => {
+  return <div style={{width: '100%'}}>
+    <div className={"background-standard scrollable-goal-wrapper"}>
+      <h3>Which risks/problems will you solve?</h3>
+      <ol>
+        {renderRiskGoals(project, it, true)}
+      </ol>
 
-  var [r, setR] = useState(-1)
-
-
-  var hasChanges = users || income || audienceType >= 0
-
-  var possibleSolutions = ''
-  if (r >= 0) {
-    possibleSolutions = <ul>{project.risks[r].solutions.map(s => <li key={s.id}>{s.name}</li>)}</ul>
-  }
-
-  var goalPicker;
-  var audiencePicker = <div>
-    <AudiencePicker defaultAudience={audienceType} audiences={project.audiences} onPick={id => {setAudienceType(id)}}/>
-    <br />
-    {audienceType === -1 ? '' : <NumberPicker value={users} onAction={val => {
-      setDesiredUsers(val)
-      actions.addIterationGoal(it.id, Iteration.createUserGoal(project, audienceType, val))
-    }}/>}
-    {renderUserGoals(project, it)}
+      <RiskPicker project={project} risks={project.risks} onPick={val => {
+        // setRisk(val)
+        actions.addIterationGoal(it.id, Iteration.createRiskGoal(project, val))
+      }} defaultRisk={-1} excluded={[]}/>
+      <RiskAdder it={it} project={project} />
+    </div>
   </div>
+}
 
+const renderFeaturesTab = (project, it) => {
   var addNewFeature = <FieldAdder
     defaultState={true}
     placeholder={"Add new feature"}
@@ -304,6 +299,7 @@ function IterationGoalPicker({project, it}) {
       actions.addIterationGoal(it.id, Iteration.createFeatureGoal(project, nextId))
     }}
   />
+
   var chooseFromBacklog = <select
     style={{width: '150px'}}
     value={-1}
@@ -331,96 +327,98 @@ function IterationGoalPicker({project, it}) {
         return <option value={f.id} disabled={disabled}>{description}</option>
       })}
   </select>
-  var featurePicker = <div>
+
+  return <div>
     <h2>Do less</h2>
     <h3>Which problem will this feature solve?</h3>
     <h4>Is it a strongest pick in terms of time/money</h4>
 
-    {/*<br />*/}
-    {/*<br />*/}
-    {/*<ul>*/}
-
-    {/*<li>*/}
-      <table style={{marginLeft: '15px'}}>
-        <tr>
-          <td>
-            {chooseFromBacklog}
-          </td>
-          <td>
-            /
-          </td>
-          <td>
-            {addNewFeature}
-          </td>
-        </tr>
-      </table>
-    {/*</li>*/}
-    {/*</ul>*/}
+    <table style={{marginLeft: '15px'}}>
+      <tr>
+        <td>
+          {chooseFromBacklog}
+        </td>
+        <td>
+          /
+        </td>
+        <td>
+          {addNewFeature}
+        </td>
+      </tr>
+    </table>
     <ol>
-      {/*<li>*/}
-      {/*  {chooseFromBacklog} / {addNewFeature}*/}
-      {/*</li>*/}
-      {/*<li></li>*/}
-      <RenderPickableFeatureGoals project={project} it={it} />
+      <RenderPickableFeatureGoals project={project} it={it}/>
     </ol>
+  </div>;
+}
+
+const renderAudienceTab = (project, it, audienceType, users, setAudienceType, setDesiredUsers) => {
+  var picker;
+  if (Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it).length) {
+    picker = <FieldPicker
+      value={it.growthStrategy || ""}
+      placeholder={"how will you get this amount of users?"}
+      onAction={val => {actions.editIterationGrowthStrategy(it.id, val)}}
+    />
+  }
+
+  return <div>
+    <AudiencePicker defaultAudience={audienceType} audiences={project.audiences} onPick={id => {setAudienceType(id)}}/>
+    <br />
+    {audienceType === -1 ? '' : <NumberPicker value={users} onAction={val => {
+      setDesiredUsers(val)
+      setAudienceType(-1)
+      actions.addIterationGoal(it.id, Iteration.createUserGoal(project, audienceType, val))
+    }}/>}
+    {picker}
+
+    {renderUserGoalsMax(project, it)}
   </div>
+}
 
-  // if (goalType === -1)
-  //   goalPicker = priorityMockup
+const renderIncomeTab = (project, it, income, setDesiredIncome, monetizationPlan, setMonetizationPlan) => {
+  var sustainability = getSustainabilityGoal(project)
+  var dream = getDreamGoal(project)
 
-  if (goalType === GOAL_TYPE_INCOME) {
-    var sustainability = getSustainabilityGoal(project)
-    var dream = getDreamGoal(project)
-
-    const onIncomeSet = v => {
-      setDesiredIncome(v)
-      actions.addIterationGoal(it.id, Iteration.createIncomeGoal(project, v))
-    }
-
-    goalPicker = <div>
-      <h3>How much do you want to earn?</h3>
-      {income === sustainability ? '' : <button onClick={() => onIncomeSet(sustainability)}>Survive</button>}
-      {income === dream          ? '' : <button onClick={() => onIncomeSet(dream)}>Dream</button>}
-      <NumberPicker
-        value={income}
-        onAction={val => onIncomeSet(val)}
-        normalValueRenderer={onChoose => <label style={{color: 'orange'}} onClick={onChoose}>{income}$/mo</label>}
-      />
-      {renderIncomeSection(project, it, income, monetizationPlan, setMonetizationPlan)}
-    </div>
+  const onIncomeSet = v => {
+    setDesiredIncome(v)
+    actions.addIterationGoal(it.id, Iteration.createIncomeGoal(project, v))
   }
 
+  return <div>
+    <h3>How much do you want to earn?</h3>
+    {income === sustainability ? '' : <button onClick={() => onIncomeSet(sustainability)}>Survive</button>}
+    {income === dream          ? '' : <button onClick={() => onIncomeSet(dream)}>Dream</button>}
+    <NumberPicker
+      value={income}
+      onAction={val => onIncomeSet(val)}
+      normalValueRenderer={onChoose => <label style={{color: 'orange'}} onClick={onChoose}>{income}$/mo</label>}
+    />
+    {renderIncomeSection(project, it, income, monetizationPlan, setMonetizationPlan)}
+  </div>
+}
 
-  if (goalType === GOAL_TYPE_USERS) {
-    goalPicker = audiencePicker
-  }
+function IterationGoalsView({project, it}) {
+  var [goalType, setGoalType] = useState(-1)
 
-  if (goalType === GOAL_TYPE_FEATURES) {
-    goalPicker = featurePicker
-  }
+  var [income, setDesiredIncome] = useState(0)
+  var [users, setDesiredUsers] = useState(0)
+  var [audienceType, setAudienceType] = useState(-1)
+  var [monetizationPlan, setMonetizationPlan] = useState(-1)
 
-  // if (goalType === GOAL_TYPE_MONETIZATION)
-  //   goalPicker = monetizationPicker
+  var goalPicker;
 
-  if (goalType === GOAL_TYPE_RISK) {
-    goalPicker = <div style={{width: '100%'}}>
-      <div className={"background-standard scrollable-goal-wrapper"}>
-        {/*<h6>DeRisk</h6>*/}
-        <h3>Which risks will you reduce?</h3>
-        <ol>
-          {renderRiskGoals(project, it, true)}
-        </ol>
+  if (goalType === GOAL_TYPE_INCOME)
+    goalPicker = renderIncomeTab(project, it, income, setDesiredIncome, monetizationPlan, setMonetizationPlan)
 
-        <RiskPicker risks={project.risks} onPick={val => {
-          setRisk(val)
-          actions.addIterationGoal(it.id, Iteration.createRiskGoal(project, val))
-        }} defaultRisk={-1} excluded={[]}/>
-        <RiskAdder it={it} project={project} />
-        <br/>
-        {possibleSolutions}
-      </div>
-    </div>
-  }
+  if (goalType === GOAL_TYPE_USERS)
+    goalPicker = renderAudienceTab(project, it, audienceType, users, setAudienceType, setDesiredUsers)
+
+  if (goalType === GOAL_TYPE_FEATURES)
+    goalPicker = renderFeaturesTab(project, it)
+
+  if (goalType === GOAL_TYPE_RISK)
+    goalPicker = renderRiskTab(project, it)
 
 
   const gt = (goalType1, name) => {
@@ -430,7 +428,6 @@ function IterationGoalPicker({project, it}) {
     return <button
       onClick={() => setGoalType(goalType1)}
       className={`toggle ${chosen ? 'chosen' : ''}`}
-      // style={{backgroundColor: goalType === goalType1 ? 'yellow' : 'white'}}
     >{name}{goals ? ' (' + goals + ')' : ''}</button>
   }
 
@@ -441,18 +438,7 @@ function IterationGoalPicker({project, it}) {
       {gt(GOAL_TYPE_USERS, 'GROW')}
       {gt(GOAL_TYPE_FEATURES, 'Features')}
     </div>
-    {/*<select value={goalType} onChange={ev => setGoalType(parseInt(ev.target.value))}>*/}
-    {/*  <option value={-1}>Choose goal</option>*/}
-    {/*  <option value={GOAL_TYPE_RISK}>REDUCE RISKS</option>*/}
-    {/*  <option value={GOAL_TYPE_INCOME}>EARN</option>*/}
-    {/*  <option value={GOAL_TYPE_USERS}>Get Users</option>*/}
-    {/*  /!*<option value={GOAL_TYPE_MONETIZATION}>Sell X Plans</option>*!/*/}
-    {/*  <option value={GOAL_TYPE_FEATURES}>Features</option>*/}
-    {/*</select>*/}
-    {/*<br />*/}
-    {/*<br />*/}
     {goalPicker}
-    {/*{renderUserGoals(project, it)}*/}
   </div>
 }
 
@@ -501,10 +487,10 @@ function IterationView({project, it, index, setChosenIterationId}) {
     e.nativeEvent.stopImmediatePropagation();
   }
 
-  const ideaIcon = <span style={{color: 'orange'}}>?</span> // 💡
-  const growthIcon = <span style={{color: 'green'}}>😄</span>
-  const bigGrowthIcon = <span style={{color: 'green'}}>😄😄😄</span>
-  const featureIcon = <span style={{color: 'red'}}>⚙︎</span>
+  const ideaIcon = <div className="iteration-goal-icon" style={{color: 'orange'}}>?</div> // 💡
+  const growthIcon = <div className="iteration-goal-icon" style={{color: 'green'}}>😄</div>
+  const bigGrowthIcon = <div className="iteration-goal-icon" style={{color: 'green'}}>😄😄😄</div>
+  const featureIcon = <div className="iteration-goal-icon" style={{color: 'red'}}>⚙︎</div>
   const incomeIcon = bigGrowthIcon
 
   var ideaGoals     = Iteration.getGoalsByGoalType(GOAL_TYPE_RISK)(it).filter(g => getByID(project.risks, g.riskId)?.name?.length)
@@ -563,12 +549,12 @@ function IterationView({project, it, index, setChosenIterationId}) {
           {/*  actions.solveIteration(it.id, ev.target.checked)}*/}
           {/*}/></div>*/}
           <div className="iteration-title">{it.description}</div>
-          <div className="iteration-estimate">{remainingHours ? getEstimateDescription(remainingHours) : ''}</div>
+          <div className="iteration-estimate">{remainingHours ? getEstimateDescription(remainingHours) : '--'}</div>
 
 
           {renderUserGoals(project, it)}
           {/*{renderRiskGoals(project, it)}*/}
-          {ideaGoals.map(g => <div className="left iteration-secondary-text">{ideaIcon} {g.riskId} {getByID(project.risks, g.riskId)?.name}</div>)}
+          {ideaGoals.map(g => <div className="left iteration-secondary-text">{ideaIcon} {getByID(project.risks, g.riskId)?.name}</div>)}
           {featureGoals.filter(g=> !g.solved).map(g => <div className="left iteration-secondary-text">{featureIcon} {minimize(getByID(project.features, g.featureId)?.name)}</div>)}
 
           {/*<br />*/}

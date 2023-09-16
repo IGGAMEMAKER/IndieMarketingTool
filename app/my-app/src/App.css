@@ -16,7 +16,7 @@
 .menu {
   display: grid;
   background-color: orange;
-  grid-template-columns: auto auto auto auto auto auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
   position: fixed;
   height: 5vh;
   width: 100%;
@@ -44,11 +44,17 @@
   height: 70vh;
   overflow-y: scroll;
 }
+.scrollable-goal-wrapper.small {
+  height: 55vh;
+}
 
 .editable:hover {
   /*background-color: purple;*/
   /*background-color: #80008017;*/
   background-color: rgba(128, 0, 128, 0.32);
+}
+.editable.wavy {
+  text-decoration: underline dotted;
 }
 
 .Container {
@@ -139,6 +145,10 @@
   padding-right: 20%;
   background-color: red;
 }
+.iteration-goal-icon {
+  width: 15px;
+  display: inline-block;
+}
 .iteration-solve {
   position: absolute;
   top: 15px;
@@ -165,6 +175,15 @@
 .iteration-estimate {
   font-size: 0.8em;
   margin-bottom: 8px;
+}
+
+.iteration-audiences {
+  margin-left: 25px;
+  margin-bottom: 15px;
+}
+.iterations-audiences-tab {
+  height: 300px;
+  overflow-y: scroll;
 }
 
 .income-goal {

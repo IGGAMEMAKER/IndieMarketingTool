@@ -25,7 +25,7 @@ import {
   ITERATIONS_DESCRIPTION_EDIT,
   ITERATIONS_GOAL_ADD,
   ITERATIONS_GOAL_REMOVE,
-  ITERATIONS_GOAL_SOLVE,
+  ITERATIONS_GOAL_SOLVE, ITERATIONS_GROWTH_DESCRIPTION_EDIT,
   ITERATIONS_ORDER_CHANGE,
   ITERATIONS_REMOVE, ITERATIONS_SOLVE,
   LINKS_ADD,
@@ -884,6 +884,12 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break;
 
+    case ITERATIONS_GROWTH_DESCRIPTION_EDIT:
+      ind = getIndexByID(project.iterations, p.id)
+
+      project.iterations[ind].growthStrategy = p.description
+      saveProjectChanges()
+      break;
     case ITERATIONS_GOAL_REMOVE:
       ind = getIndexByID(project.iterations, p.id) // project.iterations.findIndex(it => it.id === p.id)
 
@@ -905,10 +911,12 @@ Dispatcher.register((p) => {
       var ind2 = getIndexByID(project.iterations[ind].goals, p.goalIndex)
 
       var g = project.iterations[ind].goals[ind2]
+
       if (g.goalType === GOAL_TYPE_FEATURES) {
         var featureIndex = getIndexByID(project.features, g.featureId)
         project.features[featureIndex].solved = p.solved
       }
+
       project.iterations[ind].goals[ind2].solved = p.solved
 
       console.log(ITERATIONS_GOAL_SOLVE, {p})

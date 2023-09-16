@@ -16,6 +16,7 @@ import {sortFeatures} from "./utils/sortFeatures";
 import {getFeatureIterationId} from "./utils/getFeatureIterationId";
 import {getAudienceUsageCount, getFeatureUsageCount} from "./utils/getEntityUsageCount";
 import {renderTimeButton} from "./utils/renderTimeButton";
+import {TimePicker} from "./TimePicker";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -80,18 +81,25 @@ function Channel({channel}) {
   // video channel
   // text channels
 
+  const namePicker = <FieldPicker
+    value={name}
+    placeholder={"Add short name"}
+    onAction={val => {actions.editChannelName(channel.id, val)}}
+  />
+  const LLLLLL = <a href={link} target={"_blank"}>{l}</a>
+
   return (
     // <div className="Channel-item">
     <tr style={{textAlign: 'left', backgroundColor: isDangerous ? 'red': 'white'}}>
       {/*<td>{users}</td>*/}
-      <td>
-        <a href={link} target={"_blank"}>{l}</a>
-        <br />
-        <FieldPicker
-          value={name}
-          placeholder={"Add short name"}
-          onAction={val => {actions.editChannelName(channel.id, val)}}
-        />
+      <td style={{width: '250px'}}>
+        {LLLLLL}
+        {/*<br />*/}
+        {namePicker}
+      </td>
+      <td style={{width: '250px'}}>
+        {/*{LLLLLL}*/}
+        {namePicker}
       </td>
       <td>
         <button
@@ -123,8 +131,8 @@ function ChannelList({channels}) {
   return <table>
     <thead>
     <tr>
-      <th>Users</th>
       <th>Name</th>
+      <th>Link</th>
       <th></th>
     </tr>
     </thead>
@@ -243,6 +251,18 @@ function NotesList({project}) {
   </div>
 }
 
+function TimeTest({}) {
+  var [value, setValue] = useState({})
+
+  return <div>
+    <div>
+      TimePicker Test
+    </div>
+    <div>
+      <TimePicker f={value} onClick={v => {setValue({timeCost: v})}} />
+    </div>
+  </div>
+}
 function FeatureList({project}) {
   var [chosenTimerId, setTimerId] = useState(-1)
 
@@ -380,13 +400,13 @@ function BusinessPlanner({project}) {
   return <div>
     <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} />
     <br/>
-    <p>How much do you want to earn? {desiredProfitPicker}</p>
-    <p>Your monthly expenses? {monthlyExpensesPicker}</p>
-    <p>Time till money burnout {timeTillBurnoutPicker}</p>
+    <p>How much do you want to earn?<br />{desiredProfitPicker}</p>
+    <p>Your monthly expenses?<br />{monthlyExpensesPicker}</p>
+    {/*<p>Time till money burnout {timeTillBurnoutPicker}</p>*/}
     {renderIncomeGoal(project, 1, '??', [
-      {goal: desiredProfit, name: 'Dream', color: 'green'},
       {goal: monthlyExpenses, name: 'Sustainable', color: 'orange'},
-      {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},
+      {goal: desiredProfit, name: 'Dream', color: 'green'},
+      // {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},
       ])}
 
     {/*<div className={"Audience-Container"}>*/}
@@ -423,7 +443,7 @@ function BusinessPlanner({project}) {
 
 
 
-function AudienceMessageView({index, messageId, id, m})  {
+function AudienceMessageView({index, id, m})  {
   const indexName = "audienceMessageIndex"
   var [isDragging, setDragging] = useState(false)
   var [isDraggingTarget, setDraggingTarget] = useState(false)
@@ -462,6 +482,8 @@ function AudienceMessageView({index, messageId, id, m})  {
     actions.changeAudienceMessageOrder(id, was, next)
   }
 
+  const messageId = m.id
+
   return <li
     draggable
     onDragStart={e => {onStartDragging(e, true)}}
@@ -495,6 +517,7 @@ function GlobalStrategyPlanner({project}) {
     />
   </div>
 }
+
 function MarketingPlanner({project}) {
   var defaultId = project.audiences.length ? project.audiences[0].id : -1
 
@@ -514,42 +537,21 @@ function MarketingPlanner({project}) {
     >{a.name} ({a.messages.length})</button>;
   })
 
-  const renderAudience = ({description, id, name, strategy, messages = []}) => {
-    if (!Array.isArray(strategy))
-      strategy = [strategy]
-
-    var messagePicker = <ol>
-      {messages.map((m, mi) => {
-          // TODO not i, but m.id
-          var messageId = m.id
-
-          return <AudienceMessageView index={mi} m={m} messageId={messageId} id={id} />
-        }
-      )}
-      <li>
-        <FieldAdder
-          onAdd={val => actions.addAudienceMessage(val, id)}
-          placeholder={"what will you tell them?"}
-        />
-      </li>
-    </ol>
-
+  const renderAudience = ({description, id, name, messages = []}) => {
     return <tr key={"marketing-planner." + id} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
-      {/*<td>*/}
-      {/*  {a.name}*/}
-      {/*</td>*/}
-      {/*<td>*/}
-      {/*  <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>*/}
-      {/*  <br />*/}
-      {/*  <label style={{color: 'gray'}}>{description}</label>*/}
-      {/*  <br />*/}
-      {/*  {strategyPicker}*/}
-      {/*</td>*/}
       <td>
         <b>What will you tell <span style={{color: 'green'}}>{name}</span>?</b>
         <br />
         <label style={{color: 'gray'}}>{description}</label>
-        {messagePicker}
+        <ol>
+          {messages.map((m, mi) => <AudienceMessageView index={mi} m={m} id={id}/>)}
+          <li>
+            <FieldAdder
+              onAdd={val => actions.addAudienceMessage(val, id)}
+              placeholder={"what will you tell them?"}
+            />
+          </li>
+        </ol>
       </td>
     </tr>
   }
@@ -562,22 +564,10 @@ function MarketingPlanner({project}) {
 
     <div className="Container">
       <table>
-        {/*<thead>*/}
-        {/*  <tr>*/}
-        {/*    /!*<th>#</th>*!/*/}
-        {/*    <th>How to reach them</th>*/}
-        {/*    <th>Your message</th>*/}
-        {/*  </tr>*/}
-        {/*</thead>*/}
         <tbody>
         {audience ? renderAudience(audience) : ''}
         </tbody>
       </table>
-      {/*<table>*/}
-      {/*  <tbody>*/}
-      {/*  {audience ? renderAudienceStrats(audience) : ''}*/}
-      {/*  </tbody>*/}
-      {/*</table>*/}
     </div>
   </div>
 }
@@ -732,7 +722,7 @@ export class ProjectPage extends Component {
 
     var project = this.state?.project
 
-    const menus = ["Notes", "Audiences", "Monetization", "Goals", "Message", "Risks", "GROWTH", "ITERATIONS", "Links"]
+    const menus = ["Notes", "Audiences", "Monetization", "Goals", "Message", /*"Risks",*/ "GROWTH", "ITERATIONS", "Links"]
     return (
       <div className="App">
         <div>
@@ -770,10 +760,11 @@ export class ProjectPage extends Component {
           <BusinessPlanner project={this.state.project}/>
           <MarketingPlanner project={this.state}/>
           <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
+
+          {/*<RisksPanel risks={risks}/>*/}
+
           <GlobalStrategyPlanner project={this.state.project}/>
-
-          <RisksPanel risks={risks}/>
-
+          {/*<TimeTest />*/}
           <IterationPlanner project={this.state.project}/>
 
           <UsefulLinks links={this.state.links}/>

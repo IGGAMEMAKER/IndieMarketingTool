@@ -67,7 +67,11 @@ import {
   FEATURES_EDIT,
   FEATURES_REMOVE,
   FEATURES_ORDER_CHANGE,
-  FEATURES_EDIT_TIME_COST, ITERATIONS_SOLVE, STRATEGY_EDIT
+  FEATURES_EDIT_TIME_COST,
+  ITERATIONS_SOLVE,
+  STRATEGY_EDIT,
+  ITERATIONS_GOAL_EXECUTION_TIME_EDIT,
+  ITERATIONS_GOAL_DESCRIPTION_EDIT, ITERATIONS_GROWTH_DESCRIPTION_EDIT
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -571,6 +575,27 @@ export function solveIteration(id, solved = true) {
   })
 }
 
+export function setIterationGoalExecutionTime(iterationId, goalIndex, timeCost) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GOAL_EXECUTION_TIME_EDIT,
+    iterationId, goalIndex, timeCost
+  })
+}
+
+export function setIterationGoalDescription(iterationId, goalIndex, description) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GOAL_DESCRIPTION_EDIT,
+    iterationId, goalIndex, description
+  })
+}
+
+export function editIterationGrowthStrategy(id, description) {
+  Dispatcher.dispatch({
+    actionType: ITERATIONS_GROWTH_DESCRIPTION_EDIT,
+    id, description
+  })
+}
+
 export function editStrategy(description) {
   Dispatcher.dispatch({
     actionType: STRATEGY_EDIT,
@@ -668,6 +693,9 @@ export default {
   addIterationGoal,
   removeIterationGoal,
   solveIterationGoal,
+  setIterationGoalExecutionTime,
+  setIterationGoalDescription,
+  editIterationGrowthStrategy,
   solveIteration,
 }
 

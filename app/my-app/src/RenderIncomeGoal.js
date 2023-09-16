@@ -6,19 +6,35 @@ export function renderIncomeGoal(project, goal, goalName, goals = []) {
     .filter(plan => plan.price)
 
   if (goals.length) {
+    // return <table>
+    //   <tr>
+    //     <td></td>
+    //     {paidPlans.map(plan => <td><b>{plan.name}'s</b></td>)}
+    //   </tr>
+    //   {goals.map(g=> {
+    //     return <tr>
+    //       <td style={{textAlign: 'right'}}><b>{g.name}</b><br />{g.goal}$</td>
+    //       {paidPlans.map(plan =>
+    //         <td key={"plan-in-incomeee." + plan.id} style={{color: g.color || 'white'}}>
+    //           {Math.ceil(g.goal / plan.price)}
+    //         </td>
+    //       )}
+    //     </tr>
+    //   })}
+    // </table>
     return <table>
       <tr>
         <td></td>
-        {paidPlans.map(plan => <td><b>{plan.name}'s</b></td>)}
+        {goals.map(g => <td><b>{g.name}</b><br/>{g.goal}$</td>)}
       </tr>
-      {goals.map(g=> {
+      {paidPlans.map(plan => {
         return <tr>
-          <td style={{textAlign: 'right'}}><b>{g.name}</b><br />{g.goal}$</td>
-          {paidPlans.map(plan =>
-            <td key={"plan-in-incomeee." + plan.id} style={{color: g.color || 'white'}}>
+          <td style={{textAlign: 'right'}}>{plan.name}</td>
+          {goals.map(g => {
+            return <td key={"plan-in-incomeee." + plan.id + "." + g.name} style={{color: g.color || 'white'}}>
               {Math.ceil(g.goal / plan.price)}
             </td>
-          )}
+          })}
         </tr>
       })}
     </table>
