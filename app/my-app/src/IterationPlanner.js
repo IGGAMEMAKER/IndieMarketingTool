@@ -370,6 +370,7 @@ const renderAudienceTab = (project, it, audienceType, users, setAudienceType, se
       setAudienceType(-1)
       actions.addIterationGoal(it.id, Iteration.createUserGoal(project, audienceType, val))
     }}/>}
+    <br />
     {picker}
 
     {renderUserGoalsMax(project, it)}
