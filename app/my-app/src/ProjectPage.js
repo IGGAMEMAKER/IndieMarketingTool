@@ -95,7 +95,7 @@ function Channel({channel}) {
       <td style={{width: '250px'}}>
         {LLLLLL}
         {/*<br />*/}
-        {namePicker}
+        {/*{namePicker}*/}
       </td>
       <td style={{width: '250px'}}>
         {/*{LLLLLL}*/}
@@ -380,21 +380,21 @@ function BusinessPlanner({project}) {
     value={desiredProfit}
     placeholder={"Type your desired profit"}
     onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
-    defaultState={true}
+    defaultState={false}
   />
 
   var monthlyExpensesPicker = <NumberPicker
     value={monthlyExpenses}
     placeholder={"What are ur expenses"}
     onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
-    defaultState={true}
+    defaultState={false}
   />
 
   var timeTillBurnoutPicker = <NumberPicker
     value={timeTillBurnout}
     placeholder={"How many months can you spend on that venture?"}
     onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
-    defaultState={true}
+    defaultState={false}
   />
 
   return <div>
