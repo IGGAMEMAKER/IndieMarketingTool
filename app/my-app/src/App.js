@@ -277,9 +277,28 @@ class AdminPage extends Component {
   }
 
   render() {
+    if (!this.state.loaded)
+      return 'wait'
+    var users = this.state.grouped;
+
     return <div>
       <h1>Admin</h1>
       {/*{JSON.stringify(this.state.result, null, 2)}*/}
+      <table>
+        {users.map(u => <tr>
+          <td>
+            <b>{u._id}</b>
+          </td>
+          <td>
+            [{u.count}]
+          </td>
+          <td>
+            {u.projects.map(p => p.name).join(', ')}
+          </td>
+        </tr>)}
+      </table>
+      <br />
+      <br />
       {JSON.stringify(this.state.grouped, null, 2)}
     </div>
   }
