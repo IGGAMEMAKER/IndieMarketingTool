@@ -270,6 +270,7 @@ class AdminPage extends Component {
     ping('/api/projects', r => {
       this.setState({
         result: r.body.result,
+        grouped: r.body.grouped,
         loaded: true
       })
     })
@@ -278,7 +279,8 @@ class AdminPage extends Component {
   render() {
     return <div>
       <h1>Admin</h1>
-      {JSON.stringify(this.state.result, null, 2)}
+      {/*{JSON.stringify(this.state.result, null, 2)}*/}
+      {JSON.stringify(this.state.grouped, null, 2)}
     </div>
   }
 }

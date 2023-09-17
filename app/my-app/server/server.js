@@ -297,7 +297,9 @@ const getProjects = async (req, res) => {
   var grouped = await ProjectModel.aggregate([
     {
       $group: {
-        _id: 'ownerId'
+        _id: 'ownerId',
+        count: { $sum: 1 }
+        // itemsSold: { $push: { item: "$item" } }
       }
     }
   ])
