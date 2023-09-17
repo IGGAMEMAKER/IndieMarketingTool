@@ -2,10 +2,15 @@ const {ProjectModel} = require("../Models");
 
 const updateProject = async (req, res) => {
   var objectId = req.params.objectId;
+  var canEdit = await ProjectModel.findOne({ownerId: req.userId, _id: objectId})
+
   var p = req.body.project;
   // console.log({objectId}, p)
 
-  var result = await ProjectModel.findByIdAndUpdate(objectId, p)
+  var result;
+
+  if (!!canEdit)
+    await ProjectModel.findByIdAndUpdate(objectId, p)
 
   // console.log({result})
 

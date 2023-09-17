@@ -10,6 +10,7 @@ import {ping} from "./PingBrowser";
 // import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 import {generatePassword} from "./secret";
 import actions from "./actions";
+import {APP_TYPE_APP} from "./constants/constants";
 
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
@@ -293,7 +294,11 @@ class AdminPage extends Component {
             [{u.count}]
           </td>
           <td>
-            {u.projects.map(p => p.name || p._id).join(', ')}
+            {u.projects.map(p => {
+              var color = p.type === APP_TYPE_APP ? 'purple' : 'orange'
+
+              return <a target="_blank" href={`/projects/${p._id}`} style={{color}}>{p.name} </a>
+            })}
           </td>
         </tr>)}
       </table>

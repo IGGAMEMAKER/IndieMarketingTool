@@ -175,7 +175,6 @@ const logIn = async (req, res, next) => {
     })
 }
 
-
 const authenticate = async (req, res, next) => {
   console.log('\nauthenticate')
   var {email, sessionToken} = await getCookies(req)
@@ -360,7 +359,7 @@ app.get   ('/test/cookies', (req, res) => {
 app.get   ('/api/profile',            authenticate, getProfile)
 app.post  ('/api/projects',           authenticate, createProject)
 
-app.get   ('/api/projects/:objectId', authenticate, getProject)
+app.get   ('/api/projects/:objectId', /*authenticate,*/ getProject) // TODO visibility settings
 app.put   ('/api/projects/:objectId', authenticate, updateProject) // save changes
 app.delete('/api/projects/:objectId', authenticate, removeProject)
 
