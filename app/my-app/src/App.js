@@ -4,40 +4,12 @@ import './App.css';
 import {Component, useEffect, useState} from 'react';
 // import { BrowserRouter } from 'react-router-dom';
 import {Link, Route, Routes} from 'react-router-dom';
-import {ProjectList} from "./ProjectList";
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {ping} from "./PingBrowser";
-import { useCalendlyEventListener, InlineWidget } from "react-calendly";
+// import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 import {generatePassword} from "./secret";
 import actions from "./actions";
-
-class Examples extends Component {
-  render() {
-    var list = [
-      {id: '6495f797115f0e146936e5ad', name: 'Indie Marketing Tool'},
-      {id: '', name: 'EU4'}
-    ]
-
-    return <div className="App">
-      <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
-        <h1>Stop wasting years on a game/app, that nobody needs</h1>
-        <br />
-        <h2>
-          Bring your project to market faster
-        </h2>
-        <h2>
-          Innovate without destroying your mental health
-        </h2>
-        <ProjectList projectIDs={list} />
-        <br />
-        <br />
-        <Link to={"/"}>Back</Link>
-        <Link to={"/pricing"}>Pricing</Link>
-      </header>
-    </div>
-  }
-}
 
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
@@ -232,20 +204,10 @@ function ResetPasswordForm({}) {
   </div>
 }
 
-function CalendlyTest({}) {
-  useCalendlyEventListener({
-    onProfilePageViewed: () => console.log("onProfilePageViewed"),
-    onDateAndTimeSelected: () => console.log("onDateAndTimeSelected"),
-    onEventTypeViewed: () => console.log("onEventTypeViewed"),
-    onEventScheduled: (e) => console.log(e.data.payload),
-  });
-
-  return <InlineWidget url={"https://calendly.com/konstantin-gevorkov/strategic-session"} />
-}
-
 class MainPage extends Component {
   state = {
-    authenticated: false
+    authenticated: false,
+    loaded: false,
   }
 
   componentDidMount() {
@@ -254,7 +216,8 @@ class MainPage extends Component {
       console.log({r}, authenticated)
 
       this.setState({
-        authenticated
+        authenticated,
+        loaded: true
       })
     })
   }
@@ -264,35 +227,60 @@ class MainPage extends Component {
     var hasCookies = document.cookie.length
     var isNewUser = !authenticated && !hasCookies
 
+    const profileLink = <Link to={"/profile"}>Profile</Link>
+    const loginLink = <div>
+      <Link to={"/register"}>Register</Link>
+      <br />
+      <Link to={"/login"}>Login</Link>
+    </div>
+
+    var loginForm;
+    if (this.state.loaded) {
+      loginForm = authenticated ? profileLink : loginLink
+    }
+
+
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
-        <h1>Stop wasting years on a game/app, that nobody needs</h1>
+        <h1>
+          <span style={{color: 'orange'}}>RELEASE</span> <span style={{color: 'violet'}}>FASTER</span>
+        </h1>
+        <h2>Mission of this site is to prevent you from wasting years on a game/app, that nobody needs</h2>
         <br />
-        <h2>Bring ur project to market faster</h2>
-        <h2>Innovate without destroying yourself</h2>
-        {/*<Link to={"/examples"}>Examples</Link>*/}
-        {/*<Link to={"/pricing"}>Pricing</Link>*/}
-
-
+        <h3>I know how it hurts</h3>
+        {/*<h3>Bring ur project to market faster</h3>*/}
+        {/*<h3>Innovate without destroying yourself</h3>*/}
         {/*{document.cookie}*/}
 
-        {authenticated ?
-          <Link to={"/profile"}>Profile</Link>
-          :
-          <div>
-            <Link to={"/register"}>Register</Link>
-            <br />
-            <Link to={"/login"}>Login</Link>
-          </div>
-        }
-        {/*<CalendlyTest />*/}
+
+        {loginForm}
       </header>
     </div>
   }
 }
 
 
+class AdminPage extends Component {
+  state = {
+    result: [],
+    loaded: false,
+  }
 
+  componentDidMount() {
+    ping('/api/projects', r => {
+      this.setState({
+        result: r.body.result,
+        loaded: true
+      })
+    })
+  }
+
+  render() {
+    return <div>
+      <h1>Admin</h1>
+    </div>
+  }
+}
 
 class App extends Component {
   render() {
@@ -307,11 +295,11 @@ class App extends Component {
             <Route path='/logout'               element={<LoginForm/>}/>
             <Route path='/reset'                element={<ResetPasswordForm />}/>
 
-            <Route path='/examples'             element={<Examples/>}/>
             <Route path='/about'                element={<div>ABOUT</div>}/>
 
             <Route path='/profile'              element={<ProfilePage/>}/>
             <Route path='/projects/:projectId'  element={<ProjectPage/>}/>
+            <Route path='/admin'  element={<AdminPage/>}/>
           </Routes>
         </header>
       </div>

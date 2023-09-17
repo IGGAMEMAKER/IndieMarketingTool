@@ -1,3 +1,4 @@
+const {ProjectModel} = require("./Models");
 const {MY_MAIL} = require("../CD/Configs");
 const {sendVerificationSuccess} = require("./mailer");
 const {createRandomPassword} = require("./createPassword");
@@ -104,6 +105,13 @@ const isDevIP = (req) => {
   // return !!req.cookies["isDevIP"]
 }
 
+const isAdminMiddleware = (req, res, next) => {
+  if (isDevIP(req)) {
+    next()
+  } else {
+    next('access restricted')
+  }
+}
 
 const saveDevIP = (req, res) => {
   const ipAddresses = getIP(req);
@@ -284,12 +292,22 @@ const createUser = async (req, res) => {
     })
 }
 
+const getProjects = async (req, res) => {
+  var result = await ProjectModel.find({});
+
+  res.json({
+    result
+  })
+}
+
 // ROUTES
 app.get('/', renderSPA)
 app.get('/projects/:objectId', authenticate, renderSPA)
 app.get('/profile', authenticate, renderSPA) // show user projects here
 app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
+
+app.get('/admin', isAdminMiddleware, renderSPA)
 
 app.get('/register', renderSPA)
 app.get('/login', renderSPA)
@@ -307,6 +325,8 @@ app.get   ('/api/users/verify', verifyNewUser)
 
 app.get('/api/me/login', saveDevIP)
 app.get('/api/me/logout', flushDevIP)
+
+app.get('/api/projects', isAdminMiddleware, getProjects)
 
 app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)
