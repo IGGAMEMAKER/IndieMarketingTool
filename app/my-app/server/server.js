@@ -298,7 +298,8 @@ const getProjects = async (req, res) => {
     {
       $group: {
         _id: '$ownerId',
-        count: { $sum: 1 }
+        count: { $sum: 1 },
+        projects: {$push: {item: "$name"}}
         // itemsSold: { $push: { item: "$item" } }
       }
     }
