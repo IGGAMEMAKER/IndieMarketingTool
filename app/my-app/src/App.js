@@ -291,7 +291,8 @@ class AdminPage extends Component {
       <table>
         {users.sort((u1, u2) => u2.count - u1.count).map(u => <tr>
           <td>
-            <b>{u._id} {JSON.stringify(u?.user, null, 2)} {/*{JSON.stringify(u, null, 2)}*/}</b>
+            {/*<b>{u._id} {JSON.stringify(u?.user, null, 2)} /!*{JSON.stringify(u, null, 2)}*!/</b>*/}
+            <b>{u?.user?.email.split('@')[0]}{/*{JSON.stringify(u, null, 2)}*/}</b>
           </td>
           <td>
             [{u.count}]

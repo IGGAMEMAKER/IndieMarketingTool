@@ -317,7 +317,10 @@ const getProjects = async (req, res) => {
       }
     },
     {
-      $unwind: '$user'
+      $unwind: {
+        path: '$user',
+        preserveNullAndEmptyArrays: true
+      }
     },
     {
       $project: {
