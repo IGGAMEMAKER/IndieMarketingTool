@@ -313,8 +313,11 @@ const getProjects = async (req, res) => {
         from: 'users',
         localField: '_id',
         foreignField: '_id',
-        as: 'lulul'
+        as: 'user'
       }
+    },
+    {
+      $unwind: '$user'
     }
   ])
 

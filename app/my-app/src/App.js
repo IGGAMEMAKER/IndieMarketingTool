@@ -291,7 +291,7 @@ class AdminPage extends Component {
       <table>
         {users.sort((u1, u2) => u2.count - u1.count).map(u => <tr>
           <td>
-            <b>{u._id}</b>
+            <b>{u._id} {JSON.stringify(u.lulul, null, 2)} {/*{JSON.stringify(u, null, 2)}*/}</b>
           </td>
           <td>
             [{u.count}]
@@ -307,7 +307,7 @@ class AdminPage extends Component {
       </table>
       <br />
       <br />
-      {JSON.stringify(this.state.grouped, null, 2)}
+      {/*{JSON.stringify(this.state.grouped, null, 2)}*/}
     </div>
   }
 }
