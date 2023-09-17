@@ -307,6 +307,14 @@ const getProjects = async (req, res) => {
         projects: {$push: "$$ROOT"}
         // itemsSold: { $push: { item: "$item" } }
       }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'lulul'
+      }
     }
   ])
 

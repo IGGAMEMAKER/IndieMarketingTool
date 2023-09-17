@@ -1,7 +1,7 @@
 import {useState} from "react";
 
 
-export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=true, normalValueRenderer}) {
+export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=false, normalValueRenderer}) {
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
 

@@ -3,6 +3,7 @@ const {ProjectModel} = require("../Models");
 const updateProject = async (req, res) => {
   var objectId = req.params.objectId;
   var canEdit = await ProjectModel.findOne({ownerId: req.userId, _id: objectId})
+  console.log({canEdit})
 
   var p = req.body.project;
   // console.log({objectId}, p)

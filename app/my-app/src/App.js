@@ -282,11 +282,14 @@ class AdminPage extends Component {
       return 'wait'
     var users = this.state.grouped;
 
+    var projectsCount = users.map(u => u.count).reduce((p, c) => p + c, 0)
+
     return <div>
       <h1>Admin</h1>
+      <h2>Users: {users.length}, Projects: {projectsCount}</h2>
       {/*{JSON.stringify(this.state.result, null, 2)}*/}
       <table>
-        {users.map(u => <tr>
+        {users.sort((u1, u2) => u2.count - u1.count).map(u => <tr>
           <td>
             <b>{u._id}</b>
           </td>
@@ -295,9 +298,9 @@ class AdminPage extends Component {
           </td>
           <td>
             {u.projects.map(p => {
-              var color = p.type === APP_TYPE_APP ? 'purple' : 'orange'
+              var color = p.type === APP_TYPE_APP ? 'orange' : 'violet'
 
-              return <a target="_blank" href={`/projects/${p._id}`} style={{color}}>{p.name} </a>
+              return <a target="_blank" href={`/projects/${p._id}`} style={{color, marginRight: '10px'}}>{p.name}</a>
             })}
           </td>
         </tr>)}
