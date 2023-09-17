@@ -318,6 +318,12 @@ const getProjects = async (req, res) => {
     },
     {
       $unwind: '$user'
+    },
+    {
+      $project: {
+        'user.password': 0,
+        'user.sessionToken': 0,
+      }
     }
   ])
 
