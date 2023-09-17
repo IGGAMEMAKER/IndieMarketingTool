@@ -294,9 +294,17 @@ const createUser = async (req, res) => {
 
 const getProjects = async (req, res) => {
   var result = await ProjectModel.find({});
+  var grouped = await ProjectModel.aggregate([
+    {
+      $group: {
+        _id: 'ownerId'
+      }
+    }
+  ])
 
   res.json({
-    result
+    result,
+    grouped
   })
 }
 

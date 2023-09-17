@@ -278,6 +278,7 @@ class AdminPage extends Component {
   render() {
     return <div>
       <h1>Admin</h1>
+      {JSON.stringify(this.state.result, null, 2)}
     </div>
   }
 }
