@@ -293,7 +293,7 @@ class AdminPage extends Component {
             [{u.count}]
           </td>
           <td>
-            {u.projects.map(p => p.name).join(', ')}
+            {u.projects.map(p => p.name || p._id).join(', ')}
           </td>
         </tr>)}
       </table>

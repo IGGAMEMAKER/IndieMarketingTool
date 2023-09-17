@@ -296,6 +296,11 @@ const getProjects = async (req, res) => {
   var result = await ProjectModel.find({});
   var grouped = await ProjectModel.aggregate([
     {
+      $match: {
+        name: {$exists: true}
+      }
+    },
+    {
       $group: {
         _id: '$ownerId',
         count: { $sum: 1 },
