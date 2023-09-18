@@ -281,16 +281,13 @@ function FeatureList({project}) {
 
   return <div>
     <Panel id={"Features"} header={"Features"}/>
-    {/*<h4>You won't be able to use them if you won't specify implementation time</h4>*/}
-    <FieldAdder placeholder={"feature"} onAdd={val => actions.addFeature(val)}/>
-    <br/>
-    <br/>
     <p>
       <b>Remaining: {getEstimateDescription(scheduledHours)}{/*, +Not assigned: {getEstimateDescription(totalHours)}*/}</b>
     </p>
     <p>
       if you work 8 Hours / day
     </p>
+    <FieldAdder placeholder={"add new feature"} defaultState={true} autoFocus={false} onAdd={val => actions.addFeature(val)}/>
     <br/>
     <br/>
     <table>
@@ -378,6 +375,7 @@ function BusinessPlanner({project}) {
 
   var desiredProfitPicker = <NumberPicker
     value={desiredProfit}
+    // normalValueRenderer={v => <label>{v}$</label>}
     placeholder={"Type your desired profit"}
     onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
     defaultState={false}
@@ -399,15 +397,19 @@ function BusinessPlanner({project}) {
 
   return <div>
     <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} />
-    <br/>
-    <p>How much do you want to earn?<br />{desiredProfitPicker}</p>
-    <p>Your monthly expenses?<br />{monthlyExpensesPicker}</p>
+    <p>How much do you want to earn?<br />{desiredProfitPicker}$</p>
+    {renderIncomeGoal(project, desiredProfit, "earn")}
+    {/*<p>Your monthly expenses?<br />{monthlyExpensesPicker}</p>*/}
+    {/*{renderIncomeGoal(project, monthlyExpenses, "Survive")}*/}
+
     {/*<p>Time till money burnout {timeTillBurnoutPicker}</p>*/}
-    {renderIncomeGoal(project, 1, '??', [
-      {goal: monthlyExpenses, name: 'Sustainable', color: 'orange'},
-      {goal: desiredProfit, name: 'Dream', color: 'green'},
-      // {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},
-      ])}
+    {/*<br />*/}
+    {/*<br />*/}
+    {/*{renderIncomeGoal(project, 1, '??', [*/}
+    {/*  {goal: monthlyExpenses, name: 'Sustainable', color: 'orange'},*/}
+    {/*  {goal: desiredProfit, name: 'Dream', color: 'green'},*/}
+    {/*  // {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},*/}
+    {/*])}*/}
 
     {/*<div className={"Audience-Container"}>*/}
     {/*  <table>*/}
@@ -723,7 +725,7 @@ export class ProjectPage extends Component {
 
     var project = this.state?.project
 
-    const menus = ["Notes", "Audiences", "Monetization", "Goals", "Message", /*"Risks",*/ "GROWTH", "ITERATIONS", "Links"]
+    const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
     return (
       <div className="App">
         <div>
@@ -758,12 +760,12 @@ export class ProjectPage extends Component {
           <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
           <br/>
           <br/>
-          <BusinessPlanner project={this.state.project}/>
           <MarketingPlanner project={this.state}/>
           <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
 
           {/*<RisksPanel risks={risks}/>*/}
 
+          <BusinessPlanner project={this.state.project}/>
           <GlobalStrategyPlanner project={this.state.project}/>
           {/*<TimeTest />*/}
           <IterationPlanner project={this.state.project}/>

@@ -236,19 +236,21 @@ class MainPage extends Component {
     </div>
 
     var loginForm;
-    if (this.state.loaded) {
+    // if (this.state.loaded) {
       loginForm = authenticated ? profileLink : loginLink
-    }
+    // }
 
+    const col1 = t => <span className="color1">{t}</span>
+    const col2 = t => <span className="color2">{t}</span>
 
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>
-          <span style={{color: 'orange'}}>RELEASE</span> <span style={{color: 'violet'}}>FASTER</span>
+          {col1("RELEASE")} {col2("FASTER")}
         </h1>
-        <h2>Mission of this site is to prevent you from wasting years on a game/app, that nobody needs</h2>
+        <h2>Mission of this site is to prevent you from {col1("wasting years")} on a game/app, {col2("that nobody needs")}</h2>
         <br />
-        <h3>I know how it hurts</h3>
+        <h3>Cause I know how it hurts</h3>
         {/*<h3>Bring ur project to market faster</h3>*/}
         {/*<h3>Innovate without destroying yourself</h3>*/}
         {/*{document.cookie}*/}
