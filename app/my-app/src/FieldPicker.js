@@ -68,7 +68,14 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer,
     <textarea
       value={newValue}
       placeholder={placeholder}
-      onChange={event => onValueChange(parseFloat(event.target.value))}
+      onChange={event => {
+        var val = parseFloat(event.target.value)
+
+        if (isNaN(val))
+          val = 0;
+
+        onValueChange(val)
+      }}
     />
     {saveButton}
   </div>

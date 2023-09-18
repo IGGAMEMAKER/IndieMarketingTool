@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export function FieldAdder({onAdd, placeholder, defaultState = false, defaultWord = "+", defaultValue = ""}) {
+export function FieldAdder({onAdd, placeholder, defaultState = false, autoFocus = true, defaultWord = "+", defaultValue = ""}) {
   var [value, onChange] = useState(defaultValue);
   var [needsToAdd, setNeedsToAdd] = useState(defaultState)
 
@@ -11,7 +11,7 @@ export function FieldAdder({onAdd, placeholder, defaultState = false, defaultWor
   }
 
   return <div>
-    <input autoFocus value={value} placeholder={placeholder} onChange={ev => onChange(ev.target.value)}/>
+    <input autoFocus={autoFocus} value={value} placeholder={placeholder} onChange={ev => onChange(ev.target.value)}/>
     <button onClick={() => {
       onAdd(value)
       onChange("")

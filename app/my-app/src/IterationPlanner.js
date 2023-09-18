@@ -291,6 +291,7 @@ const renderRiskTab = (project, it) => {
 const renderFeaturesTab = (project, it) => {
   var addNewFeature = <FieldAdder
     defaultState={true}
+    autoFocus={false}
     placeholder={"Add new feature"}
     onAdd={val => {
       var nextId = getNextID(project.features);

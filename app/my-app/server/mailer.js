@@ -60,7 +60,7 @@ const sendVerificationSuccess = (email) => {
   sendMail(email, "Congratulations! Let's innovate together!",
     `<h1>Thank you for registration on ${siteName}</h1>
         <br />
-        Hope, you enjoy it
+        Hope, you enjoy it!
     `)
 }
 

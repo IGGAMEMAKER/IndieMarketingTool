@@ -188,16 +188,16 @@ const authenticate = async (req, res, next) => {
   UserModel.findOne(match)
     .then(user => {
       if (user) {
-        if (!user.verifiedAt) {
-          sendVerificationEmail(email, createVerificationLink())
-          res.redirect('/verify')
-        } else {
+        // if (!user.verifiedAt) {
+        //   sendVerificationEmail(email, createVerificationLink())
+        //   res.redirect('/verify')
+        // } else {
           // VERIFIED USER, WELCOME
           console.log({user})
 
           req.userId = getUserId(user)
           next()
-        }
+        // }
       } else {
         console.log('user not found', match, req.cookies)
 
@@ -278,10 +278,16 @@ const createUser = async (req, res) => {
   u.save()
     .then(async r => {
       console.log({r})
+      sendVerificationSuccess(email)
       await generateCookies(res, email, req)
-      sendVerificationEmail(email, verificationLink)
 
+      // no redirect?
       res.redirect('/profile')
+      // await generateCookies(res, email, req)
+      //
+      // sendVerificationEmail(email, verificationLink)
+      //
+      // res.redirect('/profile')
     })
     .catch(e => {
       console.error({e})
@@ -357,7 +363,7 @@ app.get('/authenticated', authenticate, (req, res) => res.json({authenticated: !
 app.post  ('/api/login', logIn)
 app.post  ('/api/user', createUser)
 app.post  ('/api/reset-password', resetPassword)
-app.get   ('/api/users/verify', verifyNewUser)
+// app.get   ('/api/users/verify', verifyNewUser)
 
 app.get('/api/me/login', saveDevIP)
 app.get('/api/me/logout', flushDevIP)

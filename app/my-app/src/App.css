@@ -56,6 +56,9 @@
 .editable.wavy {
   text-decoration: underline dotted;
 }
+.editable {
+  white-space: pre-line
+}
 
 .Container {
   display: grid;
