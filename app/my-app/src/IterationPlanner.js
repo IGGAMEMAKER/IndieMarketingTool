@@ -274,13 +274,12 @@ function renderIncomeSection(project, it, income, planId, setMonetizationPlan) {
 const renderRiskTab = (project, it) => {
   return <div style={{width: '100%'}}>
     <div className={"background-standard scrollable-goal-wrapper"}>
-      <h3>Which risks/problems will you solve?</h3>
+      <h3>Which risks/problems do you have?</h3>
       <ol>
         {renderRiskGoals(project, it, true)}
       </ol>
 
       <RiskPicker project={project} risks={project.risks} onPick={val => {
-        // setRisk(val)
         actions.addIterationGoal(it.id, Iteration.createRiskGoal(project, val))
       }} defaultRisk={-1} excluded={[]}/>
       <RiskAdder it={it} project={project} />

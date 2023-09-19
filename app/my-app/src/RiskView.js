@@ -20,7 +20,7 @@ function RiskSolutionAdder({riskIndex}) {
     <FieldAdder
       onAdd={v => {actions.addRiskSolution(riskIndex, v)}}
       defaultValue={""}
-      placeholder={"Solution"}
+      placeholder="add solution"
     />
   </li>
 }

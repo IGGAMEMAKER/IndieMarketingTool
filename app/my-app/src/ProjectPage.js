@@ -370,6 +370,8 @@ function FeatureList({project}) {
   </div>
 }
 
+
+
 function BusinessPlanner({project}) {
   var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
 
@@ -763,7 +765,7 @@ export class ProjectPage extends Component {
           <MarketingPlanner project={this.state}/>
           <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
 
-          {/*<RisksPanel risks={risks}/>*/}
+          <RisksPanel risks={risks}/>
 
           <BusinessPlanner project={this.state.project}/>
           <GlobalStrategyPlanner project={this.state.project}/>
