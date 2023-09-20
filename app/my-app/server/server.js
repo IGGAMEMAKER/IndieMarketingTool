@@ -272,9 +272,14 @@ const saveUserAction = async (req, action) => {
     date: new Date()
   })
 
-  await a.save()
+  var r = await a.save()
+
+  console.log('saveUserAction', {
+    r
+  })
 }
 const saveUserActionRoute = async (req, res) => {
+  console.log('saveUserActionRoute', req.body)
   res.json({ok: 1})
   var {action} = req.body;
 
