@@ -134,8 +134,18 @@ const renderUserGoalsMax = (project, it) => {
     </div>
   })
 
+  var picker;
+  if (Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it).length) {
+    picker = <FieldPicker
+      value={it.growthStrategy || ""}
+      placeholder={"how will you get this amount of users?"}
+      onAction={val => {actions.editIterationGrowthStrategy(it.id, val)}}
+    />
+  }
+
   // iterations-audiences-tab
   return <div className="scrollable-goal-wrapper small">
+    {picker}
     <h4>Sources of clients</h4>
     {project.channels.map(c => <a style={{marginRight: '15px'}} href={c.link} target="_blank">{c.name}</a>)}
     <br />
@@ -353,15 +363,6 @@ const renderFeaturesTab = (project, it) => {
 }
 
 const renderAudienceTab = (project, it, audienceType, users, setAudienceType, setDesiredUsers) => {
-  var picker;
-  if (Iteration.getGoalsByGoalType(GOAL_TYPE_USERS)(it).length) {
-    picker = <FieldPicker
-      value={it.growthStrategy || ""}
-      placeholder={"how will you get this amount of users?"}
-      onAction={val => {actions.editIterationGrowthStrategy(it.id, val)}}
-    />
-  }
-
   return <div>
     <AudiencePicker defaultAudience={audienceType} audiences={project.audiences} onPick={id => {setAudienceType(id)}}/>
     <br />
@@ -371,7 +372,6 @@ const renderAudienceTab = (project, it, audienceType, users, setAudienceType, se
       actions.addIterationGoal(it.id, Iteration.createUserGoal(project, audienceType, val))
     }}/>}
     <br />
-    {picker}
 
     {renderUserGoalsMax(project, it)}
   </div>

@@ -1,3 +1,4 @@
+const {UserActionsModel} = require("./Models");
 const {ProjectModel} = require("./Models");
 const {MY_MAIL} = require("../CD/Configs");
 const {sendVerificationSuccess} = require("./mailer");
@@ -264,6 +265,27 @@ const resetPassword = async (req, res) => {
     })
 }
 
+const saveUserAction = async (req, action) => {
+  var a = new UserActionsModel({
+    userId: req.userId,
+    action,
+    date: new Date()
+  })
+
+  await a.save()
+}
+const saveUserActionRoute = async (req, res) => {
+  res.json({ok: 1})
+  var {action} = req.body;
+
+  await saveUserAction(req, action)
+}
+const saveUserUnderstandingStatsRoute = async (req, res) => {
+  res.json({ok: 1})
+  var {action} = req.body;
+
+  await saveUserAction(req, action)
+}
 
 const createUser = async (req, res) => {
   var {email, password} = req.body;
@@ -386,8 +408,11 @@ app.get   ('/api/profile',            authenticate, getProfile)
 app.post  ('/api/projects',           authenticate, createProject)
 
 app.get   ('/api/projects/:objectId', /*authenticate,*/ getProject) // TODO visibility settings
-app.put   ('/api/projects/:objectId', authenticate, updateProject) // save changes
+app.put   ('/api/projects/:objectId', authenticate, updateProject) // save changes // TODO CHECK WHO CAN EDIT THE PROJECT
 app.delete('/api/projects/:objectId', authenticate, removeProject)
+
+app.post('/stats/actions', authenticate, saveUserActionRoute)
+app.post('/stats/inputs', authenticate, saveUserUnderstandingStatsRoute)
 
 // TODO protect that link with password too?
 app.post('/links/name', getLinkName)

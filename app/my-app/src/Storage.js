@@ -313,6 +313,19 @@ Dispatcher.register((p) => {
       })
   }
 
+  const saveUserAction = () => {
+    post('/stats/actions', {
+      action: p
+    })
+      .then(r => {
+        console.log(r);
+      })
+      .catch(err => {
+        console.error('saveUserAction', err)
+      })
+  }
+  saveUserAction()
+
   const fixStrategy = (p) => {
     // TODO PATCH FOR OLDER PROJECTS
     console.log('fixStrategy', {p})

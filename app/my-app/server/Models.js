@@ -74,6 +74,13 @@ const ScrappedGameSchema = new Schema({
 })
 const ScrappedGameModel = mongoose.model("scrappedgames", ScrappedGameSchema)
 
+const UserActionsSchema = new Schema({
+  userId: mongoose.ObjectId,
+  action: mongoose.Mixed, // actionType
+  date: Date,
+})
+
+const UserActionsModel = mongoose.model("actions", UserActionsSchema)
 
 // const defaultConfig = {
 //   WEB3: 0, // 1 - TRUE, 0 - FALSE // Allow or restrict WEB3 operations
@@ -138,6 +145,7 @@ module.exports = {
   UserModel,
   ProjectModel,
   ScrappedGameModel,
+  UserActionsModel,
 
   // getServerConfigs,
   // getCf
