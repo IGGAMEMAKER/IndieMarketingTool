@@ -1,3 +1,4 @@
+const {saveUserAction} = require("../saveUserAction");
 const {ProjectModel} = require("../Models");
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -129,12 +130,14 @@ const createProject = async (req, res) => {
   })
 
   project.save()
-    .then(r => {
+    .then(async r => {
       console.log({r})
       var newId = r._id;
       console.log({newId})
 
       res.json({objectId: '??', newId, r})
+
+      await saveUserAction(req, {actionType: 'CREATE_PROJECT'})
     })
     .catch(e => {
       console.error({e})

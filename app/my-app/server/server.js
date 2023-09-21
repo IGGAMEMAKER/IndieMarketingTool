@@ -1,3 +1,4 @@
+const {saveUserAction} = require("./saveUserAction");
 const {getUserProjects} = require("./routes/getUserProjects");
 const {UserActionsModel} = require("./Models");
 const {ProjectModel} = require("./Models");
@@ -266,17 +267,7 @@ const resetPassword = async (req, res) => {
     })
 }
 
-const saveUserAction = async (req, action) => {
-  var a = new UserActionsModel({
-    userId: req.userId,
-    action,
-    date: new Date()
-  })
 
-  var r = await a.save()
-
-  console.log('saveUserAction', {r})
-}
 const saveUserActionRoute = async (req, res) => {
   console.log('saveUserActionRoute', req.body)
 
