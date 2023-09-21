@@ -1,3 +1,4 @@
+const {getUserProjects} = require("./routes/getUserProjects");
 const {UserActionsModel} = require("./Models");
 const {ProjectModel} = require("./Models");
 const {MY_MAIL} = require("../CD/Configs");
@@ -274,22 +275,24 @@ const saveUserAction = async (req, action) => {
 
   var r = await a.save()
 
-  console.log('saveUserAction', {
-    r
-  })
+  console.log('saveUserAction', {r})
 }
 const saveUserActionRoute = async (req, res) => {
   console.log('saveUserActionRoute', req.body)
+
   res.json({ok: 1})
+
   var {action} = req.body;
 
   await saveUserAction(req, action)
 }
 const saveUserUnderstandingStatsRoute = async (req, res) => {
   res.json({ok: 1})
+
   var {action} = req.body;
 
   await saveUserAction(req, action)
+  // await UserModel.findByIdAndUpdate(req.userId, {})
 }
 
 const createUser = async (req, res) => {
@@ -324,50 +327,6 @@ const createUser = async (req, res) => {
     })
 }
 
-const getProjects = async (req, res) => {
-  var result = await ProjectModel.find({});
-  var grouped = await ProjectModel.aggregate([
-    {
-      $match: {
-        name: {$exists: true}
-      }
-    },
-    {
-      $group: {
-        _id: '$ownerId',
-        count: { $sum: 1 },
-        // projects: {$push: {item: "$name"}}
-        projects: {$push: "$$ROOT"}
-        // itemsSold: { $push: { item: "$item" } }
-      }
-    },
-    {
-      $lookup: {
-        from: 'users',
-        localField: '_id',
-        foreignField: '_id',
-        as: 'user'
-      }
-    },
-    {
-      $unwind: {
-        path: '$user',
-        preserveNullAndEmptyArrays: true
-      }
-    },
-    {
-      $project: {
-        'user.password': 0,
-        'user.sessionToken': 0,
-      }
-    }
-  ])
-
-  res.json({
-    result,
-    grouped
-  })
-}
 
 // ROUTES
 app.get('/', renderSPA)
@@ -395,7 +354,7 @@ app.post  ('/api/reset-password', resetPassword)
 app.get('/api/me/login', saveDevIP)
 app.get('/api/me/logout', flushDevIP)
 
-app.get('/api/projects', isAdminMiddleware, getProjects)
+app.get('/api/projects', isAdminMiddleware, getUserProjects)
 
 app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)

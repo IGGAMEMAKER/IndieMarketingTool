@@ -313,7 +313,7 @@ Dispatcher.register((p) => {
       })
   }
 
-  const saveUserAction = () => {
+  const saveUserAction = (p) => {
     post('/stats/actions', {
       action: p
     })
@@ -324,7 +324,7 @@ Dispatcher.register((p) => {
         console.error('saveUserAction', err)
       })
   }
-  saveUserAction()
+  saveUserAction(p)
 
   const fixStrategy = (p) => {
     // TODO PATCH FOR OLDER PROJECTS
