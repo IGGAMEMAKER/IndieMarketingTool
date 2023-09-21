@@ -332,7 +332,7 @@ class App extends Component {
 
             <Route path='/profile'              element={<ProfilePage/>}/>
             <Route path='/projects/:projectId'  element={<ProjectPage/>}/>
-            <Route path='/admin'  element={<AdminPage/>}/>
+            <Route path='/admin/panel'  element={<AdminPage/>}/>
           </Routes>
         </header>
       </div>
