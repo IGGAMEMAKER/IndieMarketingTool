@@ -248,7 +248,7 @@ class MainPage extends Component {
         <h1>
           {col1("RELEASE")} {col2("FASTER")}
         </h1>
-        <h2>Mission of this site is to prevent you from {col1("wasting years")} on a game/app, {col2("that nobody needs")}</h2>
+        <h2>I made this site to prevent you from {col1("wasting years")} on a game/app, {col2("that nobody needs")}</h2>
         <br />
         <h3>Cause I know how it hurts</h3>
         {/*<h3>Bring ur project to market faster</h3>*/}
