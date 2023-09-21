@@ -17,6 +17,7 @@ import {getFeatureIterationId} from "./utils/getFeatureIterationId";
 import {getAudienceUsageCount, getFeatureUsageCount} from "./utils/getEntityUsageCount";
 import {renderTimeButton} from "./utils/renderTimeButton";
 import {TimePicker} from "./TimePicker";
+import {Link} from "react-router-dom";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -166,9 +167,30 @@ function AudienceSourcesPanel({channels, audiences}) {
         var strategyId = s.id
         // console.log(s.id, 'strategyPicker', {strategyId})
 
+        var isTooBig = s.name.split(' ').find(word => word.length > 15);
+        var style = {}
+        if (isTooBig) {
+          style = {overflow: 'hidden', width: '250px', textOverflow: 'elipsis'}
+        }
+        var isUrl = isTooBig && s.name.startsWith('http') || s.name.startsWith('www')
+
         return <li key={"strategy." + id + "." + strategyId}>
           <FieldPicker
             value={s.name}
+            normalValueRenderer={onEdit => {
+              if (isUrl) {
+                return <div>
+                  <div className="editable" style={style} onClick={() => onEdit(true)}>
+                    edit
+                  </div>
+                  <Link to={s.name}>link</Link>
+                </div>
+              }
+
+              return <div className="editable" onClick={() => onEdit(true)}>
+                  {s.name}
+                </div>
+            }}
             placeholder={"How will you reach them?"}
             onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}
             onRemove={() => actions.removeAudienceStrategy(id, strategyId)}
