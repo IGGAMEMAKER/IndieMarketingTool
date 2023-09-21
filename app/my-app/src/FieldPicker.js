@@ -1,29 +1,33 @@
 import {useState} from "react";
+import {openedFieldPicker, savedFieldPicker} from "./saveUserUnderstandingStat";
 
 
 export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=false, normalValueRenderer}) {
   var [editName, onChangeName] = useState(false)
   var [newValue, onValueChange] = useState(value)
 
+  var ff = ev => {
+    openedFieldPicker(placeholder)
+    onChangeName(ev)
+  }
+
   if (value.length && !editName) {
     if (!normalValueRenderer)
-      return <span className="editable" onClick={onChangeName}>{value}</span>
+      return <span className="editable" onClick={ff}>{value}</span>
 
-    return <div className="editable">{normalValueRenderer(onChangeName)}</div>
+    return <div className="editable">{normalValueRenderer(ff)}</div>
   }
 
   var saveButton = ''
   if (newValue?.length || value?.length) {
     const onSave = () => {
-      if (onRemove) {
-        if (!newValue.length)
-          onRemove()
-        else
-          onAction(newValue)
+      if (onRemove && !newValue.length) {
+        onRemove()
       } else {
         onAction(newValue)
       }
 
+      savedFieldPicker(placeholder)
       onChangeName(false)
     }
 
