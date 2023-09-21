@@ -11,6 +11,7 @@ var UserSchema = new Schema({
 
   // payments, chosen plan (when)
   // shown interest in (plan...)
+  lastAction: mongoose.Mixed
 })
 
 

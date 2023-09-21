@@ -1,13 +1,17 @@
+const {UserModel} = require("./Models");
 const {UserActionsModel} = require("./Models");
 
 const saveUserAction = async (req, action) => {
-  var a = new UserActionsModel({
+  var lastAction = {
     userId: req.userId,
     action,
     date: new Date()
-  })
+  }
+  var a = new UserActionsModel(lastAction)
 
   var r = await a.save()
+
+  var v = await UserModel.findByIdAndUpdate(req.userId, {lastAction})
 
   console.log('saveUserAction', {r})
 }
