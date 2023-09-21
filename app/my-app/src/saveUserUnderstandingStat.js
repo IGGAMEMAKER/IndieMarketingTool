@@ -29,3 +29,7 @@ export const openedFieldPicker = (placeholder) => {
 export const savedFieldPicker = (placeholder) => {
   saveUserUnderstandingStat('FIELD_PICKER_SAVED', {placeholder})
 }
+
+export const removeField = (placeholder) => {
+  saveUserUnderstandingStat('FIELD_PICKER_REMOVED', {placeholder})
+}

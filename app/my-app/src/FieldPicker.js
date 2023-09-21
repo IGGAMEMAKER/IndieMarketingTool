@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {openedFieldPicker, savedFieldPicker} from "./saveUserUnderstandingStat";
+import {openedFieldPicker, removeField, savedFieldPicker} from "./saveUserUnderstandingStat";
 
 
 export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=false, normalValueRenderer}) {
@@ -22,12 +22,13 @@ export function FieldPicker({value, onAction, onRemove, placeholder, autoFocus=f
   if (newValue?.length || value?.length) {
     const onSave = () => {
       if (onRemove && !newValue.length) {
+        removeField(placeholder)
         onRemove()
       } else {
+        savedFieldPicker(placeholder)
         onAction(newValue)
       }
 
-      savedFieldPicker(placeholder)
       onChangeName(false)
     }
 
