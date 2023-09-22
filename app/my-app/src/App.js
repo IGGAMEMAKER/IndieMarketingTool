@@ -44,6 +44,9 @@ function RegisterForm({}) {
     }}>Generate & Copy
   </button>
 
+  // ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+  const isDataValid = email.length && email.includes("@") && password.length >=8
+
   return <div>
     <h2>Register</h2>
     <form method="POST" action="/api/user">
@@ -56,6 +59,8 @@ function RegisterForm({}) {
               autoComplete="email"
               type="email"
               placeholder="Input email"
+              minLength="4" maxLength="40"
+              required
 
               value={email}
               onChange={ev => setEmail(ev.target.value)}
@@ -70,6 +75,8 @@ function RegisterForm({}) {
               autoComplete="new-password"
               type="password"
               placeholder="Input password"
+              minLength="8" maxLength="40"
+              required
 
               value={password}
               onChange={ev => setPassword(ev.target.value)}
@@ -82,7 +89,7 @@ function RegisterForm({}) {
         <tr></tr>
         <tr>
           <td style={{float: 'left'}}>
-            <input type="submit" value={"Register"} />
+            <input disabled={!isDataValid} type="submit" value={"Register"} />
           </td>
         </tr>
         </tbody>
