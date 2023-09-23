@@ -660,23 +660,26 @@ function MonetizationPanel({plans, audiences}) {
   </div>
 }
 
-function MainProblem({project}) {
+function MainProblem({project, appType}) {
   var essence;
   var header;
+  var placeholder
 
-  if (project.appType === APP_TYPE_GAME) {
+  if (appType === APP_TYPE_GAME) {
     essence = project?.mainFeeling;
     header = "Which emotion/feel do you want to create?"
+    placeholder = "main feel"
   } else {
     essence = project?.mainProblem;
     header = "Which problem are you trying to solve?"
+    placeholder = "main problem"
   }
 
   return <div>
     <Panel id="Problem" header={header} />
     <FieldPicker
       value={essence || ""}
-      placeholder={"Main problem?"}
+      placeholder={placeholder}
       onAction={val => {actions.editMainProblem(val)}}
     />
   </div>
@@ -797,7 +800,7 @@ export class ProjectPage extends Component {
             onAction={val => {actions.editDescription(projectId, val)}}
           />
 
-          <MainProblem project={project} projectId={projectId} />
+          <MainProblem project={project} projectId={projectId} appType={appType} />
           <Panel id="Audiences" header={audiencePhrase} />
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <NotesList project={project} />
