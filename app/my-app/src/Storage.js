@@ -52,7 +52,7 @@ import {
   PROJECT_EDIT_BURNOUT_TIME,
   PROJECT_EDIT_DESCRIPTION,
   PROJECT_EDIT_DESIRED_PROFIT,
-  PROJECT_EDIT_EXPENSES, PROJECT_EDIT_MAIN_PROBLEM,
+  PROJECT_EDIT_EXPENSES, PROJECT_EDIT_ESSENCE,
   PROJECT_LOAD,
   PROJECT_REMOVE,
   PROJECT_RENAME,
@@ -66,7 +66,7 @@ import {
   RISK_SOLUTION_REMOVE, STRATEGY_EDIT
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
-import {GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
+import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
 import actions from "./actions";
 import {Iteration} from "./Iteration";
@@ -406,8 +406,11 @@ Dispatcher.register((p) => {
       saveProjectChanges()
       break
 
-    case PROJECT_EDIT_MAIN_PROBLEM:
-      project.mainProblem = p.problem;
+    case PROJECT_EDIT_ESSENCE:
+      if (project.appType === APP_TYPE_GAME)
+        project.mainFeeling = p.problem;
+      else
+        project.mainProblem = p.problem;
       saveProjectChanges()
       break
 

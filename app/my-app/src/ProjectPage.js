@@ -661,13 +661,21 @@ function MonetizationPanel({plans, audiences}) {
 }
 
 function MainProblem({project}) {
-  if (project.appType === APP_TYPE_GAME)
-    return ''
+  var essence;
+  var header;
+
+  if (project.appType === APP_TYPE_GAME) {
+    essence = project?.mainFeeling;
+    header = "Which emotion/feel do you want to create?"
+  } else {
+    essence = project?.mainProblem;
+    header = "Which problem are you trying to solve?"
+  }
 
   return <div>
-    <Panel id="Problem" header={"Which problem are you trying to solve?"} />
+    <Panel id="Problem" header={header} />
     <FieldPicker
-      value={project?.mainProblem || ""}
+      value={essence || ""}
       placeholder={"Main problem?"}
       onAction={val => {actions.editMainProblem(val)}}
     />
