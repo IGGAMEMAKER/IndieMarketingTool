@@ -660,7 +660,19 @@ function MonetizationPanel({plans, audiences}) {
   </div>
 }
 
+function MainProblem({project}) {
+  if (project.appType === APP_TYPE_GAME)
+    return ''
 
+  return <div>
+    <Panel id="Problem" header={"Which problem are you trying to solve?"} />
+    <FieldPicker
+      value={project?.mainProblem || ""}
+      placeholder={"Main problem?"}
+      onAction={val => {actions.editMainProblem(val)}}
+    />
+  </div>
+}
 function AudiencesList({audiences, state, audiencePhrase}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
   const {monetizationPlans, risks, channels, name, appType} = state;
@@ -775,8 +787,9 @@ export class ProjectPage extends Component {
             value={this.state.project?.description || ""}
             placeholder={"What will you create?"}
             onAction={val => {actions.editDescription(projectId, val)}}
-            // normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
           />
+
+          <MainProblem project={project} projectId={projectId} />
           <Panel id="Audiences" header={audiencePhrase} />
           <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
           <NotesList project={project} />

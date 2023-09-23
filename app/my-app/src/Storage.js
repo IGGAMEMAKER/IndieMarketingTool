@@ -52,7 +52,7 @@ import {
   PROJECT_EDIT_BURNOUT_TIME,
   PROJECT_EDIT_DESCRIPTION,
   PROJECT_EDIT_DESIRED_PROFIT,
-  PROJECT_EDIT_EXPENSES,
+  PROJECT_EDIT_EXPENSES, PROJECT_EDIT_MAIN_PROBLEM,
   PROJECT_LOAD,
   PROJECT_REMOVE,
   PROJECT_RENAME,
@@ -403,6 +403,11 @@ Dispatcher.register((p) => {
 
     case PROJECT_EDIT_DESCRIPTION:
       project.description = p.description;
+      saveProjectChanges()
+      break
+
+    case PROJECT_EDIT_MAIN_PROBLEM:
+      project.mainProblem = p.problem;
       saveProjectChanges()
       break
 

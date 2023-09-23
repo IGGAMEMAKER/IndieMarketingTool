@@ -43,6 +43,9 @@ var ProjectSchema = new Schema({
   monthlyExpenses: Number,
   timeTillBurnout: Number,
 
+  mainProblem: String, // for apps
+  mainFeeling: String, // for games
+
   iterations: Array,
 })
 

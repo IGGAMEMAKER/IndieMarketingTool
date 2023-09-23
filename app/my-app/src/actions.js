@@ -71,7 +71,7 @@ import {
   ITERATIONS_SOLVE,
   STRATEGY_EDIT,
   ITERATIONS_GOAL_EXECUTION_TIME_EDIT,
-  ITERATIONS_GOAL_DESCRIPTION_EDIT, ITERATIONS_GROWTH_DESCRIPTION_EDIT
+  ITERATIONS_GOAL_DESCRIPTION_EDIT, ITERATIONS_GROWTH_DESCRIPTION_EDIT, PROJECT_EDIT_MAIN_PROBLEM
 } from './constants/actionConstants';
 
 export function loadProject(projectId) {
@@ -92,6 +92,13 @@ export function editDescription(projectId, description) {
   Dispatcher.dispatch({
     actionType: PROJECT_EDIT_DESCRIPTION,
     projectId, description
+  })
+}
+
+export function editMainProblem(problem) {
+  Dispatcher.dispatch({
+    actionType: PROJECT_EDIT_MAIN_PROBLEM,
+    problem
   })
 }
 
@@ -620,6 +627,7 @@ export default {
   addProject,
   editName,
   editDescription,
+  editMainProblem,
   removeProject,
   editStrategy,
 
