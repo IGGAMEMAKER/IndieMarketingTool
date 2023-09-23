@@ -407,7 +407,8 @@ Dispatcher.register((p) => {
       break
 
     case PROJECT_EDIT_ESSENCE:
-      if (project.appType === APP_TYPE_GAME)
+      // console.log('apptype', APP_TYPE_GAME, project.appType, project)
+      if (project.type === APP_TYPE_GAME)
         project.mainFeeling = p.problem;
       else
         project.mainProblem = p.problem;
