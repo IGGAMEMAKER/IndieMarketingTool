@@ -8,7 +8,7 @@ import {useState} from "react";
 export function RiskList({risks}) {
   // key={"risk-list." + r.id}
   return (
-    <ol>
+    <ol className="list">
       {risks.map((r, index) => <RiskView risk={r} index={index} />)}
       <li><RiskAdder /></li>
     </ol>

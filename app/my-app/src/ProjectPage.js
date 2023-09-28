@@ -203,9 +203,6 @@ function AudienceSourcesPanel({channels, audiences}) {
     </ol>
 
     return <tr className="Audience-item" key={"marketing-planner." + id} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', textAlign: 'left'}}>
-      {/*<td>*/}
-      {/*  {a.name}*/}
-      {/*</td>*/}
       <td>
         <b>How to reach <span style={{color: 'green'}}>{name}</span>?</b>
         <br />
@@ -213,12 +210,6 @@ function AudienceSourcesPanel({channels, audiences}) {
         <br />
         {strategyPicker}
       </td>
-      {/*<td>*/}
-      {/*  <b>What will you tell <span style={{color: 'green'}}>{name}</span>?</b>*/}
-      {/*  <br />*/}
-      {/*  <label style={{color: 'gray'}}>{description}</label>*/}
-      {/*  {messagePicker}*/}
-      {/*</td>*/}
     </tr>
   }
 
@@ -228,7 +219,6 @@ function AudienceSourcesPanel({channels, audiences}) {
       {audiences.map(a => renderAudienceStrats(a))}
     </div>
     <h3>Where will you find your audience?</h3>
-    {/*<h6>User count will update in future releases</h6>*/}
     <div className="Container">
       <ChannelList channels={channels} />
     </div>
@@ -248,16 +238,17 @@ function NotesList({project}) {
   }
 
   return <div>
-    <Panel id={"Notes"} header={"Notes"} />
+    <Panel id={"Notes"} header={"Notes"} noHelp />
     <h3>Save minds quickly here</h3>
 
     <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} />
     <br />
     <br />
-    <div>
+    <div className="list">
       {notes.map((n, i) => {
         return <div
           key={"note" + n.id}
+          className="left paddings"
         >
           <FieldPicker
             autoFocus
@@ -292,7 +283,7 @@ function FeatureList({project}) {
 
   var sum = list => list.map(f => f.timeCost || 0).reduce((p, c) => p + c, 0)
   var countableFeatures = features.filter(f => !f.solved)
-  var totalHours     = sum(countableFeatures)
+  var totalHours = sum(countableFeatures)
   var scheduledHours = sum(countableFeatures.filter(f => !!getFeatureIterationId(project, f.id)))
 
   var firstIterationWithFeatures = project.iterations.find(it => {
@@ -309,86 +300,89 @@ function FeatureList({project}) {
     <p>
       if you work 8 Hours / day
     </p>
-    <FieldAdder placeholder={"add new feature"} defaultState={true} autoFocus={false} onAdd={val => actions.addFeature(val)}/>
+    <FieldAdder placeholder={"add new feature"} defaultState={true} autoFocus={false}
+                onAdd={val => actions.addFeature(val)}/>
     <br/>
     <br/>
-    <table>
-      {features
-        .sort(sortFeatures)
-        .filter(f => {
-          var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
-          if (f.solved)
-            return false
+    <center>
+      <table className="list">
+        {features
+          .sort(sortFeatures)
+          .filter(f => {
+            var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
+            if (f.solved)
+              return false
 
-          if (f.solved && !isPartOfFirstIteration) {
-            return false
-          }
+            if (f.solved && !isPartOfFirstIteration) {
+              return false
+            }
 
-          return true;
-        })
-        .map(f => {
-          var dayDurationHours = 8;
-          var timeButton = t => renderTimeButton(t, f, () => {
-            setTimerId(-1)
+            return true;
           })
+          .map(f => {
+            var dayDurationHours = 8;
+            var timeButton = t => renderTimeButton(t, f, () => {
+              setTimerId(-1)
+            })
 
 
-          var onPick = () => {
-            setTimerId(f.id)
-          }
-          var timePicker = isNaN(f.timeCost) ?
-            <button onClick={onPick}>Set Estimates</button>
-            :
-            <span className={"editable"} onClick={onPick}>{getEstimateDescription(f.timeCost)}</span>
+            var onPick = () => {
+              setTimerId(f.id)
+            }
+            var timePicker = isNaN(f.timeCost) ?
+              <button onClick={onPick}>Set Estimates</button>
+              :
+              <span className={"editable"} onClick={onPick}>{getEstimateDescription(f.timeCost)}</span>
 
-          if (chosenTimerId === f.id) {
-            timePicker = <div>
-              {timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}
-              <br/>
-            </div>
-          }
+            if (chosenTimerId === f.id) {
+              timePicker = <div>
+                {timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}
+                <br/>
+              </div>
+            }
 
-          return <tr
-            key={"feature" + f.id}
-          >
-            {/*<td>*/}
-            {/*  <b>{f.id}</b>*/}
-            {/*</td>*/}
-            <td className={"left feature-tab"}>
-              <FieldPicker
-                autoFocus
-                value={f.name}
-                placeholder={"type your mind"}
-                onAction={val => actions.editFeatureName(f.id, val)}
-                onRemove={() => {
-                  var usages = getFeatureUsageCount(project, f.id)
+            return <tr
+              key={"feature" + f.id}
+            >
+              {/*<td>*/}
+              {/*  <b>{f.id}</b>*/}
+              {/*</td>*/}
+              <td className={"left feature-tab"}>
+                <FieldPicker
+                  autoFocus
+                  value={f.name}
+                  placeholder={"type your mind"}
+                  onAction={val => actions.editFeatureName(f.id, val)}
+                  onRemove={() => {
+                    var usages = getFeatureUsageCount(project, f.id)
 
-                  if (usages.length) {
-                    alert(`Can't remove this feature, cause it's used in\n\n${usages.join('\n')}`)
-                  } else {
-                    actions.removeFeature(f.id)
-                  }
-                }}
-                normalValueRenderer={onEdit => {
-                  var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
+                    if (usages.length) {
+                      alert(`Can't remove this feature, cause it's used in\n\n${usages.join('\n')}`)
+                    } else {
+                      actions.removeFeature(f.id)
+                    }
+                  }}
+                  normalValueRenderer={onEdit => {
+                    var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
 
-                  var solved = f.solved ? 'solved' : ''
-                  var used = getFeatureIterationId(project, f.id) ? 'used' : ''
-                  var isNearestFeature = isPartOfFirstIteration && !f.solved ? 'nearest' : ''
+                    var solved = f.solved ? 'solved' : ''
+                    var used = getFeatureIterationId(project, f.id) ? 'used' : ''
+                    var isNearestFeature = isPartOfFirstIteration && !f.solved ? 'nearest' : ''
 
-                  return <div
-                    onClick={onEdit}
-                    className={`feature ${solved} ${used} ${isNearestFeature}`}
-                  >{f.name}</div>
-                }}
-              />
-            </td>
-            <td>
-              {timePicker}
-            </td>
-          </tr>
-        })}
-    </table>
+                    return <div
+                      onClick={onEdit}
+                      className={`feature ${solved} ${used} ${isNearestFeature}`}
+                    >{f.name}</div>
+                  }}
+                />
+              </td>
+              <td>
+                {timePicker}
+              </td>
+            </tr>
+          })}
+      </table>
+    </center>
   </div>
 }
 
@@ -585,7 +579,6 @@ function MarketingPlanner({project}) {
 
   return <div>
     <Panel id="Message" header="Your message" />
-    <h3>Most important part of the project</h3>
     {audiencePicker}
     <br />
 
@@ -601,7 +594,22 @@ function MarketingPlanner({project}) {
 
 function UsefulLinks({links}) {
   var list = []
-  links.forEach(l => {
+  const adder = <div>
+    <div>
+      <FieldAdder onAdd={val => {
+        actions.addLink(val)
+      }} placeholder="Add link" defaultState={false}/>
+    </div>
+  </div>
+
+  // list.push(adder)
+  // list.push(    <div></div>)
+  // list.push(    <div></div>)
+  // list.push(    <div></div>)
+
+  for (var i = links.length - 1; i >= 0; i--) {
+    var l = links[i]
+
     list.push(<div key={"useful-links.link." + l.id}><a target={"_blank"} href={l.link}>Link</a></div>)
     list.push(          <FieldPicker
       key={"links-field" + l.id}
@@ -621,17 +629,17 @@ function UsefulLinks({links}) {
     list.push(          <div key={"useful-links.remove." + l.id}>
       <button onClick={() => actions.removeLink(l.id)}>x</button>
     </div>)
-  })
+  }
+  // links.forEach(l => {
+  // })
 
-  list.push(      <div>
-    <div>
-      <FieldAdder onAdd={val => actions.addLink(val)} placeholder="Add link" defaultState={false}/>
-    </div>
-  </div>)
+  // list.push()
 
   return <div>
-    <Panel id="Links" header="Save useful links here" />
-    <div className="Container links">
+    <Panel id="Links" header="Save useful links here" noHelp />
+    <div>{adder}</div>
+    <br />
+    <div className="Container links list">
       {list}
     </div>
   </div>
@@ -677,6 +685,12 @@ function MainProblem({project, appType}) {
 
   return <div>
     <Panel id="Problem" header={header} />
+    <div className="panel-instructions">
+      <h3>Most important part of the project{/*. 99% importance*/}</h3>
+      <h4>If you cannot formulate it clearly, the rest is FANTASY</h4>
+    </div>
+    {/*<hr />*/}
+    {/*<h5>Which can still be fine</h5>*/}
     <FieldPicker
       value={essence || ""}
       placeholder={placeholder}
@@ -713,6 +727,11 @@ function AudiencesList({audiences, state, audiencePhrase}) {
   </div>
 }
 
+const PROJECT_MODE_VISION = 1
+const PROJECT_MODE_EXECUTION = 2
+const PROJECT_MODE_STRATEGY = 4
+const PROJECT_MODE_NOTES = 3
+
 export class ProjectPage extends Component {
   state = {
     audiences: [],
@@ -721,6 +740,7 @@ export class ProjectPage extends Component {
     risks: [],
     links: [],
     loaded: false,
+    mode: PROJECT_MODE_VISION
   }
 
   copyState = () => {
@@ -737,6 +757,7 @@ export class ProjectPage extends Component {
 
       project: storage.getProject()
     })
+    document.title = storage.getProject().name
   }
 
   getProjectId = () => {
@@ -747,6 +768,11 @@ export class ProjectPage extends Component {
     // console.log({projectId, arr})
 
     return projectId
+  }
+
+  setMode = mode => {
+    this.setState({mode})
+    window.scrollTo(0, 0);
   }
 
   componentWillMount() {
@@ -768,69 +794,114 @@ export class ProjectPage extends Component {
     var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
     var projectId = this.getProjectId()
 
-    var audiencePhrase = appType === APP_TYPE_GAME ? 'Who will play your game?' : 'Who will use your service?'
+    var isGame = appType === APP_TYPE_GAME;
+    var isProject = !isGame;
+
+    var audiencePhrase = isGame ? 'Who will play your game?' : 'Who will use your service?'
 
     var project = this.state?.project
 
-    const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
+    // Notes, Vision, Execution
+    // Notes - notes, links, sources???, features???
+    // Execution - Iterations, Risks, Goals, Growth strategy???
+
+    const NotesPanel = <div>
+      <NotesList project={project} />
+      <UsefulLinks links={this.state.links}/>
+      <FeatureList project={project} />
+    </div>
+
+    const VisionPanel = <div>
+      <FieldPicker
+        value={project?.name}
+        placeholder={"name the project"}
+        onAction={val => {actions.editName(projectId, val)}}
+        normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+      />
+      {/*<a id="Audiences" href={"/profile"} className="Panel">Profile</a>*/}
+      {/*<a href={"/profile"}>Profile</a>*/}
+      <Panel id="Description" header={"What are you doing?"} noHelp />
+      <FieldPicker
+        value={this.state.project?.description || ""}
+        placeholder={"What will you create?"}
+        onAction={val => {actions.editDescription(projectId, val)}}
+      />
+
+      <MainProblem project={project} projectId={projectId} appType={appType} />
+      <Panel id="Audiences" header={audiencePhrase} />
+      <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
+      <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
+      <br/>
+      <br/>
+      <MarketingPlanner project={this.state}/>
+      <BusinessPlanner project={this.state.project}/>
+    </div>
+
+    const StrategyPanel = <div>
+      <button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>Iterations</button>
+      <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
+      <GlobalStrategyPlanner project={this.state.project}/>
+      <BusinessPlanner project={this.state.project} />
+    </div>
+
+    const ExecutionPanel = <div>
+      {/*<RisksPanel risks={risks} />*/}
+
+      <IterationPlanner project={this.state.project}/>
+    </div>
+
+    const visionLink = '/projects/' + projectId
+    const executionLink = '/projects/' + projectId + '/execution'
+
+    // const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
+    // const menus = ["Notes", "Vision", "Execution",  "Profile"]
+
+    var content;
+
+    switch (this.state.mode) {
+      case PROJECT_MODE_VISION: content = VisionPanel; break;
+      case PROJECT_MODE_STRATEGY: content = StrategyPanel; break;
+      case PROJECT_MODE_NOTES: content = NotesPanel; break;
+      case PROJECT_MODE_EXECUTION: content = ExecutionPanel; break;
+
+      default: content = VisionPanel
+    }
+
+    const menus = ["Vision", "Execution"]
     return (
       <div className="App">
         <div>
+          <center>
           <div className="menu">
-            {menus.map(Name => <span key={"menu" + Name}><a href={"#" + Name}>{Name}</a></span>)}
-            {/*{menus.map(Name => <span><Link to={"./#" + Name}>{Name}</Link></span>)}*/}
+            <Link onClick={() => this.setMode(PROJECT_MODE_NOTES)}>Notes</Link>
+            <Link onClick={() => this.setMode(PROJECT_MODE_VISION)}>Vision</Link>
+            <Link onClick={() => this.setMode(PROJECT_MODE_STRATEGY)}>Execution</Link>
+            {/*{menus.map(Name => <span key={"menu" + Name}><a href={"#" + Name}>{Name}</a></span>)}*/}
+            <Link to="/profile">Profile</Link>
           </div>
+          </center>
         </div>
         <header className="App-header">
-          {/*<div><textarea autoFocus /></div>*/}
           <br />
           <br />
-          <FieldPicker
-            value={project?.name}
-            placeholder={"name the project"}
-            onAction={val => {actions.editName(projectId, val)}}
-            normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
-          />
-          {/*<a id="Audiences" href={"/profile"} className="Panel">Profile</a>*/}
-          <a href={"/profile"}>Profile</a>
-          <Panel id="Description" header={"What are you doing?"} />
-          <FieldPicker
-            value={this.state.project?.description || ""}
-            placeholder={"What will you create?"}
-            onAction={val => {actions.editDescription(projectId, val)}}
-          />
+          <div>
+            {content}
+          </div>
 
-          <MainProblem project={project} projectId={projectId} appType={appType} />
-          <Panel id="Audiences" header={audiencePhrase} />
-          <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
-          <NotesList project={project} />
-          <FeatureList project={project} />
-          <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
-          <br/>
-          <br/>
-          <MarketingPlanner project={this.state}/>
-          <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
+          {/*{ExecutionPanel}*/}
 
-          <RisksPanel risks={risks}/>
-
-          <BusinessPlanner project={this.state.project}/>
-          <GlobalStrategyPlanner project={this.state.project}/>
-          {/*<TimeTest />*/}
-          <IterationPlanner project={this.state.project}/>
-
-          <UsefulLinks links={this.state.links}/>
-
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+          {/*<br/>*/}
+          {/*<br/>*/}
+          {/*<br/>*/}
+          {/*<br/>*/}
+          {/*<br/>*/}
+          {/*<br/>*/}
+          {/*<br/>*/}
+          {/*<br/>*/}
           {/*<a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>*/}
         </header>
       </div>
     );
   }
 }
+

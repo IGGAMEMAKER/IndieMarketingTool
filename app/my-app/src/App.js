@@ -12,6 +12,10 @@ import {generatePassword} from "./secret";
 import actions from "./actions";
 import {APP_TYPE_APP} from "./constants/constants";
 
+const col1 = t => <span className="color1">{t}</span>
+const col2 = t => <span className="color2">{t}</span>
+function ReleaseFaster({}) {return <span>{col1("Release")} {col2("Faster")}</span>}
+
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
   var [password, setPassword] = useState("")
@@ -173,6 +177,56 @@ function LoginForm({}) {
   </div>
 }
 
+
+function About({}) {
+  return <div>
+    <h1>
+      What is <ReleaseFaster/>?
+    </h1>
+    <h2>
+      {/*<ReleaseFaster />*/}It is
+      a {col1("project management tool")} {col2("for indie hackers")} and {col1("your Co-Pilot")}
+    </h2>
+    <h3>
+      {/*It's main purpose is to make you {col1("avoid infinite feature creep")} and {col2("focus on real users")}*/}
+      {/*you {col1("wasting years making a game/app, that nobody needs")} and {col2("focus on real users")}*/}
+      Its main purpose is to {col1("help you make apps and games")} {col2("that people will care about")}
+    </h3>
+    <h1>Why is it necessary?</h1>
+    <div style={{textAlign: 'left', marginLeft: '15px'}}>
+      <div>Whenever most indie hackers start new projects, they build, build, build and see no end</div>
+      <div>After some time (years for game developers and months for startups) they finally get some courage to release
+        their stuff
+      </div>
+      <div>And nobody responds to that</div>
+      <div>Silence</div>
+      <div>Or even worse, they never go public, cause they are too scared to show what they did</div>
+      <div>And this is sad</div>
+      <div>No, this is REALLY SAD</div>
+      <div>Time, that these talents wasted to dust, could been spent by enjoying life and/or building better products!
+      </div>
+      <div>That's why it's important to have a proper balance between development and marketing, when you are creating
+        something new
+      </div>
+      <center>
+        <h2>But why does it happen?</h2>
+        <ol>
+          <li>They think that a "good product will sell itself"</li>
+          <li>They think that a product is just a bunch of features</li>
+          <li>They are too shy to show off</li>
+          <li>They are too lazy to do marketing</li>
+        </ol>
+      </center>
+    </div>
+    <p>
+      Follow step by step instructions to make a product, that people really care about
+      {/*Answer questions about the game/app*/}
+    </p>
+    <br/>
+    <Link to={"/login"}>Try it</Link>
+  </div>
+}
+
 function ResetPasswordForm({}) {
   var [email, setEmail] = useState("")
 
@@ -212,6 +266,7 @@ function ResetPasswordForm({}) {
   </div>
 }
 
+
 class MainPage extends Component {
   state = {
     authenticated: false,
@@ -243,27 +298,27 @@ class MainPage extends Component {
     </div>
 
     var loginForm;
-    // if (this.state.loaded) {
-      loginForm = authenticated ? profileLink : loginLink
-    // }
-
-    const col1 = t => <span className="color1">{t}</span>
-    const col2 = t => <span className="color2">{t}</span>
+    loginForm = authenticated ? profileLink : loginLink
 
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>
           {col1("RELEASE")} {col2("FASTER")}
         </h1>
-        <h2>I made this site to prevent you from {col1("wasting years")} on a game/app, {col2("that nobody needs")}</h2>
+        <h2>I made this site to prevent you from {col1("wasting years making a game/app")}, {col2("that nobody needs")}</h2>
         <br />
         <h3>Cause I know how it hurts</h3>
         {/*<h3>Bring ur project to market faster</h3>*/}
         {/*<h3>Innovate without destroying yourself</h3>*/}
         {/*{document.cookie}*/}
 
-
-        {loginForm}
+        <table>
+          <tr>
+            {/*<td>{loginForm}</td>*/}
+            <td><Link to={"/login"}>Try it!</Link></td>
+            <td><Link to={"/about"}>More info</Link></td>
+          </tr>
+        </table>
       </header>
     </div>
   }
@@ -328,18 +383,19 @@ class App extends Component {
       <div className="App">
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
-            <Route path='/'                     element={<MainPage/>}/>
-            <Route path='/register'             element={<RegisterForm/>}/>
-            <Route path='/verify'               element={<VerifyForm />}/>
-            <Route path='/login'                element={<LoginForm/>}/>
-            <Route path='/logout'               element={<LoginForm/>}/>
-            <Route path='/reset'                element={<ResetPasswordForm />}/>
+            <Route path='/'                               element={<MainPage/>}/>
+            <Route path='/register'                       element={<RegisterForm/>}/>
+            <Route path='/verify'                         element={<VerifyForm />}/>
+            <Route path='/login'                          element={<LoginForm/>}/>
+            <Route path='/logout'                         element={<LoginForm/>}/>
+            <Route path='/reset'                          element={<ResetPasswordForm />}/>
 
-            <Route path='/about'                element={<div>ABOUT</div>}/>
+            <Route path='/about'                          element={<About />}/>
 
-            <Route path='/profile'              element={<ProfilePage/>}/>
-            <Route path='/projects/:projectId'  element={<ProjectPage/>}/>
-            <Route path='/admin/panel'  element={<AdminPage/>}/>
+            <Route path='/profile'                        element={<ProfilePage/>}/>
+            <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
+            <Route path='/projects/:projectId/execution'  element={<ProjectPage/>}/>
+            <Route path='/admin/panel'                    element={<AdminPage/>}/>
           </Routes>
         </header>
       </div>

@@ -16,7 +16,8 @@
 .menu {
   display: grid;
   background-color: orange;
-  grid-template-columns: auto auto auto auto auto auto auto auto;
+  /*grid-template-columns: auto auto auto auto auto auto auto auto;*/
+  grid-template-columns: auto auto auto auto;
   position: fixed;
   height: 5vh;
   width: 100%;
@@ -53,7 +54,7 @@
   /*background-color: #80008017;*/
   background-color: rgba(128, 0, 128, 0.32);
 }
-.editable.wavy {
+/*.editable*/.wavy {
   text-decoration: underline dotted;
 }
 .editable {
@@ -247,10 +248,38 @@
   color: green;
 }
 
+.need-help {
+  width: 320px;
+  margin: auto;
+}
 
 .Panel {
   /*margin-top: 25px;*/
-  padding-top: 25px;
+  /*padding-top: 25px;*/
+  padding-top: 1px;
+  background-color: palevioletred;
+  margin-bottom: 8px;
+  margin-top: 8px;
+
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.paddings {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.list {
+  height: 350px;
+  overflow-y: scroll;
+}
+
+.panel-instructions {
+  background-color: blueviolet;
+  padding: 1px;
+  margin-bottom: 8px;
+  margin-top: -11px;
 }
 
 .text-secondary {
@@ -279,6 +308,21 @@ button.toggle {
   min-height: 120px;
 }
 
+.help{
+  background-color: violet;
+  color: white;
+}
+
+/*no arrow in details*/
+details > summary {
+  list-style: none;
+}
+
+details > summary::marker, /* Latest Chrome, Edge, Firefox */
+details > summary::-webkit-details-marker /* Safari */ {
+  display: none;
+}
+
 @media (max-width: 420px) {
   .Audience-Container {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -291,10 +335,12 @@ button.toggle {
   }
 
   .menu {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    height: 75px;
+    /*grid-template-columns: repeat(3, minmax(0, 1fr));*/
+    /*height: 75px;*/
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    height: 45px;
     bottom: 0;
-    top: calc(100vh - 75px)
+    top: calc(100vh - 45px)
   }
 
   .Container.links {
