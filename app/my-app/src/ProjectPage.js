@@ -877,6 +877,22 @@ export class ProjectPage extends Component {
       default: content = VisionPanel
     }
 
+    var removeProject = <div>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
+    </div>
+
+    if (!window.location.href.includes("localhost")) {
+      removeProject = ''
+    }
+
     const menus = ["Vision", "Execution"]
     return (
       <div className="App">
@@ -900,15 +916,7 @@ export class ProjectPage extends Component {
 
           {/*{ExecutionPanel}*/}
 
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<br/>*/}
-          {/*<a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>*/}
+          {removeProject}
         </header>
       </div>
     );
