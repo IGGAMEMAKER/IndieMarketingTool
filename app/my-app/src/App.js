@@ -219,7 +219,7 @@ function About({}) {
       </center>
     </div>
     <p>
-      Follow step by step instructions to make a product, that people really care about
+      Follow step by step instructions to make a product, that people will care about
       {/*Answer questions about the game/app*/}
     </p>
     <br/>

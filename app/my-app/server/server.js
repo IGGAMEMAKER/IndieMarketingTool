@@ -325,6 +325,7 @@ app.get('/projects/:objectId', authenticate, renderSPA)
 app.get('/profile', authenticate, renderSPA) // show user projects here
 app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
+app.get('/about', renderSPA)
 
 app.get('/admin/panel', isAdminMiddleware, renderSPA)
 
