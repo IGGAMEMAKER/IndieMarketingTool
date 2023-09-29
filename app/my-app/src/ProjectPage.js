@@ -804,6 +804,22 @@ export class ProjectPage extends Component {
 
     var project = this.state?.project
 
+    var removeProject = <div>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
+    </div>
+
+    if (!window.location.href.includes("localhost")) {
+      removeProject = ''
+    }
+
     // Notes, Vision, Execution
     // Notes - notes, links, sources???, features???
     // Execution - Iterations, Risks, Goals, Growth strategy???
@@ -812,6 +828,7 @@ export class ProjectPage extends Component {
       <NotesList project={project} />
       <UsefulLinks links={this.state.links}/>
       {/*<FeatureList project={project} />*/}
+      {removeProject}
     </div>
 
     const VisionPanel = <div>
@@ -877,22 +894,6 @@ export class ProjectPage extends Component {
       default: content = VisionPanel
     }
 
-    var removeProject = <div>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
-    </div>
-
-    if (!window.location.href.includes("localhost")) {
-      removeProject = ''
-    }
-
     const menus = ["Vision", "Execution"]
     return (
       <div className="App">
@@ -915,8 +916,6 @@ export class ProjectPage extends Component {
           </div>
 
           {/*{ExecutionPanel}*/}
-
-          {removeProject}
         </header>
       </div>
     );
