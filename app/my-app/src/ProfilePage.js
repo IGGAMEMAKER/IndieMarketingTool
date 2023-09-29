@@ -74,10 +74,9 @@ export class ProfilePage extends Component {
       <h1>PROFILE</h1>
       <br/>
       <br/>
-      <ProjectList projectIDs={projectIDs}/>
-      <br/>
-      <br/>
       <NewProjectAdder/>
+      <br/>
+      <ProjectList projectIDs={projectIDs}/>
       <br />
       <br />
       <br />

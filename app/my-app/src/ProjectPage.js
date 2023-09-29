@@ -239,7 +239,7 @@ function NotesList({project}) {
 
   return <div>
     <Panel id={"Notes"} header={"Notes"} noHelp />
-    <h3>Save minds quickly here</h3>
+    <h3>Save notes here</h3>
 
     <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />
     <br />
@@ -811,7 +811,7 @@ export class ProjectPage extends Component {
     const NotesPanel = <div>
       <NotesList project={project} />
       <UsefulLinks links={this.state.links}/>
-      <FeatureList project={project} />
+      {/*<FeatureList project={project} />*/}
     </div>
 
     const VisionPanel = <div>
@@ -908,7 +908,7 @@ export class ProjectPage extends Component {
           {/*<br/>*/}
           {/*<br/>*/}
           {/*<br/>*/}
-          {/*<a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>*/}
+          <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
         </header>
       </div>
     );
