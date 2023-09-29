@@ -241,7 +241,7 @@ function NotesList({project}) {
     <Panel id={"Notes"} header={"Notes"} noHelp />
     <h3>Save minds quickly here</h3>
 
-    <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} />
+    <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />
     <br />
     <br />
     <div className="list">
@@ -414,7 +414,7 @@ function BusinessPlanner({project}) {
   />
 
   return <div>
-    <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} />
+    <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} noHelp />
     <p>How much do you want to earn?<br />{desiredProfitPicker}$</p>
     {renderIncomeGoal(project, desiredProfit, "earn")}
     {/*<p>Your monthly expenses?<br />{monthlyExpensesPicker}</p>*/}
@@ -598,7 +598,7 @@ function UsefulLinks({links}) {
     <div>
       <FieldAdder onAdd={val => {
         actions.addLink(val)
-      }} placeholder="Add link" defaultState={false}/>
+      }} placeholder="Add link" defaultState={true} autoFocus={false}/>
     </div>
   </div>
 
@@ -608,7 +608,10 @@ function UsefulLinks({links}) {
   // list.push(    <div></div>)
 
   for (var i = links.length - 1; i >= 0; i--) {
-    var l = links[i]
+
+  }
+  links.forEach(l => {
+    // var l = links[i]
 
     list.push(<div key={"useful-links.link." + l.id}><a target={"_blank"} href={l.link}>Link</a></div>)
     list.push(          <FieldPicker
@@ -629,9 +632,7 @@ function UsefulLinks({links}) {
     list.push(          <div key={"useful-links.remove." + l.id}>
       <button onClick={() => actions.removeLink(l.id)}>x</button>
     </div>)
-  }
-  // links.forEach(l => {
-  // })
+  })
 
   // list.push()
 
@@ -686,7 +687,8 @@ function MainProblem({project, appType}) {
   return <div>
     <Panel id="Problem" header={header} />
     <div className="panel-instructions">
-      <h3>Most important part of the project{/*. 99% importance*/}</h3>
+      {/*<h3>Most important part of the project/!*. 99% importance*!/</h3>*/}
+      <h3>MOST IMPORTANT QUESTION{/*. 99% importance*/}</h3>
       <h4>If you cannot formulate it clearly, the rest is FANTASY</h4>
     </div>
     {/*<hr />*/}
@@ -797,6 +799,7 @@ export class ProjectPage extends Component {
     var isGame = appType === APP_TYPE_GAME;
     var isProject = !isGame;
 
+    var wordedType = isGame ? 'game' : 'service'
     var audiencePhrase = isGame ? 'Who will play your game?' : 'Who will use your service?'
 
     var project = this.state?.project
@@ -812,12 +815,6 @@ export class ProjectPage extends Component {
     </div>
 
     const VisionPanel = <div>
-      <FieldPicker
-        value={project?.name}
-        placeholder={"name the project"}
-        onAction={val => {actions.editName(projectId, val)}}
-        normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
-      />
       {/*<a id="Audiences" href={"/profile"} className="Panel">Profile</a>*/}
       {/*<a href={"/profile"}>Profile</a>*/}
       <Panel id="Description" header={"What are you doing?"} noHelp />
@@ -830,15 +827,28 @@ export class ProjectPage extends Component {
       <MainProblem project={project} projectId={projectId} appType={appType} />
       <Panel id="Audiences" header={audiencePhrase} />
       <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
-      <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
-      <br/>
-      <br/>
-      <MarketingPlanner project={this.state}/>
-      <BusinessPlanner project={this.state.project}/>
+      <Panel id="Name" header={`How will you name your ${wordedType}?`} />
+      <FieldPicker
+        value={project?.name}
+        placeholder={"name the project"}
+        onAction={val => {actions.editName(projectId, val)}}
+        normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+      />
+      <br />
+      <br />
+      <button>REVIEW</button>
+
+      {/*<MonetizationPanel plans={monetizationPlans} audiences={audiences}/>*/}
+      {/*<br/>*/}
+      {/*<br/>*/}
+      {/*<MarketingPlanner project={this.state}/>*/}
+      {/*<BusinessPlanner project={this.state.project}/>*/}
     </div>
 
     const StrategyPanel = <div>
-      <button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>Iterations</button>
+      <button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>
+      <br />
+
       <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
       <GlobalStrategyPlanner project={this.state.project}/>
       <BusinessPlanner project={this.state.project} />

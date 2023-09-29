@@ -812,9 +812,10 @@ Dispatcher.register((p) => {
         push(project.links, obj, 'links')
         // project.links.push(obj)
       } catch (e) {
-        project.links = []
-        push(project.links, obj, 'links')
+        // project.links = []
+        // push(project.links, obj, 'links')
         // project.links.push(obj)
+        console.error('CANNOT SAVE LINK', e)
       }
 
       saveProjectChanges()
