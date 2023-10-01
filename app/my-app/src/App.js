@@ -14,6 +14,7 @@ import {APP_TYPE_APP} from "./constants/constants";
 
 const col1 = t => <span className="color1">{t}</span>
 const col2 = t => <span className="color2">{t}</span>
+
 function ReleaseFaster({}) {return <span>{col1("Release")} {col2("Faster")}</span>}
 
 function RegisterForm({}) {
@@ -293,30 +294,94 @@ class MainPage extends Component {
     const profileLink = <Link to={"/profile"}>Profile</Link>
     const loginLink = <div>
       <Link to={"/register"}>Register</Link>
-      <br />
+      <br/>
       <Link to={"/login"}>Login</Link>
     </div>
 
     var loginForm;
     loginForm = authenticated ? profileLink : loginLink
 
+    let commonMistakes = <div>
+      <div><b>{col2("Common mistakes")}</b></div>
+      <ol className="left">
+        <li>
+          Don't know, what they are creating
+          {/*Cannot formulate their product/problem in one sentence, which leads to:*/}
+          <ul>
+            <li>They cannot explain their idea to others</li>
+            <li>But think, that EVERYONE WILL LOVE IT WHEN THEY SEE IT (they won't)</li>
+            <li>Maybe add this feature or that one, or even third one?</li>
+            <li>Shit, I have to redo EVERYTHING, then it will be </li>
+            <li>Hard to market ur stuff, cause they don't understand, what you are making</li>
+            <li>Hard to market ur stuff, cause you can't explain ur idea fast</li>
+          </ul>
+        </li>
+        <li>Treating product like a set of features and only focusing on development</li>
+        <li>
+          Thinking, that they know everything
+          <ul>
+            <li>I know, which features are necessary</li>
+          </ul>
+        </li>
+        <li>(Also cause avoided market research) Trying to make as much features as they can, cause "people won't like it otherwise".
+          <ul>
+            <li>Fear of rejection/Perfectionism</li>
+            <li>Polishing before people shown interest</li>
+            <li>Not sure if people want it or not</li>
+          </ul>
+        </li>
+        <li>Starting projects just to prove something to yourself</li>
+      </ol>
+    </div>
+
+    commonMistakes = ''
+
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>
           {col1("RELEASE")} {col2("FASTER")}
         </h1>
-        <h2>I made this site to prevent you from {col1("wasting years making a game/app")}, {col2("that nobody needs")}</h2>
-        <br />
-        <h3>Cause I know how it hurts</h3>
+        <h2>Plan your new projects here, be it {col1("services")} or {col2("games")}</h2>
+        {/*<h2>{col1("Project management tool")} {col2("for indie hackers")} and {col1("your Co-Pilot")}</h2>*/}
+
+        {/*<h2>I made this site to prevent you from {col1("wasting years making a game/app")}, {col2("that nobody needs")}</h2>*/}
+        {/*<h3>Cause I know how it hurts</h3>*/}
         {/*<h3>Bring ur project to market faster</h3>*/}
         {/*<h3>Innovate without destroying yourself</h3>*/}
         {/*{document.cookie}*/}
 
+        <div><b>{col1("Project management tool")}</b></div>
+        <ul className="left">
+          <li>Workflow {col1("designed specifically")} for <b>{col2("indie hackers")}</b></li>
+          <li>Tool will help you avoid mistakes, most people are making, when developing new products</li>
+          <li>Answer main questions about your new idea and get help if you can't give clear answers</li>
+          <li>Follow step by step guide to spend least amount of time possible</li>
+          <li>Main goal is <b>{col2("SPEED")}</b> and {col1("avoiding wasting YEARS")} on product, nobody needs</li>
+        </ul>
+
+        <div><b>{col2("Co-Pilot")}</b></div>
+        <ul className="left">
+          <li>Don't want to do market research, cause you only want to build? {col1("I'll research for you")}</li>
+          <li>{col1("Scared")} to show your project to the crowd? {col2("Show to me first!")}</li>
+        </ul>
+
+        {commonMistakes}
+
         <table>
           <tr>
             {/*<td>{loginForm}</td>*/}
-            <td><Link to={"/login"}>Try it!</Link></td>
-            <td><Link to={"/about"}>More info</Link></td>
+            <td>
+              <Link to={"/login"}>
+                <button className="primary">Try it!</button>
+              </Link>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+              <Link to={"/about"}>
+                {col2("More info")}
+              </Link>
+            </td>
           </tr>
         </table>
       </header>

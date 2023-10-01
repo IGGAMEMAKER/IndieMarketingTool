@@ -61,6 +61,24 @@
   white-space: pre-line
 }
 
+button.primary {
+  height: 50px;
+  min-width: 175px;
+  background-color: violet;
+  border-color: violet;
+  font-size: 32px;
+  border-radius: 10px;
+}
+
+a button.primary {
+  color: white;
+}
+
+button a:link { text-decoration: none; }
+button a:visited { text-decoration: none; }
+button a:hover { text-decoration: none; }
+button a:active { text-decoration: none; }
+
 .color1 {
   color: orange;
 }
@@ -304,8 +322,8 @@ button.toggle {
 
 .field-picker {
   /*min-width: 150px;*/
-  width: 150px;
-  min-height: 120px;
+  width: 450px;
+  min-height: 250px;
 }
 
 .help{
@@ -332,6 +350,11 @@ details > summary::-webkit-details-marker /* Safari */ {
     grid-template-columns: repeat(1, minmax(0, 1fr) 35px);
     /*grid-template-rows: repeat(1, minmax(0, 1fr) 25px);*/
     row-gap: 25px;
+  }
+
+  .field-picker {
+    width: 250px;
+    min-height: 150px;
   }
 
   .menu {
