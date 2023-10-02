@@ -874,6 +874,7 @@ export class ProjectPage extends Component {
 
     const ExecutionPanel = <div>
       {/*<RisksPanel risks={risks} />*/}
+      <BusinessPlanner project={this.state.project} />
 
       <IterationPlanner project={this.state.project}/>
     </div>
