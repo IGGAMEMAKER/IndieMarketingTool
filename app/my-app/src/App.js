@@ -386,7 +386,7 @@ class MainPage extends Component {
 
         <div><b>{col2("Co-Pilot")}</b></div>
         <ul className="left">
-          <li>Don't want to do market research, cause you only want to build? {col1("I'll research for you")}</li>
+          <li>{col1("Don't want to do market research")}, cause you only want to build? {col2("I'll research for you")}</li>
           <li>{col1("Scared")} to show your project to the crowd? {col2("Show to me first!")}</li>
           <li>Don't know, how to {col1("get your first clients")}? {col2("Let's find them together")}</li>
         </ul>
