@@ -845,6 +845,7 @@ export class ProjectPage extends Component {
       <MainProblem project={project} projectId={projectId} appType={appType} />
       <Panel id="Audiences" header={audiencePhrase} />
       <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
+      <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
       <br />
       <br />
       <Panel id="Name" header={`How will you name your ${wordedType}?`} noHelp />
@@ -854,9 +855,9 @@ export class ProjectPage extends Component {
         onAction={val => {actions.editName(projectId, val)}}
         normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
       />
+
       <Button text={"REVIEW"} />
 
-      {/*<MonetizationPanel plans={monetizationPlans} audiences={audiences}/>*/}
       {/*<br/>*/}
       {/*<br/>*/}
       {/*<MarketingPlanner project={this.state}/>*/}
