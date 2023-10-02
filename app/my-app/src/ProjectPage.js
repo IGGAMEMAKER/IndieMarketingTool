@@ -18,6 +18,7 @@ import {getAudienceUsageCount, getFeatureUsageCount} from "./utils/getEntityUsag
 import {renderTimeButton} from "./utils/renderTimeButton";
 import {TimePicker} from "./TimePicker";
 import {Link} from "react-router-dom";
+import {Button} from "./UI";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -844,16 +845,16 @@ export class ProjectPage extends Component {
       <MainProblem project={project} projectId={projectId} appType={appType} />
       <Panel id="Audiences" header={audiencePhrase} />
       <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
-      <Panel id="Name" header={`How will you name your ${wordedType}?`} />
+      <br />
+      <br />
+      <Panel id="Name" header={`How will you name your ${wordedType}?`} noHelp />
       <FieldPicker
         value={project?.name}
         placeholder={"name the project"}
         onAction={val => {actions.editName(projectId, val)}}
         normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
       />
-      <br />
-      <br />
-      <button>REVIEW</button>
+      <Button text={"REVIEW"} />
 
       {/*<MonetizationPanel plans={monetizationPlans} audiences={audiences}/>*/}
       {/*<br/>*/}
@@ -863,8 +864,8 @@ export class ProjectPage extends Component {
     </div>
 
     const StrategyPanel = <div>
-      <button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>
-      <br />
+      {/*<button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>*/}
+      {/*<br />*/}
 
       <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
       <GlobalStrategyPlanner project={this.state.project}/>
@@ -886,9 +887,9 @@ export class ProjectPage extends Component {
     var content;
 
     switch (this.state.mode) {
+      case PROJECT_MODE_NOTES: content = NotesPanel; break;
       case PROJECT_MODE_VISION: content = VisionPanel; break;
       case PROJECT_MODE_STRATEGY: content = StrategyPanel; break;
-      case PROJECT_MODE_NOTES: content = NotesPanel; break;
       case PROJECT_MODE_EXECUTION: content = ExecutionPanel; break;
 
       default: content = VisionPanel
@@ -902,7 +903,8 @@ export class ProjectPage extends Component {
           <div className="menu">
             <Link onClick={() => this.setMode(PROJECT_MODE_NOTES)}>Notes</Link>
             <Link onClick={() => this.setMode(PROJECT_MODE_VISION)}>Vision</Link>
-            <Link onClick={() => this.setMode(PROJECT_MODE_STRATEGY)}>Execution</Link>
+            <Link onClick={() => this.setMode(PROJECT_MODE_STRATEGY)}>GROWTH</Link>
+            <Link onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>Execution</Link>
             {/*{menus.map(Name => <span key={"menu" + Name}><a href={"#" + Name}>{Name}</a></span>)}*/}
             <Link to="/profile">Profile</Link>
           </div>

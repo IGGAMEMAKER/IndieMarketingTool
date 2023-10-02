@@ -17,7 +17,7 @@
   display: grid;
   background-color: orange;
   /*grid-template-columns: auto auto auto auto auto auto auto auto;*/
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto;
   position: fixed;
   height: 5vh;
   width: 100%;
@@ -66,6 +66,7 @@ button.primary {
   min-width: 175px;
   background-color: violet;
   border-color: violet;
+  color: white;
   font-size: 32px;
   border-radius: 10px;
 }
@@ -360,7 +361,7 @@ details > summary::-webkit-details-marker /* Safari */ {
   .menu {
     /*grid-template-columns: repeat(3, minmax(0, 1fr));*/
     /*height: 75px;*/
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     height: 45px;
     bottom: 0;
     top: calc(100vh - 45px)

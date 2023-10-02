@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import {Component, useEffect, useState} from 'react';
+import {Component, useState} from 'react';
 // import { BrowserRouter } from 'react-router-dom';
 import {Link, Route, Routes} from 'react-router-dom';
 import {ProfilePage} from "./ProfilePage";
@@ -11,11 +11,7 @@ import {ping} from "./PingBrowser";
 import {generatePassword} from "./secret";
 import actions from "./actions";
 import {APP_TYPE_APP} from "./constants/constants";
-
-const col1 = t => <span className="color1">{t}</span>
-const col2 = t => <span className="color2">{t}</span>
-
-function ReleaseFaster({}) {return <span>{col1("Release")} {col2("Faster")}</span>}
+import {col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
 
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
@@ -225,6 +221,13 @@ function About({}) {
     </p>
     <br/>
     <Link to={"/login"}>Try it</Link>
+    <h2>Stages</h2>
+    <ul>
+      <li>Formulate the problem / main game idea</li>
+      <li>Test if anyone has that problem / wants to play that</li>
+      <li>Build your MVP (1 week)</li>
+      <li>Get Feedback</li>
+    </ul>
   </div>
 }
 
@@ -267,6 +270,63 @@ function ResetPasswordForm({}) {
   </div>
 }
 
+class MistakesPage extends Component {
+  render() {
+    return <div>
+      <div><b>{col2("Common mistakes")}</b></div>
+      <ol className="left">
+        <li>Building, before researching</li>
+        <li>Treating product like a set of features and only focusing on development</li>
+        <li>
+          Don't know precisely, what they are creating
+          {/*Cannot formulate their product/problem in one sentence, which leads to:*/}
+          <ul>
+            <li>They cannot explain their idea to others</li>
+            <li>But think, that EVERYONE WILL LOVE IT WHEN THEY SEE IT (they won't)</li>
+            <li>Maybe add this feature or that one, or even third one?</li>
+            <li>Shit, I have to redo EVERYTHING, then it will be OKAY</li>
+            {/*<li>Hard to market ur stuff, cause they don't understand, what you are making</li>*/}
+            {/*<li>Hard to market ur stuff, cause you can't explain ur idea fast</li>*/}
+          </ul>
+        </li>
+        <li>
+          Not showing their work to people early on
+          <ul>
+            <li>Cause they are scared or</li>
+            <li>Cause they think that product IS GOOD, I just need to finish it</li>
+          </ul>
+        </li>
+        <li>
+          Thinking, that they know everything
+          <ul>
+            <li>I know, which features are necessary</li>
+          </ul>
+        </li>
+        <li>(Also cause avoided market research) Trying to make as much features as they can, cause "people won't like
+          it otherwise".
+          <ul>
+            <li>Fear of rejection/Perfectionism</li>
+            <li>Polishing before people shown interest</li>
+            <li>Not sure if people want it or not</li>
+          </ul>
+        </li>
+        <li>Starting projects just to prove something to yourself</li>
+      </ol>
+      <table>
+        <tr>
+          {/*<td>*/}
+          {/*  <ButtonLink url={"/login"} text={"Try it!"} />*/}
+          {/*</td>*/}
+          <td>
+            <SimpleLink url={"/"} text={"back"} />
+          </td>
+        </tr>
+      </table>
+    </div>
+  }
+}
+
+
 
 class MainPage extends Component {
   state = {
@@ -301,41 +361,6 @@ class MainPage extends Component {
     var loginForm;
     loginForm = authenticated ? profileLink : loginLink
 
-    let commonMistakes = <div>
-      <div><b>{col2("Common mistakes")}</b></div>
-      <ol className="left">
-        <li>
-          Don't know, what they are creating
-          {/*Cannot formulate their product/problem in one sentence, which leads to:*/}
-          <ul>
-            <li>They cannot explain their idea to others</li>
-            <li>But think, that EVERYONE WILL LOVE IT WHEN THEY SEE IT (they won't)</li>
-            <li>Maybe add this feature or that one, or even third one?</li>
-            <li>Shit, I have to redo EVERYTHING, then it will be </li>
-            <li>Hard to market ur stuff, cause they don't understand, what you are making</li>
-            <li>Hard to market ur stuff, cause you can't explain ur idea fast</li>
-          </ul>
-        </li>
-        <li>Treating product like a set of features and only focusing on development</li>
-        <li>
-          Thinking, that they know everything
-          <ul>
-            <li>I know, which features are necessary</li>
-          </ul>
-        </li>
-        <li>(Also cause avoided market research) Trying to make as much features as they can, cause "people won't like it otherwise".
-          <ul>
-            <li>Fear of rejection/Perfectionism</li>
-            <li>Polishing before people shown interest</li>
-            <li>Not sure if people want it or not</li>
-          </ul>
-        </li>
-        <li>Starting projects just to prove something to yourself</li>
-      </ol>
-    </div>
-
-    commonMistakes = ''
-
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>
@@ -353,7 +378,7 @@ class MainPage extends Component {
         <div><b>{col1("Project management tool")}</b></div>
         <ul className="left">
           <li>Workflow {col1("designed specifically")} for <b>{col2("indie hackers")}</b></li>
-          <li>Tool will help you avoid mistakes, most people are making, when developing new products</li>
+          <li>Tool will help you avoid <Link to={"/mistakes"}>common mistakes</Link>, indie devs make {/*(myself included)*/}</li>
           <li>Answer main questions about your new idea and get help if you can't give clear answers</li>
           <li>Follow step by step guide to spend least amount of time possible</li>
           <li>Main goal is <b>{col2("SPEED")}</b> and {col1("avoiding wasting YEARS")} on product, nobody needs</li>
@@ -363,27 +388,10 @@ class MainPage extends Component {
         <ul className="left">
           <li>Don't want to do market research, cause you only want to build? {col1("I'll research for you")}</li>
           <li>{col1("Scared")} to show your project to the crowd? {col2("Show to me first!")}</li>
+          <li>Don't know, how to {col1("get your first clients")}? {col2("Let's find them together")}</li>
         </ul>
 
-        {commonMistakes}
-
-        <table>
-          <tr>
-            {/*<td>{loginForm}</td>*/}
-            <td>
-              <Link to={"/login"}>
-                <button className="primary">Try it!</button>
-              </Link>
-            </td>
-            <td></td>
-            <td></td>
-            <td>
-              <Link to={"/about"}>
-                {col2("More info")}
-              </Link>
-            </td>
-          </tr>
-        </table>
+        <CTAButtons />
       </header>
     </div>
   }
@@ -449,6 +457,7 @@ class App extends Component {
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
             <Route path='/'                               element={<MainPage/>}/>
+            <Route path='/mistakes'                       element={<MistakesPage />}/>
             <Route path='/register'                       element={<RegisterForm/>}/>
             <Route path='/verify'                         element={<VerifyForm />}/>
             <Route path='/login'                          element={<LoginForm/>}/>
