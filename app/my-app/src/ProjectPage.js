@@ -1,7 +1,13 @@
 import {Component, useState} from "react";
 import storage from "./Storage";
 import actions, {editDescription} from "./actions";
-import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS, LINK_TYPE_SIMILAR} from "./constants/constants";
+import {
+  APP_TYPE_APP,
+  APP_TYPE_GAME,
+  GOAL_TYPE_FEATURES,
+  LINK_TYPE_DOCS,
+  LINK_TYPE_SIMILAR
+} from "./constants/constants";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {IterationPlanner} from "./IterationPlanner";
 import {Audience} from "./Audience";
@@ -19,6 +25,7 @@ import {renderTimeButton} from "./utils/renderTimeButton";
 import {TimePicker} from "./TimePicker";
 import {Link} from "react-router-dom";
 import {Button} from "./UI";
+import {isCompositeComponent} from "react-dom/test-utils";
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -230,6 +237,7 @@ function NotesList({project}) {
   var [isPopupOpened, setOpenedPopup] = useState(false)
 
   var notes = project.notes || []
+
   const openNotePopup = () => {
     setOpenedPopup(true)
   }
@@ -540,7 +548,7 @@ function GlobalStrategyPlanner({project}) {
   </div>
 }
 
-function MarketingPlanner({project}) {
+function MessagePlanner({project}) {
   var defaultId = project.audiences.length ? project.audiences[0].id : -1
 
   var [chosenAudience, setChosenAudience] = useState(defaultId)
@@ -662,15 +670,26 @@ function MonetizationPanel({plans, audiences}) {
   return <div>
     <Panel id="Monetization" header={content} />
     <h6>WHO WILL PAY & FOR WHAT?</h6>
-    <br />
-    <br />
+    {/*<br />*/}
+    {/*<br />*/}
     <div className="Audience-Container">
       {plans.map((p, i) => <MonetizationPlan key={'monetizationPlanX.' + p.id + ' ' + i} plan={p} index={i} audiences={audiences} />)}
     </div>
   </div>
 }
 
-function MainProblem({project, appType}) {
+function ProjectDescription({project, projectId}) {
+  return <div>
+    <Panel id="Description" header={"What are you doing?"} noHelp />
+    <FieldPicker
+      value={project?.description || ""}
+      placeholder={"What will you create?"}
+      onAction={val => {actions.editDescription(projectId, val)}}
+    />
+  </div>
+}
+
+function ProjectEssence({project, appType}) {
   var essence;
   var header;
   var placeholder
@@ -706,6 +725,7 @@ function AudiencesList({audiences, state, audiencePhrase}) {
   const {monetizationPlans, risks, channels, name, appType} = state;
 
   return <div>
+    <Panel id="Audiences" header={audiencePhrase} />
     <div className="Audience-Container">
       {audiences.map((a, i) => {
         var usages = getAudienceUsageCount(monetizationPlans, a)
@@ -727,6 +747,75 @@ function AudiencesList({audiences, state, audiencePhrase}) {
       )}
       <AudienceAdder placeholder={audiencePhrase} />
     </div>
+  </div>
+}
+
+function NamePicker({project, projectId, wordedType, name}) {
+  return <div>
+    <Panel id="Name" header={`How will you name your ${wordedType}?`} noHelp />
+    <FieldPicker
+      value={project?.name}
+      placeholder={"name the project"}
+      onAction={val => {actions.editName(projectId, val)}}
+      normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
+    />
+  </div>
+}
+
+function Validator({project}) {
+  var essenceCheck;
+
+  const saasThing = <div>
+    <center>
+      <table>
+        <tr><td className="left">hour</td><td></td><td></td><td>1) Does the problem exist? Who has that problem? Google forms + Search (SEO + Gum)</td></tr>
+        <tr><td className="left">hours</td><td></td><td></td><td>2) Does the problem exist? Who has that problem? Landing page</td></tr>
+        <tr><td className="left">days</td><td></td><td></td><td>If enough people subbed, split em (half for free testing increase gradually / half for paid)</td></tr>
+        {/*<tr><td className="left">days</td><td></td><td></td><td>Screenshots</td></tr>*/}
+        {/*<tr><td className="left">week</td><td></td><td></td><td>Fake Gameplay Trailer</td></tr>*/}
+        {/*<tr><td className="left">day/week</td><td></td><td></td><td>Prototype</td></tr>*/}
+      </table>
+    </center>
+  </div>
+
+  const gameplayThing = <div>
+    <center>
+      <table>
+        <tr><td className="left">hour</td><td></td><td></td><td>1 sentence</td></tr>
+        <tr><td className="left">hours</td><td></td><td></td><td>Intro post (I want to make game like X, but Y; genre & main features)</td></tr>
+        <tr><td className="left">hours</td><td></td><td></td><td>Intro WITH screenshot</td></tr>
+        <tr><td className="left">days</td><td></td><td></td><td>Screenshots</td></tr>
+        <tr><td className="left">week</td><td></td><td></td><td>Fake Gameplay Trailer</td></tr>
+        <tr><td className="left">day/week</td><td></td><td></td><td>Prototype</td></tr>
+      </table>
+    </center>
+  </div>
+
+  if (project.type === APP_TYPE_GAME) {
+    essenceCheck = <div>
+      <div>
+        Do people want to play that?
+      </div>
+
+      <br />
+      {gameplayThing}
+    </div>
+  }
+
+  if (project.type === APP_TYPE_APP) {
+    essenceCheck = <p>
+      Does the problem exist? Who has that problem?
+
+      <br />
+      <br />
+      {saasThing}
+      <br />
+      {gameplayThing}
+    </p>
+  }
+
+  return <div>
+    <div>{essenceCheck}</div>
   </div>
 }
 
@@ -797,6 +886,8 @@ export class ProjectPage extends Component {
     var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
     var projectId = this.getProjectId()
 
+
+
     var isGame = appType === APP_TYPE_GAME;
     var isProject = !isGame;
 
@@ -804,6 +895,18 @@ export class ProjectPage extends Component {
     var audiencePhrase = isGame ? 'Who will play your game?' : 'Who will use your service?'
 
     var project = this.state?.project
+
+    const isFilledDescription = !!project?.description
+    const isFilledEssence = project?.mainFeeling || project?.mainProblem
+    const isFilledAudiences = project.audiences.length;
+
+    const isDefaultName = project.name.toLowerCase() === "new game" || project.name.toLowerCase() === "new app"
+
+    const canShowEssence = isFilledDescription;
+    const canShowAudiences = canShowEssence && isFilledEssence;
+    const canShowMonetization = canShowAudiences && isFilledAudiences
+    const canShowNamePicker = canShowMonetization && project.monetizationPlans.filter(mp => mp.price > 0).length
+    const canShowSubmitProjectButton = canShowNamePicker && !isDefaultName
 
     var removeProject = <div>
       <br/>
@@ -832,35 +935,46 @@ export class ProjectPage extends Component {
       {removeProject}
     </div>
 
+    const panels = [
+      {
+        canShow: canShowEssence, error: 'type what are you doing first',
+        c: <ProjectEssence project={project} projectId={projectId} appType={appType} />
+      },
+      {
+        canShow: canShowAudiences, error: 'main problem is super important. Type it first',
+        c: <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
+      },
+      {
+        canShow: canShowMonetization, error: 'create at least one audience',
+        c: <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
+      },
+      {
+        canShow: canShowNamePicker, error: 'create at least one PAID plan',
+        c: <NamePicker project={project} projectId={projectId} wordedType={wordedType} name={name} />
+      },
+      {
+        canShow: canShowSubmitProjectButton, error: 'Change project name',
+        c: <div><Button text={"REVIEW"}/></div>
+      }
+    ]
+
+    var actualPanels = [];
+
+    for (var i = 0; i < panels.length; i++) {
+      var p = panels[i];
+
+      if (p.canShow) {
+        actualPanels.push(p.c)
+      } else {
+        actualPanels.push(<div className="error">To continue, {p.error}</div>)
+        i = 10000000
+      }
+    }
+
     const VisionPanel = <div>
-      {/*<a id="Audiences" href={"/profile"} className="Panel">Profile</a>*/}
-      {/*<a href={"/profile"}>Profile</a>*/}
-      <Panel id="Description" header={"What are you doing?"} noHelp />
-      <FieldPicker
-        value={this.state.project?.description || ""}
-        placeholder={"What will you create?"}
-        onAction={val => {actions.editDescription(projectId, val)}}
-      />
+      <ProjectDescription project={project} projectId={projectId} />
+      {actualPanels}
 
-      <MainProblem project={project} projectId={projectId} appType={appType} />
-      <Panel id="Audiences" header={audiencePhrase} />
-      <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
-      <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
-      <br />
-      <br />
-      <Panel id="Name" header={`How will you name your ${wordedType}?`} noHelp />
-      <FieldPicker
-        value={project?.name}
-        placeholder={"name the project"}
-        onAction={val => {actions.editName(projectId, val)}}
-        normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
-      />
-
-      <Button text={"REVIEW"} />
-
-      {/*<br/>*/}
-      {/*<br/>*/}
-      {/*<MarketingPlanner project={this.state}/>*/}
       {/*<BusinessPlanner project={this.state.project}/>*/}
     </div>
 
@@ -868,13 +982,18 @@ export class ProjectPage extends Component {
       {/*<button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>*/}
       {/*<br />*/}
 
+      <MessagePlanner project={this.state}/>
       <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
-      <GlobalStrategyPlanner project={this.state.project}/>
-      <BusinessPlanner project={this.state.project} />
+      {/*<GlobalStrategyPlanner project={this.state.project}/>*/}
+      {/*<BusinessPlanner project={this.state.project} />*/}
     </div>
 
     const ExecutionPanel = <div>
       {/*<RisksPanel risks={risks} />*/}
+      <Validator project={project} />
+
+      <br />
+      <br />
       <BusinessPlanner project={this.state.project} />
 
       <IterationPlanner project={this.state.project}/>
@@ -897,19 +1016,28 @@ export class ProjectPage extends Component {
       default: content = VisionPanel
     }
 
-    const menus = ["Vision", "Execution"]
+    const menus = []
+    const addMenu = (mode, name) => menus.push({name, mode})
+
+    addMenu(PROJECT_MODE_NOTES, "Notes")
+    addMenu(PROJECT_MODE_VISION, "Vision")
+    if (canShowSubmitProjectButton) {
+      addMenu(PROJECT_MODE_STRATEGY, "Growth")
+      addMenu(PROJECT_MODE_EXECUTION, "Execution")
+    }
+
     return (
       <div className="App">
         <div>
           <center>
           <div className="menu">
-            <Link onClick={() => this.setMode(PROJECT_MODE_NOTES)}>Notes</Link>
-            <Link onClick={() => this.setMode(PROJECT_MODE_VISION)}>Vision</Link>
-            <Link onClick={() => this.setMode(PROJECT_MODE_STRATEGY)}>GROWTH</Link>
-            <Link onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>Execution</Link>
-            {/*{menus.map(Name => <span key={"menu" + Name}><a href={"#" + Name}>{Name}</a></span>)}*/}
-            <Link to="/profile">Profile</Link>
+            {menus.map(m => <button
+              className={`item ${this.state.mode === m.mode ? 'chosen' : ''}`}
+              onClick={() => this.setMode(m.mode)}
+            >{m.name}</button>)}
+            <Link className={"item"} to="/profile">Profile</Link>
           </div>
+            {/*<FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />*/}
           </center>
         </div>
         <header className="App-header">
@@ -918,8 +1046,6 @@ export class ProjectPage extends Component {
           <div>
             {content}
           </div>
-
-          {/*{ExecutionPanel}*/}
         </header>
       </div>
     );

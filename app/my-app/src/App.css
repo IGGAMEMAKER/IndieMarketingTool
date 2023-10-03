@@ -18,12 +18,22 @@
   background-color: orange;
   /*grid-template-columns: auto auto auto auto auto auto auto auto;*/
   grid-template-columns: auto auto auto auto auto;
+
   position: fixed;
   height: 5vh;
   width: 100%;
   top: 0;
   left: 0;
   right: 0;
+}
+
+.menu .item {
+  background-color: orange;
+  font-size: 22px;
+  color: white;
+}
+.menu .item.chosen {
+  background-color: blueviolet;
 }
 
 .App-header h1 {
@@ -140,6 +150,15 @@ button a:active { text-decoration: none; }
   padding: 10px;
   font-size: 30px;
   text-align: center;
+}
+
+.Audience-item .field-picker {
+  width: 250px;
+  min-height: 80px;
+}
+
+.error {
+  color: red;
 }
 
 /*.Audience-item*/.dragging {
@@ -365,6 +384,10 @@ details > summary::-webkit-details-marker /* Safari */ {
     height: 45px;
     bottom: 0;
     top: calc(100vh - 45px)
+  }
+
+  .menu .item {
+    font-size: 12px;
   }
 
   .Container.links {
