@@ -369,7 +369,11 @@ class MainPage extends Component {
         <h1>
           {col1("RELEASE")} {col2("FASTER")}
         </h1>
-        <h2>Plan your new projects here, be it {col1("services")} or {col2("games")}</h2>
+        <h2>
+          Plan your {col1("new projects")} here, be it {col1("services")} or {col2("games")}
+          {/*<br />*/}
+        </h2>
+        <h3>Get help if you are stuck, scared, got exhausted in that long journey, or just need someone to talk if family and friends are sick of your "ventures"</h3>
         {/*<h2>{col1("Project management tool")} {col2("for indie hackers")} and {col1("your Co-Pilot")}</h2>*/}
 
         {/*<h2>I made this site to prevent you from {col1("wasting years making a game/app")}, {col2("that nobody needs")}</h2>*/}
