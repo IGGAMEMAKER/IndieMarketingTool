@@ -11,7 +11,7 @@ import {ping} from "./PingBrowser";
 import {generatePassword} from "./secret";
 import actions from "./actions";
 import {APP_TYPE_APP} from "./constants/constants";
-import {col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
+import {ButtonLink, col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
 
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
@@ -270,6 +270,7 @@ function ResetPasswordForm({}) {
   </div>
 }
 
+
 class MistakesPage extends Component {
   render() {
     return <div>
@@ -278,7 +279,7 @@ class MistakesPage extends Component {
         <li>Building, before researching</li>
         <li>Treating product like a set of features and only focusing on development</li>
         <li>
-          Don't know precisely, what they are creating
+          Not knowing precisely, what they are creating:
           {/*Cannot formulate their product/problem in one sentence, which leads to:*/}
           <ul>
             <li>They cannot explain their idea to others</li>
@@ -302,7 +303,7 @@ class MistakesPage extends Component {
             <li>I know, which features are necessary</li>
           </ul>
         </li>
-        <li>(Also cause avoided market research) Trying to make as much features as they can, cause "people won't like
+        <li>{/*(Also cause avoided market research) */}Trying to make as much features as they can, cause "people won't like
           it otherwise".
           <ul>
             <li>Fear of rejection/Perfectionism</li>
@@ -361,6 +362,8 @@ class MainPage extends Component {
     var loginForm;
     loginForm = authenticated ? profileLink : loginLink
 
+    // const linkToMistakes =
+
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>
@@ -374,22 +377,24 @@ class MainPage extends Component {
         {/*<h3>Bring ur project to market faster</h3>*/}
         {/*<h3>Innovate without destroying yourself</h3>*/}
         {/*{document.cookie}*/}
-
-        <div><b>{col1("Project management tool")}</b></div>
-        <ul className="left">
-          <li>Workflow {col1("designed specifically")} for <b>{col2("indie hackers")}</b></li>
-          <li>Tool will help you avoid <Link to={"/mistakes"}>common mistakes</Link>, indie devs make {/*(myself included)*/}</li>
-          <li>Answer main questions about your new idea and get help if you can't give clear answers</li>
-          <li>Follow step by step guide to spend least amount of time possible</li>
-          <li>Main goal is <b>{col2("SPEED")}</b> and {col1("avoiding wasting YEARS")} on product, nobody needs</li>
-        </ul>
-
         <div><b>{col2("Co-Pilot")}</b></div>
         <ul className="left">
           <li>{col1("Don't want to do market research")}, cause you only want to build? {col2("I'll research for you")}</li>
           <li>{col1("Scared")} to show your project to the crowd? {col2("Show to me first!")}</li>
-          <li>Don't know, how to {col1("get your first clients")}? {col2("Let's find them together")}</li>
+          <li>Don't know, {col1("how to get your first clients")}? {col2("Let's find them together")}</li>
+          <li>Don't know, exactly, {col1("what are you doing")}? {col2("Let's find that out!")}</li>
+          <li>Don't know, {col1("which features to focus on")}? {col2("I'll help prioritising")}</li>
         </ul>
+
+        <div><b>{col1("Project management tool")}</b></div>
+        <ul className="left">
+          <li>Workflow {col1("designed specifically")} to avoid <SimpleLink url={"/mistakes"} text={"common mistakes indie hackers make"} /> {/*<Link style={{color: 'white'}} to={"/mistakes"}>common mistakes</Link> <b>{col2("indie hackers make")}</b>*/}</li>
+          {/*<li>, indie devs make /!*(myself included)*!/</li>*/}
+          <li>Answer main questions about your new idea and get help if you can't give clear answers</li>
+          <li>Find out if your project will be successful {col1("BEFORE WASTING YEARS")} on it</li>
+          <li>DROP it if it has no potential, cause life is too short for wasting it on bad projects</li>
+        </ul>
+
 
         <CTAButtons />
       </header>
@@ -449,6 +454,8 @@ class AdminPage extends Component {
     </div>
   }
 }
+
+
 
 class App extends Component {
   render() {

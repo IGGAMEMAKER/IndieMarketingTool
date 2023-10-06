@@ -36,6 +36,17 @@
   background-color: blueviolet;
 }
 
+.chat-container {
+  position: fixed;
+  right: 15px;
+  width: 250px;
+  height: 375px;
+  bottom: 15px;
+
+  background-color: white;
+  color: black;
+}
+
 .App-header h1 {
   padding: 0;
 }

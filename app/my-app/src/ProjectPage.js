@@ -824,6 +824,17 @@ const PROJECT_MODE_EXECUTION = 2
 const PROJECT_MODE_STRATEGY = 4
 const PROJECT_MODE_NOTES = 3
 
+class Chat extends Component {
+  render() {
+    var {isOpened} = this.props;
+
+
+    return <div className="chat-container">
+      Chat
+    </div>
+  }
+}
+
 export class ProjectPage extends Component {
   state = {
     audiences: [],
@@ -1022,7 +1033,7 @@ export class ProjectPage extends Component {
     addMenu(PROJECT_MODE_NOTES, "Notes")
     addMenu(PROJECT_MODE_VISION, "Vision")
     if (canShowSubmitProjectButton) {
-      addMenu(PROJECT_MODE_STRATEGY, "Growth")
+      // addMenu(PROJECT_MODE_STRATEGY, "Growth")
       addMenu(PROJECT_MODE_EXECUTION, "Execution")
     }
 
@@ -1047,6 +1058,7 @@ export class ProjectPage extends Component {
             {content}
           </div>
         </header>
+        {/*<Chat />*/}
       </div>
     );
   }
