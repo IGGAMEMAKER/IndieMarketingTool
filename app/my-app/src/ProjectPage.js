@@ -1,31 +1,354 @@
 import {Component, useState} from "react";
 import storage from "./Storage";
-import actions, {editDescription} from "./actions";
-import {
-  APP_TYPE_APP,
-  APP_TYPE_GAME,
-  GOAL_TYPE_FEATURES,
-  LINK_TYPE_DOCS,
-  LINK_TYPE_SIMILAR
-} from "./constants/constants";
-import {FieldPicker, NumberPicker} from "./FieldPicker";
+import actions from "./actions";
+import {LINK_TYPE_DOCS, LINK_TYPE_SIMILAR} from "./constants/constants";
+import {FieldPicker} from "./FieldPicker";
 import {IterationPlanner} from "./IterationPlanner";
 import {Audience} from "./Audience";
 import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldAdder} from "./FieldAdder";
-import {renderIncomeGoal} from "./RenderIncomeGoal";
 import {RiskList} from "./RiskView";
 import {Panel} from "./Panel";
 import {getByID} from "./utils";
-import {getEstimateDescription} from "./utils/getEstimateDescription";
-import {sortFeatures} from "./utils/sortFeatures";
-import {getFeatureIterationId} from "./utils/getFeatureIterationId";
-import {getAudienceUsageCount, getFeatureUsageCount} from "./utils/getEntityUsageCount";
-import {renderTimeButton} from "./utils/renderTimeButton";
+import {getAudienceUsageCount} from "./utils/getEntityUsageCount";
 import {TimePicker} from "./TimePicker";
 import {Link} from "react-router-dom";
 import {Button} from "./UI";
-import {isCompositeComponent} from "react-dom/test-utils";
+import {isApp, isGame} from "./utils/projectUtils";
+import {BusinessPlanner} from "./BusinessPlanner";
+import {AudienceMessageView} from "./AudienceMessageView";
+import {ProjectDescription} from "./ProjectDescription";
+import {ProjectEssence} from "./ProjectEssence";
+import {NamePicker} from "./NamePicker";
+
+const PROJECT_MODE_VISION = 1
+const PROJECT_MODE_DREAM = 5
+const PROJECT_MODE_EXECUTION = 2
+const PROJECT_MODE_STRATEGY = 4
+const PROJECT_MODE_NOTES = 3
+const PROJECT_MODE_RISK = 6
+const PROJECT_MODE_RESEARCH = 7
+
+const addPanel = (panels, canShow, err, c) => {
+  panels.push({
+    canShow, err, c
+  })
+  
+  return panels
+}
+
+const renderCodependentPanels = panels => {
+  const actualPanels = []
+
+  for (var i = 0; i < panels.length; i++) {
+    var p = panels[i];
+
+    if (p.canShow) {
+      actualPanels.push(p.c)
+    } else {
+      actualPanels.push(<div className="error">To continue, {p.error}</div>)
+      i = 10000000
+    }
+  }
+
+  return actualPanels
+}
+
+export class ProjectPage extends Component {
+  state = {
+    audiences: [],
+    monetizationPlans: [],
+    channels: [],
+    risks: [],
+    links: [],
+    loaded: false,
+    mode: PROJECT_MODE_VISION
+  }
+
+  copyState = () => {
+    this.setState({
+      loaded: true,
+
+      audiences: storage.getAudiences(),
+      monetizationPlans: storage.getMonetizationPlans(),
+      channels: storage.getChannels(),
+      risks: storage.getRisks(),
+      name: storage.getProjectName(),
+      appType: storage.getProjectType(),
+      links: storage.getUsefulLinks(),
+
+      project: storage.getProject()
+    })
+
+    document.title = storage.getProject().name
+  }
+
+  getProjectId = () => {
+    // var {projectId} = useParams()
+    var arr = window.location.href.split('/')
+    var projectId = arr[arr.length - 1]
+
+    // console.log({projectId, arr})
+
+    return projectId
+  }
+
+  setMode = mode => {
+    this.setState({mode})
+    window.scrollTo(0, 0);
+  }
+
+  componentWillMount() {
+    storage.addChangeListener(() => {
+      // console.log('store listener')
+      this.copyState()
+    })
+
+    actions.loadProject(this.getProjectId())
+  }
+
+  isDefaultName = project => {
+    const projectName = project.name.toLowerCase()
+
+    return projectName === "new game" || projectName === "new app"
+  }
+
+  renderNotesPanel = (project, projectId) => {
+    var removeProject = <div>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
+    </div>
+
+    if (!window.location.href.includes("localhost")) {
+      removeProject = ''
+    }
+
+    const NotesPanel = <div>
+      <NotesList project={project} />
+      <UsefulLinks links={this.state.links}/>
+
+      {removeProject}
+    </div>
+
+    return NotesPanel
+  }
+
+  getProjectFillingStats = (project) => {
+    const isFilledDescription = !!project?.description
+    const isFilledEssence = project?.mainFeeling || project?.mainProblem
+    const isFilledAudiences = project.audiences.length;
+
+    const isDefaultName = this.isDefaultName(project)
+
+    const canShowEssence = isFilledDescription;
+    const canShowAudiences = canShowEssence && isFilledEssence;
+    const canShowMonetization = canShowAudiences && isFilledAudiences
+    const canShowNamePicker = canShowMonetization && project.monetizationPlans.filter(mp => mp.price > 0).length
+    const canShowSubmitProjectButton = canShowNamePicker && !isDefaultName
+
+    return {
+      isFilledDescription,
+      isFilledEssence,
+      isFilledAudiences,
+
+      isDefaultName,
+      canShowEssence,
+      canShowAudiences,
+      canShowMonetization,
+      canShowNamePicker,
+      canShowSubmitProjectButton,
+    }
+  }
+
+  renderDreamPanel = (project, projectId) => {
+    return <div>
+      <NamePicker project={project} projectId={projectId} />
+      <ProjectDescription project={project} projectId={projectId}/>
+      {/*<FeatureList noTiming project={project} />*/}
+
+      <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>
+    </div>
+  }
+
+  
+  renderVisionPanel = (project, projectId, monetizationPlans, audiences, name) => {
+
+    var {
+      canShowSubmitProjectButton, canShowNamePicker,
+      canShowMonetization, canShowAudiences, canShowEssence,
+    } = this.getProjectFillingStats(project)
+
+
+    let panels = []
+    addPanel(panels, canShowEssence, 'type what are you doing first', <ProjectEssence project={project} projectId={projectId} />)
+    addPanel(panels, canShowAudiences, 'main problem is super important. Type it first', <AudiencesList audiences={audiences} monetizationPlans={monetizationPlans} project={project} />)
+    addPanel(panels, canShowMonetization, 'create at least one audience', <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>)
+    addPanel(panels, canShowNamePicker, 'create at least one PAID plan', <NamePicker project={project} projectId={projectId} name={name} />)
+    addPanel(panels, canShowSubmitProjectButton, 'Change project name', <div><Button text={"REVIEW"}/></div>)
+    
+    // const panels = [
+    //   {
+    //     canShow: canShowEssence, error: 'type what are you doing first',
+    //     c: <ProjectEssence project={project} projectId={projectId} />
+    //   },
+    //   {
+    //     canShow: canShowAudiences, error: 'main problem is super important. Type it first',
+    //     c: <AudiencesList audiences={audiences} monetizationPlans={monetizationPlans} project={project} />
+    //   },
+    //   {
+    //     canShow: canShowMonetization, error: 'create at least one audience',
+    //     c: <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
+    //   },
+    //   {
+    //     canShow: canShowNamePicker, error: 'create at least one PAID plan',
+    //     c: <NamePicker project={project} projectId={projectId} name={name} />
+    //   },
+    //   {
+    //     canShow: canShowSubmitProjectButton, error: 'Change project name',
+    //     c: <div><Button text={"REVIEW"}/></div>
+    //   }
+    // ]
+    //
+    // var actualPanels = [];
+    // for (var i = 0; i < panels.length; i++) {
+    //   var p = panels[i];
+    //
+    //   if (p.canShow) {
+    //     actualPanels.push(p.c)
+    //   } else {
+    //     actualPanels.push(<div className="error">To continue, {p.error}</div>)
+    //     i = 10000000
+    //   }
+    // }
+
+    return <div>
+      {renderCodependentPanels(panels)}
+
+      {/*<BusinessPlanner project={this.state.project}/>*/}
+    </div>
+  }
+
+  renderStrategyMode = (project, channels)=> {
+    const StrategyPanel = <div>
+      {/*<button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>*/}
+      {/*<br />*/}
+
+      <MessagePlanner project={this.state}/>
+      <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
+      {/*<GlobalStrategyPlanner project={this.state.project}/>*/}
+      {/*<BusinessPlanner project={this.state.project} />*/}
+    </div>
+
+    return StrategyPanel;
+  }
+
+  renderExecution = (project) => {
+    const ExecutionPanel = <div>
+      {/*<RisksPanel risks={risks} />*/}
+      <Validator project={project} />
+
+      <br />
+      <br />
+      <BusinessPlanner project={this.state.project} />
+
+      <IterationPlanner project={this.state.project}/>
+    </div>
+
+    return ExecutionPanel
+  }
+
+  renderRiskPanel = (project, risks) => {
+    return <div>
+      <RisksPanel risks={risks} />
+    </div>
+  }
+
+  renderMenus = (project) => {
+    const menus = []
+
+    // Notes, Vision, Execution
+    // Notes - notes, links, sources???, features???
+    // Execution - Iterations, Risks, Goals, Growth strategy???
+
+    // const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
+    // const menus = ["Notes", "Vision", "Execution",  "Profile"]
+
+    var {canShowSubmitProjectButton} = this.getProjectFillingStats(project)
+    const addMenu = (mode, name) => menus.push({name, mode})
+
+    addMenu(PROJECT_MODE_NOTES, "Notes")
+    addMenu(PROJECT_MODE_DREAM, "Dream")
+    addMenu(PROJECT_MODE_VISION, "Vision")
+    addMenu(PROJECT_MODE_RISK, "Risks")
+    addMenu(PROJECT_MODE_RESEARCH, "Research")
+
+    if (canShowSubmitProjectButton) {
+      // addMenu(PROJECT_MODE_STRATEGY, "Growth")
+      addMenu(PROJECT_MODE_EXECUTION, "DO")
+    }
+
+    return menus.map(m => <button
+      className={`item ${this.state.mode === m.mode ? 'chosen' : ''}`}
+      onClick={() => this.setMode(m.mode)}
+    >{m.name}</button>)
+  }
+
+  renderMainContent = (project) => {
+    var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
+    var projectId = this.getProjectId()
+
+    switch (this.state.mode) {
+      case PROJECT_MODE_NOTES: return this.renderNotesPanel(project, projectId);
+      case PROJECT_MODE_DREAM: return this.renderDreamPanel(project, projectId);
+      case PROJECT_MODE_STRATEGY: return this.renderStrategyMode(project, channels);
+      case PROJECT_MODE_EXECUTION: return this.renderExecution(project)
+      case PROJECT_MODE_RISK: return this.renderRiskPanel(project, risks)
+
+      case PROJECT_MODE_VISION:
+      default: return this.renderVisionPanel(project, projectId, monetizationPlans, audiences, name);
+    }
+  }
+
+  render() {
+    if (!this.state.loaded)
+      return <div>Loading the project...</div>
+
+    var project = this.state?.project
+
+    return (
+      <div className="App">
+        <div>
+          <center>
+            <div className="menu">
+              {this.renderMenus(project)}
+              <Link className={"item"} to="/profile">Profile</Link>
+            </div>
+            {/*<FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />*/}
+          </center>
+        </div>
+        <header className="App-header">
+          <br />
+          <br />
+          <div>
+            {this.renderMainContent(project)}
+          </div>
+        </header>
+        {/*<Chat />*/}
+      </div>
+    );
+  }
+}
+
+
+
+
 
 const getUrlWithoutPrefixes = link => {
   try {
@@ -234,20 +557,10 @@ function AudienceSourcesPanel({channels, audiences}) {
 }
 
 function NotesList({project}) {
-  var [isPopupOpened, setOpenedPopup] = useState(false)
-
   var notes = project.notes || []
 
-  const openNotePopup = () => {
-    setOpenedPopup(true)
-  }
-
-  if (isPopupOpened) {
-
-  }
-
   return <div>
-    <Panel id={"Notes"} header={"Notes"} noHelp />
+    {/*<Panel id={"Notes"} header={"Notes"} noHelp />*/}
     <h3>Save notes here</h3>
 
     <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />
@@ -285,256 +598,8 @@ function TimeTest({}) {
     </div>
   </div>
 }
-function FeatureList({project}) {
-  var [chosenTimerId, setTimerId] = useState(-1)
-
-  var features = project.features || []
-
-  var sum = list => list.map(f => f.timeCost || 0).reduce((p, c) => p + c, 0)
-  var countableFeatures = features.filter(f => !f.solved)
-  var totalHours = sum(countableFeatures)
-  var scheduledHours = sum(countableFeatures.filter(f => !!getFeatureIterationId(project, f.id)))
-
-  var firstIterationWithFeatures = project.iterations.find(it => {
-    if (it.goals.find(g => g.goalType === GOAL_TYPE_FEATURES))
-      return true
-    return false
-  })
-
-  return <div>
-    <Panel id={"Features"} header={"Features"}/>
-    <p>
-      <b>Remaining: {getEstimateDescription(scheduledHours)}{/*, +Not assigned: {getEstimateDescription(totalHours)}*/}</b>
-    </p>
-    <p>
-      if you work 8 Hours / day
-    </p>
-    <FieldAdder placeholder={"add new feature"} defaultState={true} autoFocus={false}
-                onAdd={val => actions.addFeature(val)}/>
-    <br/>
-    <br/>
-    <center>
-      <table className="list">
-        {features
-          .sort(sortFeatures)
-          .filter(f => {
-            var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
-            if (f.solved)
-              return false
-
-            if (f.solved && !isPartOfFirstIteration) {
-              return false
-            }
-
-            return true;
-          })
-          .map(f => {
-            var dayDurationHours = 8;
-            var timeButton = t => renderTimeButton(t, f, () => {
-              setTimerId(-1)
-            })
 
 
-            var onPick = () => {
-              setTimerId(f.id)
-            }
-            var timePicker = isNaN(f.timeCost) ?
-              <button onClick={onPick}>Set Estimates</button>
-              :
-              <span className={"editable"} onClick={onPick}>{getEstimateDescription(f.timeCost)}</span>
-
-            if (chosenTimerId === f.id) {
-              timePicker = <div>
-                {timeButton(15)} {timeButton(60)} {timeButton(4 * 60)} {timeButton(dayDurationHours * 60)} {timeButton(dayDurationHours * 3 * 60)} {timeButton(dayDurationHours * 7 * 60)}
-                <br/>
-              </div>
-            }
-
-            return <tr
-              key={"feature" + f.id}
-            >
-              {/*<td>*/}
-              {/*  <b>{f.id}</b>*/}
-              {/*</td>*/}
-              <td className={"left feature-tab"}>
-                <FieldPicker
-                  autoFocus
-                  value={f.name}
-                  placeholder={"type your mind"}
-                  onAction={val => actions.editFeatureName(f.id, val)}
-                  onRemove={() => {
-                    var usages = getFeatureUsageCount(project, f.id)
-
-                    if (usages.length) {
-                      alert(`Can't remove this feature, cause it's used in\n\n${usages.join('\n')}`)
-                    } else {
-                      actions.removeFeature(f.id)
-                    }
-                  }}
-                  normalValueRenderer={onEdit => {
-                    var isPartOfFirstIteration = getFeatureIterationId(project, f.id) === firstIterationWithFeatures?.id;
-
-                    var solved = f.solved ? 'solved' : ''
-                    var used = getFeatureIterationId(project, f.id) ? 'used' : ''
-                    var isNearestFeature = isPartOfFirstIteration && !f.solved ? 'nearest' : ''
-
-                    return <div
-                      onClick={onEdit}
-                      className={`feature ${solved} ${used} ${isNearestFeature}`}
-                    >{f.name}</div>
-                  }}
-                />
-              </td>
-              <td>
-                {timePicker}
-              </td>
-            </tr>
-          })}
-      </table>
-    </center>
-  </div>
-}
-
-
-
-function BusinessPlanner({project}) {
-  var {desiredProfit=10000, monthlyExpenses=500, timeTillBurnout=1} = project
-
-  var desiredProfitPicker = <NumberPicker
-    value={desiredProfit}
-    // normalValueRenderer={v => <label>{v}$</label>}
-    placeholder={"Type your desired profit"}
-    onAction={val => actions.editProjectDesiredProfit(parseInt(val))}
-    defaultState={false}
-  />
-
-  var monthlyExpensesPicker = <NumberPicker
-    value={monthlyExpenses}
-    placeholder={"What are ur expenses"}
-    onAction={val => actions.editProjectMonthlyExpenses(parseInt(val))}
-    defaultState={false}
-  />
-
-  var timeTillBurnoutPicker = <NumberPicker
-    value={timeTillBurnout}
-    placeholder={"How many months can you spend on that venture?"}
-    onAction={val => actions.editProjectTimeTillBurnout(parseInt(val))}
-    defaultState={false}
-  />
-
-  return <div>
-    <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} noHelp />
-    <p>How much do you want to earn?<br />{desiredProfitPicker}$</p>
-    {renderIncomeGoal(project, desiredProfit, "earn")}
-    {/*<p>Your monthly expenses?<br />{monthlyExpensesPicker}</p>*/}
-    {/*{renderIncomeGoal(project, monthlyExpenses, "Survive")}*/}
-
-    {/*<p>Time till money burnout {timeTillBurnoutPicker}</p>*/}
-    {/*<br />*/}
-    {/*<br />*/}
-    {/*{renderIncomeGoal(project, 1, '??', [*/}
-    {/*  {goal: monthlyExpenses, name: 'Sustainable', color: 'orange'},*/}
-    {/*  {goal: desiredProfit, name: 'Dream', color: 'green'},*/}
-    {/*  // {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},*/}
-    {/*])}*/}
-
-    {/*<div className={"Audience-Container"}>*/}
-    {/*  <table>*/}
-    {/*    <tbody>*/}
-    {/*    <tr className={"Audience-item"}>*/}
-    {/*      <td>*/}
-    {/*        How much do you want to earn?*/}
-    {/*        {desiredProfitPicker}*/}
-    {/*        <div>monthly</div>*/}
-    {/*      </td>*/}
-    {/*      <td>*/}
-    {/*        Your monthly expenses?*/}
-    {/*        {monthlyExpensesPicker}*/}
-    {/*      </td>*/}
-    {/*      <td>*/}
-    {/*        Time till money burnout*/}
-    {/*        {timeTillBurnoutPicker}*/}
-    {/*        <div>months</div>*/}
-    {/*      </td>*/}
-    {/*    </tr>*/}
-    {/*    <tr className={"Audience-item"}>*/}
-    {/*      <td>{renderIncomeGoal(project, desiredProfit)}</td>*/}
-    {/*      <td>{renderIncomeGoal(project, monthlyExpenses, 'become sustainable')}</td>*/}
-    {/*      <td>{renderIncomeGoal(project, monthlyExpenses / timeTillBurnout, 'SURVIVE')}</td>*/}
-    {/*    </tr>*/}
-    {/*    </tbody>*/}
-    {/*  </table>*/}
-    {/*</div>*/}
-    <br/>
-    <br/>
-  </div>
-}
-
-
-
-function AudienceMessageView({index, id, m})  {
-  const indexName = "audienceMessageIndex"
-  var [isDragging, setDragging] = useState(false)
-  var [isDraggingTarget, setDraggingTarget] = useState(false)
-  var isCorrectTypeDrag = e => {
-    try {
-      var d = parseInt(e.dataTransfer.getData(indexName))
-      var resp = !isNaN(d)
-      console.log('d=', d, indexName, resp)
-
-      return true
-    } catch (err) {
-      console.error('error in drag', indexName)
-      return false
-    }
-  }
-
-  var onStartDragging = (e, dragging) => {
-    e.dataTransfer.setData(indexName, index)
-    setDragging(dragging)
-    setDraggingTarget(false)
-  }
-
-  var onDraggedUpon = (e, target) => {
-    e.preventDefault()
-
-    if (isCorrectTypeDrag(e))
-      setDraggingTarget(target)
-  }
-  var onDrop = e => {
-    var draggedOnMeId = parseInt(e.dataTransfer.getData(indexName))
-
-    var was = draggedOnMeId;
-    var next = index;
-
-    setDraggingTarget(false)
-    actions.changeAudienceMessageOrder(id, was, next)
-  }
-
-  const messageId = m.id
-
-  return <li
-    draggable
-    onDragStart={e => {onStartDragging(e, true)}}
-    onDragEnd={e => {onStartDragging(e, false)}}
-
-    onDragLeave={e => onDraggedUpon(e,false)}
-    onDragOver={e => onDraggedUpon(e, true)}
-
-    onDrop={e => {onDrop(e)}}
-
-    className={`${isDragging ? 'dragging' : ''} ${isDraggingTarget ? 'dragging-target' : ''}`}
-
-    key={`audience-message-${id}-${messageId}`}
-  >
-    <FieldPicker
-      value={m.name}
-      placeholder={"What will you tell them?"}
-      onAction={val => actions.editAudienceMessage(val, id, messageId)}
-      onRemove={() => actions.removeAudienceMessage(id, messageId)}
-    />
-  </li>
-}
 
 function GlobalStrategyPlanner({project}) {
   return <div>
@@ -678,51 +743,16 @@ function MonetizationPanel({plans, audiences}) {
   </div>
 }
 
-function ProjectDescription({project, projectId}) {
-  return <div>
-    <Panel id="Description" header={"What are you doing?"} noHelp />
-    <FieldPicker
-      value={project?.description || ""}
-      placeholder={"What will you create?"}
-      onAction={val => {actions.editDescription(projectId, val)}}
-    />
-  </div>
-}
-
-function ProjectEssence({project, appType}) {
-  var essence;
-  var header;
-  var placeholder
-
-  if (appType === APP_TYPE_GAME) {
-    essence = project?.mainFeeling;
-    header = "Which emotion/feel do you want to create?"
-    placeholder = "main feel"
-  } else {
-    essence = project?.mainProblem;
-    header = "Which problem are you trying to solve?"
-    placeholder = "main problem"
-  }
-
-  return <div>
-    <Panel id="Problem" header={header} />
-    <div className="panel-instructions">
-      {/*<h3>Most important part of the project/!*. 99% importance*!/</h3>*/}
-      <h3>MOST IMPORTANT QUESTION{/*. 99% importance*/}</h3>
-      <h4>If you cannot formulate it clearly, the rest is FANTASY</h4>
-    </div>
-    {/*<hr />*/}
-    {/*<h5>Which can still be fine</h5>*/}
-    <FieldPicker
-      value={essence || ""}
-      placeholder={placeholder}
-      onAction={val => {actions.editMainProblem(val)}}
-    />
-  </div>
-}
-function AudiencesList({audiences, state, audiencePhrase}) {
+function AudiencesList({audiences, monetizationPlans, project}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
-  const {monetizationPlans, risks, channels, name, appType} = state;
+
+  var audiencePhrase
+
+  if (isGame(project)) {
+    audiencePhrase = 'Who will play your game?'
+  } else {
+    audiencePhrase = 'Who will use your service?'
+  }
 
   return <div>
     <Panel id="Audiences" header={audiencePhrase} />
@@ -750,26 +780,14 @@ function AudiencesList({audiences, state, audiencePhrase}) {
   </div>
 }
 
-function NamePicker({project, projectId, wordedType, name}) {
-  return <div>
-    <Panel id="Name" header={`How will you name your ${wordedType}?`} noHelp />
-    <FieldPicker
-      value={project?.name}
-      placeholder={"name the project"}
-      onAction={val => {actions.editName(projectId, val)}}
-      normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
-    />
-  </div>
-}
-
 function Validator({project}) {
   var essenceCheck;
 
   const saasThing = <div>
     <center>
       <table>
-        <tr><td className="left">hour</td><td></td><td></td><td>1) Does the problem exist? Who has that problem? Google forms + Search (SEO + Gum)</td></tr>
-        <tr><td className="left">hours</td><td></td><td></td><td>2) Does the problem exist? Who has that problem? Landing page</td></tr>
+        <tr><td className="left">hour</td><td></td><td></td><td>1) Who has that problem? Google forms + Search (SEO + Gum)</td></tr>
+        <tr><td className="left">hours</td><td></td><td></td><td>2) Who has that problem? Landing page</td></tr>
         <tr><td className="left">days</td><td></td><td></td><td>If enough people subbed, split em (half for free testing increase gradually / half for paid)</td></tr>
         {/*<tr><td className="left">days</td><td></td><td></td><td>Screenshots</td></tr>*/}
         {/*<tr><td className="left">week</td><td></td><td></td><td>Fake Gameplay Trailer</td></tr>*/}
@@ -791,7 +809,7 @@ function Validator({project}) {
     </center>
   </div>
 
-  if (project.type === APP_TYPE_GAME) {
+  if (isGame(project)) {
     essenceCheck = <div>
       <div>
         Do people want to play that?
@@ -802,15 +820,15 @@ function Validator({project}) {
     </div>
   }
 
-  if (project.type === APP_TYPE_APP) {
+  if (isApp(project)) {
     essenceCheck = <p>
       Does the problem exist? Who has that problem?
 
       <br />
       <br />
       {saasThing}
-      <br />
-      {gameplayThing}
+      {/*<br />*/}
+      {/*{gameplayThing}*/}
     </p>
   }
 
@@ -819,10 +837,7 @@ function Validator({project}) {
   </div>
 }
 
-const PROJECT_MODE_VISION = 1
-const PROJECT_MODE_EXECUTION = 2
-const PROJECT_MODE_STRATEGY = 4
-const PROJECT_MODE_NOTES = 3
+
 
 class Chat extends Component {
   render() {
@@ -835,232 +850,4 @@ class Chat extends Component {
   }
 }
 
-export class ProjectPage extends Component {
-  state = {
-    audiences: [],
-    monetizationPlans: [],
-    channels: [],
-    risks: [],
-    links: [],
-    loaded: false,
-    mode: PROJECT_MODE_VISION
-  }
-
-  copyState = () => {
-    this.setState({
-      loaded: true,
-
-      audiences: storage.getAudiences(),
-      monetizationPlans: storage.getMonetizationPlans(),
-      channels: storage.getChannels(),
-      risks: storage.getRisks(),
-      name: storage.getProjectName(),
-      appType: storage.getProjectType(),
-      links: storage.getUsefulLinks(),
-
-      project: storage.getProject()
-    })
-    document.title = storage.getProject().name
-  }
-
-  getProjectId = () => {
-    // var {projectId} = useParams()
-    var arr = window.location.href.split('/')
-    var projectId = arr[arr.length - 1]
-
-    // console.log({projectId, arr})
-
-    return projectId
-  }
-
-  setMode = mode => {
-    this.setState({mode})
-    window.scrollTo(0, 0);
-  }
-
-  componentWillMount() {
-    storage.addChangeListener(() => {
-      // console.log('store listener')
-      this.copyState()
-    })
-
-    // this.copyState()
-
-    actions.loadProject(this.getProjectId())
-  }
-
-  render() {
-    if (!this.state.loaded)
-      return <div>Loading the project...</div>
-
-
-    var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
-    var projectId = this.getProjectId()
-
-
-
-    var isGame = appType === APP_TYPE_GAME;
-    var isProject = !isGame;
-
-    var wordedType = isGame ? 'game' : 'service'
-    var audiencePhrase = isGame ? 'Who will play your game?' : 'Who will use your service?'
-
-    var project = this.state?.project
-
-    const isFilledDescription = !!project?.description
-    const isFilledEssence = project?.mainFeeling || project?.mainProblem
-    const isFilledAudiences = project.audiences.length;
-
-    const isDefaultName = project.name.toLowerCase() === "new game" || project.name.toLowerCase() === "new app"
-
-    const canShowEssence = isFilledDescription;
-    const canShowAudiences = canShowEssence && isFilledEssence;
-    const canShowMonetization = canShowAudiences && isFilledAudiences
-    const canShowNamePicker = canShowMonetization && project.monetizationPlans.filter(mp => mp.price > 0).length
-    const canShowSubmitProjectButton = canShowNamePicker && !isDefaultName
-
-    var removeProject = <div>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <a style={{color: 'white'}} href="/profile" onClick={() => actions.removeProject(projectId)}>REMOVE PROJECT</a>
-    </div>
-
-    if (!window.location.href.includes("localhost")) {
-      removeProject = ''
-    }
-
-    // Notes, Vision, Execution
-    // Notes - notes, links, sources???, features???
-    // Execution - Iterations, Risks, Goals, Growth strategy???
-
-    const NotesPanel = <div>
-      <NotesList project={project} />
-      <UsefulLinks links={this.state.links}/>
-      {/*<FeatureList project={project} />*/}
-      {removeProject}
-    </div>
-
-    const panels = [
-      {
-        canShow: canShowEssence, error: 'type what are you doing first',
-        c: <ProjectEssence project={project} projectId={projectId} appType={appType} />
-      },
-      {
-        canShow: canShowAudiences, error: 'main problem is super important. Type it first',
-        c: <AudiencesList audiences={audiences} state={this.state} audiencePhrase={audiencePhrase}/>
-      },
-      {
-        canShow: canShowMonetization, error: 'create at least one audience',
-        c: <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
-      },
-      {
-        canShow: canShowNamePicker, error: 'create at least one PAID plan',
-        c: <NamePicker project={project} projectId={projectId} wordedType={wordedType} name={name} />
-      },
-      {
-        canShow: canShowSubmitProjectButton, error: 'Change project name',
-        c: <div><Button text={"REVIEW"}/></div>
-      }
-    ]
-
-    var actualPanels = [];
-
-    for (var i = 0; i < panels.length; i++) {
-      var p = panels[i];
-
-      if (p.canShow) {
-        actualPanels.push(p.c)
-      } else {
-        actualPanels.push(<div className="error">To continue, {p.error}</div>)
-        i = 10000000
-      }
-    }
-
-    const VisionPanel = <div>
-      <ProjectDescription project={project} projectId={projectId} />
-      {actualPanels}
-
-      {/*<BusinessPlanner project={this.state.project}/>*/}
-    </div>
-
-    const StrategyPanel = <div>
-      {/*<button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>*/}
-      {/*<br />*/}
-
-      <MessagePlanner project={this.state}/>
-      <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
-      {/*<GlobalStrategyPlanner project={this.state.project}/>*/}
-      {/*<BusinessPlanner project={this.state.project} />*/}
-    </div>
-
-    const ExecutionPanel = <div>
-      {/*<RisksPanel risks={risks} />*/}
-      <Validator project={project} />
-
-      <br />
-      <br />
-      <BusinessPlanner project={this.state.project} />
-
-      <IterationPlanner project={this.state.project}/>
-    </div>
-
-    const visionLink = '/projects/' + projectId
-    const executionLink = '/projects/' + projectId + '/execution'
-
-    // const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
-    // const menus = ["Notes", "Vision", "Execution",  "Profile"]
-
-    var content;
-
-    switch (this.state.mode) {
-      case PROJECT_MODE_NOTES: content = NotesPanel; break;
-      case PROJECT_MODE_VISION: content = VisionPanel; break;
-      case PROJECT_MODE_STRATEGY: content = StrategyPanel; break;
-      case PROJECT_MODE_EXECUTION: content = ExecutionPanel; break;
-
-      default: content = VisionPanel
-    }
-
-    const menus = []
-    const addMenu = (mode, name) => menus.push({name, mode})
-
-    addMenu(PROJECT_MODE_NOTES, "Notes")
-    addMenu(PROJECT_MODE_VISION, "Vision")
-    if (canShowSubmitProjectButton) {
-      // addMenu(PROJECT_MODE_STRATEGY, "Growth")
-      addMenu(PROJECT_MODE_EXECUTION, "Execution")
-    }
-
-    return (
-      <div className="App">
-        <div>
-          <center>
-          <div className="menu">
-            {menus.map(m => <button
-              className={`item ${this.state.mode === m.mode ? 'chosen' : ''}`}
-              onClick={() => this.setMode(m.mode)}
-            >{m.name}</button>)}
-            <Link className={"item"} to="/profile">Profile</Link>
-          </div>
-            {/*<FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />*/}
-          </center>
-        </div>
-        <header className="App-header">
-          <br />
-          <br />
-          <div>
-            {content}
-          </div>
-        </header>
-        {/*<Chat />*/}
-      </div>
-    );
-  }
-}
 

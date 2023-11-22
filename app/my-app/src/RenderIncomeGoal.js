@@ -39,6 +39,7 @@ export function renderIncomeGoal(project, goal, goalName, goals = []) {
       })}
     </table>
   }
+
   return <div>
     To {goalName}, you need one of
     <br/>

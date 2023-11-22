@@ -10,8 +10,9 @@ import {ping} from "./PingBrowser";
 // import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 import {generatePassword} from "./secret";
 import actions from "./actions";
-import {APP_TYPE_APP} from "./constants/constants";
 import {ButtonLink, col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
+import {isApp} from "./utils/projectUtils";
+
 
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
@@ -373,7 +374,9 @@ class MainPage extends Component {
           Plan your {col1("new projects")} here, be it {col1("services")} or {col2("games")}
           {/*<br />*/}
         </h2>
-        <h3>Get help if you are stuck, scared, got exhausted in that long journey, or just need someone to talk if family and friends are sick of your "ventures"</h3>
+        {/*<h3>Get help if you are stuck, scared, exhausted, or just need someone to talk if family and friends are sick of your "ventures"</h3>*/}
+        {/*<h3>Get help if you are stuck, scared, got exhausted in development journey, or just need someone to talk if family and friends are sick of your "ventures"</h3>*/}
+
         {/*<h2>{col1("Project management tool")} {col2("for indie hackers")} and {col1("your Co-Pilot")}</h2>*/}
 
         {/*<h2>I made this site to prevent you from {col1("wasting years making a game/app")}, {col2("that nobody needs")}</h2>*/}
@@ -381,22 +384,24 @@ class MainPage extends Component {
         {/*<h3>Bring ur project to market faster</h3>*/}
         {/*<h3>Innovate without destroying yourself</h3>*/}
         {/*{document.cookie}*/}
-        <div><b>{col2("Co-Pilot")}</b></div>
-        <ul className="left">
-          <li>{col1("Don't want to do market research")}, cause you only want to build? {col2("I'll research for you")}</li>
-          <li>{col1("Scared")} to show your project to the crowd? {col2("Show to me first!")}</li>
-          <li>Don't know, {col1("how to get your first clients")}? {col2("Let's find them together")}</li>
-          <li>Don't know, exactly, {col1("what are you doing")}? {col2("Let's find that out!")}</li>
-          <li>Don't know, {col1("which features to focus on")}? {col2("I'll help prioritising")}</li>
-        </ul>
+
+        {/*<div><b>{col2("Co-Pilot")}</b></div>*/}
+        {/*<ul className="left">*/}
+        {/*  /!*<li>Get help if you are stuck, scared, got exhausted in that long journey, or just need someone to talk if family and friends are sick of your "ventures"</li>*!/*/}
+        {/*  <li>{col1("Don't want to do market research")}, cause you only want to build? {col2("I'll research for you")}</li>*/}
+        {/*  <li>{col1("Scared")} to show your project to the crowd? {col2("Show to me first!")}</li>*/}
+        {/*  <li>Don't know, {col1("how to get your first clients")}? {col2("Let's find them together")}</li>*/}
+        {/*  <li>Don't know, exactly, {col1("what are you doing")}? {col2("Let's find that out!")}</li>*/}
+        {/*  <li>Don't know, {col1("which features to focus on")}? {col2("I'll help prioritising")}</li>*/}
+        {/*</ul>*/}
 
         <div><b>{col1("Project management tool")}</b></div>
         <ul className="left">
           <li>Workflow {col1("designed specifically")} to avoid <SimpleLink url={"/mistakes"} text={"common mistakes indie hackers make"} /> {/*<Link style={{color: 'white'}} to={"/mistakes"}>common mistakes</Link> <b>{col2("indie hackers make")}</b>*/}</li>
           {/*<li>, indie devs make /!*(myself included)*!/</li>*/}
           <li>Answer main questions about your new idea and get help if you can't give clear answers</li>
-          <li>Find out if your project will be successful {col1("BEFORE WASTING YEARS")} on it</li>
-          <li>DROP it if it has no potential, cause life is too short for wasting it on bad projects</li>
+          <li>Find out if your project has chances {col1("BEFORE WASTING YEARS")} on it</li>
+          {/*<li>DROP it if it has no potential, cause life is too</li>*/}
         </ul>
 
 
@@ -426,6 +431,7 @@ class AdminPage extends Component {
   render() {
     if (!this.state.loaded)
       return 'wait'
+
     var users = this.state.grouped;
 
     var projectsCount = users.map(u => u.count).reduce((p, c) => p + c, 0)
@@ -445,7 +451,7 @@ class AdminPage extends Component {
           </td>
           <td>
             {u.projects.map(p => {
-              var color = p.type === APP_TYPE_APP ? 'orange' : 'violet'
+              var color = isApp(p) ? 'orange' : 'violet'
 
               return <a target="_blank" href={`/projects/${p._id}`} style={{color, marginRight: '10px'}}>{p.name}</a>
             })}
@@ -479,7 +485,6 @@ class App extends Component {
 
             <Route path='/profile'                        element={<ProfilePage/>}/>
             <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
-            <Route path='/projects/:projectId/execution'  element={<ProjectPage/>}/>
             <Route path='/admin/panel'                    element={<AdminPage/>}/>
           </Routes>
         </header>

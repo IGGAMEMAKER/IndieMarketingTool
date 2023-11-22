@@ -70,6 +70,7 @@ import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/con
 import {getIndexByID, getNextID} from "./utils";
 import actions from "./actions";
 import {Iteration} from "./Iteration";
+import {isGame} from "./utils/projectUtils";
 
 const CE = 'CHANGE_EVENT';
 const domain = 'https://releasefaster.com'
@@ -408,7 +409,7 @@ Dispatcher.register((p) => {
 
     case PROJECT_EDIT_ESSENCE:
       // console.log('apptype', APP_TYPE_GAME, project.appType, project)
-      if (project.type === APP_TYPE_GAME)
+      if (isGame(project))
         project.mainFeeling = p.problem;
       else
         project.mainProblem = p.problem;

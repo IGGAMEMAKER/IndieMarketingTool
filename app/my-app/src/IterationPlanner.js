@@ -12,6 +12,7 @@ import {Panel} from "./Panel";
 import {getEstimateDescription} from "./utils/getEstimateDescription";
 import {getFeatureIterationId, getRiskIterationId} from "./utils/getFeatureIterationId";
 import {renderTimeButton} from "./utils/renderTimeButton";
+import {isGame} from "./utils/projectUtils";
 
 function RiskPicker({onPick, project, defaultRisk=-1, risks=[], excluded=[]}) {
   var [r, setR] = useState(-1)
@@ -601,7 +602,8 @@ export function IterationPlanner({project}) {
   var [chosenIterationId, setChosenIterationId] = useState(-1)
 
   // not ready to pay:
-  // *   I don't like paying, I don't have money,
+  // *   I don't like paying
+  // **  I don't have money
   // **  I don't think, that this should cost money,
   // *** I don't want to pay for THIS solution
 
@@ -612,16 +614,12 @@ export function IterationPlanner({project}) {
   var iterations = project.iterations || [];
 
   const onAutoGenerate = () => {
-    var mockIterations = [
+    var baseProjectIterations = [
       new Iteration('Who needs this app more?', [
         Iteration.createMonetizationGoal(project, 0, 1000)
       ]),
-      new Iteration('Do they find value and want to pay for it?', [
-        // Iteration.getRiskGoal(project, 3)
-      ]),
-      new Iteration('Get core users. Personal contact', [
-        // Iteration.getUserGoal(project, project.audiences[0].id, 100)
-      ]),
+      new Iteration('Do they find value and want to pay for it?', []),
+      new Iteration('Get core users. Personal contact', []),
       new Iteration('SURVIVE', [
         Iteration.createIncomeGoal(project, getBurnOutGoal(project))
       ]),
@@ -630,11 +628,29 @@ export function IterationPlanner({project}) {
       ]),
       new Iteration("DREAM", [
         Iteration.createIncomeGoal(project, getDreamGoal(project))
-      ]),
-      // new Iteration("SELLOUT", [{income: getDreamGoal(project) * 20}] ),
+      ])
     ]
 
-    mockIterations.forEach(it => {
+    var baseGameIterations = [
+      new Iteration('Who needs this app more?', [
+        Iteration.createMonetizationGoal(project, 0, 1000)
+      ]),
+      new Iteration('Do they find value and want to pay for it?', []),
+      new Iteration('Get core users. Personal contact', []),
+      new Iteration('SURVIVE', [
+        Iteration.createIncomeGoal(project, getBurnOutGoal(project))
+      ]),
+      new Iteration('BECOME SUSTAINABLE', [
+        Iteration.createIncomeGoal(project, getSustainabilityGoal(project))
+      ]),
+      new Iteration("DREAM", [
+        Iteration.createIncomeGoal(project, getDreamGoal(project))
+      ])
+    ]
+
+    var list = isGame(project) ? baseGameIterations : baseProjectIterations
+
+    list.forEach(it => {
       actions.addIteration(it, {pasteAfter: project.iterations.length});
     })
   }

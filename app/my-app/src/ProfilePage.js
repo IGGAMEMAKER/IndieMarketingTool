@@ -2,28 +2,8 @@ import {Component, useState} from "react";
 import {ping} from "./PingBrowser";
 import {ProjectList} from "./ProjectList";
 import {APP_TYPE_APP, APP_TYPE_GAME} from "./constants/constants";
-import {FieldAdder} from "./FieldAdder";
-import actions from "./actions";
 import {Link} from "react-router-dom";
-
-function ProjectAdder({appType, defaultState}) {
-  var defaultWord;
-  if (appType === APP_TYPE_GAME)
-    defaultWord = "new GAME"
-  else
-    defaultWord = "new APP"
-
-  return <FieldAdder
-    onAdd={name => {
-      // WILL GO TO NEW PROJECT PAGE
-      actions.addProject(name, appType)
-    }}
-    placeholder={"add?"}
-    defaultWord={defaultWord}
-    defaultValue={defaultWord}
-    defaultState={defaultState}
-  />
-}
+import {ProjectAdder} from "./ProjectAdder";
 
 
 function NewProjectAdder({}) {
@@ -31,9 +11,10 @@ function NewProjectAdder({}) {
   var isChosen = appType !== 0
 
   var chooseTypeForm
+
   if (!isChosen) {
     var newGameButton = <button onClick={() => setAppType(APP_TYPE_GAME)}>NEW GAME</button>
-    var newAppButton = <button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP</button>
+    var newAppButton = <button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP/SERVICE</button>
 
     chooseTypeForm = <div>{newGameButton}{newAppButton}</div>
   } else {

@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+body {
+  /*font-family: 'Gilroy-Regular', sans-serif;*/
+}
+
 .App-header {
   background-color: #282c34;
   min-height: calc(100vh - 20px);
@@ -17,7 +21,7 @@
   display: grid;
   background-color: orange;
   /*grid-template-columns: auto auto auto auto auto auto auto auto;*/
-  grid-template-columns: auto auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto auto auto;
 
   position: fixed;
   height: 5vh;
@@ -28,12 +32,18 @@
 }
 
 .menu .item {
-  background-color: orange;
   font-size: 22px;
-  color: white;
+  font-weight: bolder;
+
+  /*background-color: orange;*/
+  /*color: white;*/
+  background-color: orange;
+  color: blueviolet;
 }
+
 .menu .item.chosen {
   background-color: blueviolet;
+  color: white;
 }
 
 .chat-container {
@@ -391,7 +401,7 @@ details > summary::-webkit-details-marker /* Safari */ {
   .menu {
     /*grid-template-columns: repeat(3, minmax(0, 1fr));*/
     /*height: 75px;*/
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     height: 45px;
     bottom: 0;
     top: calc(100vh - 45px)
