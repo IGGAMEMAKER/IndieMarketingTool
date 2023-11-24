@@ -342,6 +342,7 @@ const fixProject = () => {
 
 Dispatcher.register((p) => {
   const saveProjectChanges = () => {
+    return
     // console.log('will update projectId', {projectId})
     update('/api/projects/' + projectId, {project})
       .finally(() => {

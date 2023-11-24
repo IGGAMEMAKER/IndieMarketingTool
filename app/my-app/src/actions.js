@@ -74,57 +74,44 @@ import {
   ITERATIONS_GOAL_DESCRIPTION_EDIT, ITERATIONS_GROWTH_DESCRIPTION_EDIT, PROJECT_EDIT_ESSENCE
 } from './constants/actionConstants';
 
+const DO = (actionType, obj={}) => Dispatcher.dispatch(Object.assign({actionType}, obj))
+
 export function loadProject(projectId) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_LOAD,
-    projectId
-  })
+  DO(PROJECT_LOAD, {projectId})
 }
 
 export function editName(projectId, name) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_RENAME,
-    projectId, name
-  })
+  DO(PROJECT_RENAME,{projectId, name})
 }
 
 export function editDescription(projectId, description) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_EDIT_DESCRIPTION,
+  DO(PROJECT_EDIT_DESCRIPTION,{
     projectId, description
   })
 }
 
 export function editMainProblem(problem) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_EDIT_ESSENCE,
-    problem
-  })
+  DO(PROJECT_EDIT_ESSENCE,{problem})
 }
 
 export function removeProject(projectId) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_REMOVE,
+  DO(PROJECT_REMOVE,{
     projectId
   })
 }
 
 export function addProject(name, appType) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_ADD,
+  DO(PROJECT_ADD,{
     name, appType
   })
 }
 
 export function loadProfile() {
-  Dispatcher.dispatch({
-    actionType: PROFILE_LOAD
-  })
+  DO(PROFILE_LOAD)
 }
 
 export function saveProject(project) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_SAVE,
+  DO(PROJECT_SAVE,{
     project
   })
 }
@@ -133,29 +120,25 @@ export function saveProject(project) {
 
 
 export function addNote(name) {
-  Dispatcher.dispatch({
-    actionType: NOTES_ADD,
+  DO(NOTES_ADD,{
     name
   })
 }
 
 export function editNote(id, name) {
-  Dispatcher.dispatch({
-    actionType: NOTES_EDIT,
+  DO(NOTES_EDIT,{
     id, name
   })
 }
 
 export function removeNote(id) {
-  Dispatcher.dispatch({
-    actionType: NOTES_REMOVE,
+  DO(NOTES_REMOVE,{
     id
   })
 }
 
 export function changeNoteOrder(index1, index2) {
-  Dispatcher.dispatch({
-    actionType: NOTES_ORDER_CHANGE,
+  DO(NOTES_ORDER_CHANGE,{
     index1, index2
   })
 }
@@ -163,281 +146,195 @@ export function changeNoteOrder(index1, index2) {
 
 
 export function addFeature(name) {
-  Dispatcher.dispatch({
-    actionType: FEATURES_ADD,
+  DO(FEATURES_ADD,{
     name
   })
 }
 
 export function editFeatureName(id, name) {
-  Dispatcher.dispatch({
-    actionType: FEATURES_EDIT,
-    id, name
-  })
+  DO(FEATURES_EDIT, {id, name})
 }
 
 export function removeFeature(id) {
-  Dispatcher.dispatch({
-    actionType: FEATURES_REMOVE,
-    id
-  })
+  DO(FEATURES_REMOVE,{id})
 }
 
 export function changeFeatureOrder(index1, index2) {
-  Dispatcher.dispatch({
-    actionType: FEATURES_ORDER_CHANGE,
-    index1, index2
-  })
+  DO(FEATURES_ORDER_CHANGE, {index1, index2})
 }
 
 export function changeFeatureTimeCost(id, timeCost) {
-  Dispatcher.dispatch({
-    actionType: FEATURES_EDIT_TIME_COST,
-    id, timeCost
-  })
+  DO(FEATURES_EDIT_TIME_COST, {id, timeCost})
 }
 
 
 
 export function addAudience(name) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_ADD,
-    name,
-  });
+  DO(AUDIENCE_ADD, {name});
 }
 
 export function removeAudience(audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_REMOVE,
-    audienceIndex,
-  });
+  DO(AUDIENCE_REMOVE, {audienceIndex});
 }
 
 export function editAudienceName(name, audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_NAME_EDIT,
-    name, audienceIndex
-  });
+  DO(AUDIENCE_NAME_EDIT, {name, audienceIndex});
 }
 
 export function editAudienceDescription(description, audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_DESCRIPTION_EDIT,
-    description, audienceIndex
-  })
+  DO(AUDIENCE_DESCRIPTION_EDIT, {description, audienceIndex})
 }
 
 export function addAudienceMessage(message, audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_MESSAGE_ADD,
-    message, audienceIndex,
-  })
+  DO(AUDIENCE_MESSAGE_ADD, {message, audienceIndex})
 }
 
 export function removeAudienceMessage(audienceIndex, messageIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_MESSAGE_REMOVE,
-    messageIndex, audienceIndex,
-  })
+  DO(AUDIENCE_MESSAGE_REMOVE, {messageIndex, audienceIndex})
 }
 
 export function editAudienceMessage(message, audienceIndex, messageIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_MESSAGE_EDIT,
-    messageIndex, audienceIndex, message
-  })
+  DO(AUDIENCE_MESSAGE_EDIT, {messageIndex, audienceIndex, message})
 }
 
 export function addAudienceStrategy(strategy, audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_STRATEGY_ADD,
-    strategy, audienceIndex,
-  })
+  DO(AUDIENCE_STRATEGY_ADD, {strategy, audienceIndex})
 }
 
 export function editAudienceStrategy(strategy, audienceIndex, textIndex) {
   console.log({strategy, audienceIndex, textIndex})
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_STRATEGY_EDIT,
-    strategy, audienceIndex, textIndex
-  })
+  DO(AUDIENCE_STRATEGY_EDIT, {strategy, audienceIndex, textIndex})
 }
 
 export function removeAudienceStrategy(audienceIndex, textIndex) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_STRATEGY_REMOVE,
-    audienceIndex, textIndex
-  })
+  DO(AUDIENCE_STRATEGY_REMOVE, {audienceIndex, textIndex})
 }
 
 export function changeAudienceOrder(audienceIndex1, audienceIndex2) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_ORDER_CHANGE, // ID, no
+    // ID, no
+  DO(AUDIENCE_ORDER_CHANGE, {
     audienceIndex1, audienceIndex2
   })
 }
 
 export function changeAudienceMessageOrder(audienceId, index1, index2) {
-  Dispatcher.dispatch({
-    actionType: AUDIENCE_MESSAGE_ORDER_CHANGE, // ID, no
+    // ID, no
+  DO(AUDIENCE_MESSAGE_ORDER_CHANGE, {
     audienceId, index1, index2
   })
 }
 
 // ----------- MONETIZATION --------------
 export function addMonetizationPlan(name) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_ADD,
+  DO(MONETIZATION_ADD, {
     name,
   });
 }
 export function removeMonetizationPlan(monetizationIndex) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_REMOVE,
+  DO(MONETIZATION_REMOVE, {
     monetizationIndex,
   });
 }
 
 export function editMonetizationName(monetizationIndex, name) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_EDIT_NAME,
+  DO(MONETIZATION_EDIT_NAME, {
     monetizationIndex, name
   })
 }
 
 export function editMonetizationBenefit(monetizationIndex, benefitIndex, benefit) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_EDIT_BENEFIT,
-    monetizationIndex, benefitIndex, benefit
-  })
+  DO(MONETIZATION_EDIT_BENEFIT, {monetizationIndex, benefitIndex, benefit})
 }
 
 export function editMonetizationDescription(monetizationIndex, description) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_EDIT_DESCRIPTION,
-    monetizationIndex, description
-  })
+  DO(MONETIZATION_EDIT_DESCRIPTION, {monetizationIndex, description})
 }
 
 export function removeBenefitFromMonetizationPlan(monetizationIndex, benefitIndex) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_BENEFIT_REMOVE,
-    monetizationIndex, benefitIndex
-  })
+  DO(MONETIZATION_BENEFIT_REMOVE, {monetizationIndex, benefitIndex})
 }
 
 export function addBenefitToMonetizationPlan(monetizationIndex, benefit) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_BENEFIT_ADD,
-    monetizationIndex, benefit
-  })
+  DO(MONETIZATION_BENEFIT_ADD, {monetizationIndex, benefit})
 }
 
 export function editMonetizationPrice(monetizationIndex, price) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_EDIT_PRICE,
-    monetizationIndex,
-    price: parseInt(price)
-  })
+  DO(MONETIZATION_EDIT_PRICE, {monetizationIndex, price: parseInt(price)})
 }
 
 export function attachAudienceToMonetizationPlan(audienceIndex, monetizationIndex) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_AUDIENCE_ADD,
-    audienceIndex, monetizationIndex
-  })
+  DO(MONETIZATION_AUDIENCE_ADD, {audienceIndex, monetizationIndex})
 }
 
 export function detachAudienceFromMonetizationPlan(audienceID, monetizationIndex) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_AUDIENCE_REMOVE,
-    audienceID, monetizationIndex
-  })
+  DO(MONETIZATION_AUDIENCE_REMOVE, {audienceID, monetizationIndex})
 }
 
 export function changeMonetizationOrder(monetizationIndex1, monetizationIndex2) {
-  Dispatcher.dispatch({
-    actionType: MONETIZATION_ORDER_CHANGE,
-    monetizationIndex1, monetizationIndex2
-  })
+  DO(MONETIZATION_ORDER_CHANGE, {monetizationIndex1, monetizationIndex2})
 }
 
 
 
 export function editRiskName(riskIndex, name) {
-  Dispatcher.dispatch({
-    actionType: RISK_EDIT_NAME,
-    riskIndex, name
-  })
+  DO(RISK_EDIT_NAME, {riskIndex, name})
 }
 
 export function addRisk(name) {
-  Dispatcher.dispatch({
-    actionType: RISK_ADD,
-    name
-  })
+  DO(RISK_ADD, {name})
 }
 
 export function removeRisk(riskIndex) {
-  Dispatcher.dispatch({
-    actionType: RISK_REMOVE,
+  DO(RISK_REMOVE, {
     riskIndex
   })
 }
 
 export function removeRiskSolution(riskIndex, solutionIndex) {
-  Dispatcher.dispatch({
-    actionType: RISK_SOLUTION_REMOVE,
+  DO(RISK_SOLUTION_REMOVE, {
     riskIndex, solutionIndex
   })
 }
 
 export function addRiskSolution(riskIndex, solution) {
-  Dispatcher.dispatch({
-    actionType: RISK_SOLUTION_ADD,
+  DO(RISK_SOLUTION_ADD, {
     riskIndex, solution
   })
 }
 
 export function editRiskSolution(riskIndex, solutionIndex, solution) {
-  Dispatcher.dispatch({
-    actionType: RISK_SOLUTION_EDIT,
+  DO(RISK_SOLUTION_EDIT,{
     riskIndex, solutionIndex, solution
   })
 }
 
 export function changeRiskOrder(index1, index2) {
-  Dispatcher.dispatch({
-    actionType: RISK_ORDER_CHANGE,
+  DO(RISK_ORDER_CHANGE,{
     index1, index2
   })
 }
 
 export function changeSolutionOrder(riskIndex, index1, index2) {
-  Dispatcher.dispatch({
-    actionType: RISK_SOLUTION_ORDER_CHANGE,
+  DO(RISK_SOLUTION_ORDER_CHANGE,{
     riskIndex, index1, index2
   })
 }
 
 
 export function addChannel(url) {
-  Dispatcher.dispatch({
-    actionType: CHANNELS_ADD,
+  DO(CHANNELS_ADD,{
     url
   })
 }
 
 export function removeChannel(channelIndex) {
-  Dispatcher.dispatch({
-    actionType: CHANNELS_REMOVE,
+  DO(CHANNELS_REMOVE,{
     channelIndex
   })
 }
 
 export function editChannelName(channelIndex, name) {
-  Dispatcher.dispatch({
-    actionType: CHANNELS_NAME_EDIT,
+  DO(CHANNELS_NAME_EDIT,{
     channelIndex, name
   })
 }
@@ -445,71 +342,61 @@ export function editChannelName(channelIndex, name) {
 
 
 export function addLink(link) {
-  Dispatcher.dispatch({
-    actionType: LINKS_ADD,
+  DO(LINKS_ADD,{
     link
   })
 }
 
 export function removeLink(linkIndex) {
-  Dispatcher.dispatch({
-    actionType: LINKS_REMOVE,
+  DO(LINKS_REMOVE,{
     linkIndex
   })
 }
 
 export function editLinkNotes(linkIndex, note) {
-  Dispatcher.dispatch({
-    actionType: LINKS_NOTES_EDIT,
+  DO(LINKS_NOTES_EDIT,{
     linkIndex, note
   })
 }
 
 export function editLinkType(linkIndex, linkType) {
-  Dispatcher.dispatch({
-    actionType: LINKS_TYPE_EDIT,
+  DO(LINKS_TYPE_EDIT,{
     linkIndex, linkType
   })
 }
 
 export function addMarketingCampaign(audienceIndex, message, approach) {
-  Dispatcher.dispatch({
-    actionType: MARKETING_CAMPAIGN_ADD,
+  DO(MARKETING_CAMPAIGN_ADD,{
     audienceIndex, message, approach
   })
 }
 
 export function editMarketingCampaignAudience(campaignID, audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: MARKETING_CAMPAIGN_AUDIENCE_EDIT,
+  DO(MARKETING_CAMPAIGN_AUDIENCE_EDIT,{
     audienceIndex, campaignID
   })
 }
 
 export function editMarketingCampaignMessage(campaignID, audienceIndex) {
-  Dispatcher.dispatch({
-    actionType: MARKETING_CAMPAIGN_AUDIENCE_EDIT,
+  DO(MARKETING_CAMPAIGN_AUDIENCE_EDIT,{
     audienceIndex, campaignID
   })
 }
 
 export function editProjectDesiredProfit(value) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_EDIT_DESIRED_PROFIT,
+  DO(PROJECT_EDIT_DESIRED_PROFIT,{
     value
   })
 }
 
 export function editProjectMonthlyExpenses(value) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_EDIT_EXPENSES,
+  DO(PROJECT_EDIT_EXPENSES,{
     value
   })
 }
 
 export function editProjectTimeTillBurnout(value) {
-  Dispatcher.dispatch({
-    actionType: PROJECT_EDIT_BURNOUT_TIME,
+  DO(PROJECT_EDIT_BURNOUT_TIME,{
     value
   })
 }
@@ -520,99 +407,85 @@ export function addIteration(iteration, {pasteAfter = -1, pasteBefore = -1}) {
   // number goal
 
   // index: will paste to iterations[index]
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_ADD,
+  DO(ITERATIONS_ADD,{
     iteration, pasteAfter, pasteBefore
   })
 }
 
 export function removeIteration(id) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_REMOVE,
+  DO(ITERATIONS_REMOVE,{
     id
   })
 }
 
 export function changeIterationOrder(index1, index2) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_ORDER_CHANGE,
+  DO(ITERATIONS_ORDER_CHANGE,{
     index1, index2
   })
 }
 
 export function editIterationDescription(id, description) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_DESCRIPTION_EDIT,
+  DO(ITERATIONS_DESCRIPTION_EDIT,{
     id, description
   })
 }
 
 export function editIterationGoal(id, numberGoalId, goal) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GOAL_EDIT,
+  DO(ITERATIONS_GOAL_EDIT,{
     id, numberGoalId, goal
   })
 }
 
 export function addIterationGoal(id, goal) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GOAL_ADD,
+  DO(ITERATIONS_GOAL_ADD,{
     id, goal
   })
 }
 
 export function removeIterationGoal(id, goalIndex) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GOAL_REMOVE,
+  DO(ITERATIONS_GOAL_REMOVE,{
     id, goalIndex
   })
 }
 
 export function solveIterationGoal(id, goalIndex, solved = true) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GOAL_SOLVE,
+  DO(ITERATIONS_GOAL_SOLVE,{
     id, goalIndex, solved
   })
 }
 
 export function solveIteration(id, solved = true) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_SOLVE,
+  DO(ITERATIONS_SOLVE,{
     id, solved
   })
 }
 
 export function setIterationGoalExecutionTime(iterationId, goalIndex, timeCost) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GOAL_EXECUTION_TIME_EDIT,
+  DO(ITERATIONS_GOAL_EXECUTION_TIME_EDIT,{
     iterationId, goalIndex, timeCost
   })
 }
 
 export function setIterationGoalDescription(iterationId, goalIndex, description) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GOAL_DESCRIPTION_EDIT,
+  DO(ITERATIONS_GOAL_DESCRIPTION_EDIT,{
     iterationId, goalIndex, description
   })
 }
 
 export function editIterationGrowthStrategy(id, description) {
-  Dispatcher.dispatch({
-    actionType: ITERATIONS_GROWTH_DESCRIPTION_EDIT,
+  DO(ITERATIONS_GROWTH_DESCRIPTION_EDIT,{
     id, description
   })
 }
 
 export function editStrategy(description) {
-  Dispatcher.dispatch({
-    actionType: STRATEGY_EDIT,
+  DO(STRATEGY_EDIT,{
     description
   })
 }
 
 export function logIn(email, password) {
-  Dispatcher.dispatch({
-    actionType: PROFILE_LOGIN,
+  DO(PROFILE_LOGIN,{
     email, password
   })
 }
