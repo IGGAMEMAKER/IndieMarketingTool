@@ -1,5 +1,4 @@
-const {ProjectModel} = require("../Models");
-var ObjectId = require('mongoose').Types.ObjectId;
+const {ProjectModel, ObjectId} = require("../Models");
 
 const getProfile = async (req, res) => {
   console.log('getProfile', req.userId)

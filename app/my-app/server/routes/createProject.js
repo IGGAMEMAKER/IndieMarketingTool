@@ -1,6 +1,5 @@
 const {saveUserAction} = require("../saveUserAction");
-const {ProjectModel} = require("../Models");
-var ObjectId = require('mongoose').Types.ObjectId;
+const {ObjectId, ProjectModel} = require("../Models");
 
 // var project = new ProjectModel({
 //   name: 'Indie Marketing Tool',
