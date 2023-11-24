@@ -1,5 +1,4 @@
-const {UserModel} = require("./Models");
-const {UserActionsModel} = require("./Models");
+const {UserModel, UserActionsModel} = require("./Models");
 
 const saveUserAction = async (req, action) => {
   var lastAction = {

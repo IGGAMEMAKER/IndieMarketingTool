@@ -1,8 +1,6 @@
+const {MY_MAIL} = require("../CD/Configs");
 const {saveUserAction} = require("./saveUserAction");
 const {getUserProjects} = require("./routes/getUserProjects");
-const {UserActionsModel} = require("./Models");
-const {ProjectModel} = require("./Models");
-const {MY_MAIL} = require("../CD/Configs");
 const {sendVerificationSuccess} = require("./mailer");
 const {createRandomPassword} = require("./createPassword");
 const {sendResetPasswordEmail, sendVerificationEmail} = require("./mailer");
