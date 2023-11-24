@@ -1,12 +1,12 @@
-module.exports = {
-  UserModel: {},
-  ProjectModel: {},
-  ScrappedGameModel: {},
-  UserActionsModel: {},
-
-  ObjectId: {},
-}
-return
+// module.exports = {
+//   UserModel: {},
+//   ProjectModel: {},
+//   ScrappedGameModel: {},
+//   UserActionsModel: {},
+//
+//   ObjectId: {},
+// }
+// return
 
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
