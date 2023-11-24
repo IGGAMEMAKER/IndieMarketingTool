@@ -7,7 +7,6 @@ import {Link, Route, Routes} from 'react-router-dom';
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {ping} from "./PingBrowser";
-// import { useCalendlyEventListener, InlineWidget } from "react-calendly";
 import {generatePassword} from "./secret";
 import actions from "./actions";
 import {ButtonLink, col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";

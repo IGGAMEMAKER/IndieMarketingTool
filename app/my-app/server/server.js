@@ -1,20 +1,24 @@
+const {app} = require('./expressGenerator')(3000);
+
 const {MY_MAIL} = require("../CD/Configs");
 const {saveUserAction} = require("./saveUserAction");
-const {getUserProjects} = require("./routes/getUserProjects");
 const {sendVerificationSuccess} = require("./mailer");
 const {createRandomPassword} = require("./createPassword");
 const {sendResetPasswordEmail, sendVerificationEmail} = require("./mailer");
-const {app} = require('./expressGenerator')(3000);
 
+const {getUserProjects} = require("./routes/getUserProjects");
 const {getProject} = require("./routes/getProject");
 const {updateProject} = require("./routes/updateProject");
 const {removeProject} = require("./routes/removeProject");
 const {getProfile} = require("./routes/getProfile");
 const {createProject} = require("./routes/createProject");
 const {getLinkName} = require("./routes/researchLinks");
+
 const {sha} = require("./security");
 
 const {UserModel} = require('./Models')
+
+
 
 const renderSPA = (req, res) => {
   var appPath = __dirname.replace('server', 'build') + '/index.html'
