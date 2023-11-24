@@ -1,5 +1,12 @@
 const {app} = require('./expressGenerator')(3000);
 
+// if fails to find modules
+// npm cache clean -force
+// rm package-lock.json
+// rm -r node_modules
+// npm i --save --legacy-peer-deps
+// https://stackoverflow.com/questions/9023672/how-do-i-resolve-cannot-find-module-error-using-node-js
+
 
 const {logout, isAdminMiddleware, authenticate, createUser, logIn, resetPassword, flushDevIP, saveDevIP} = require("./routes/users");
 
