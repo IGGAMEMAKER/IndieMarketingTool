@@ -39,7 +39,7 @@ export function FeatureList({project, noTiming = false}) {
     <br/>
     <br/>
     <center>
-      <table className="list">
+      <table className="list limited">
         {features
           .sort(sortFeatures)
           .filter(f => {

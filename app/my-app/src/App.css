@@ -30,8 +30,16 @@ body {
   left: 0;
   right: 0;
 }
+.menu-input {
+  position: fixed;
+  height: 5vh;
+  width: 100%;
+  top: 5vh;
+  left: 0;
+  right: 0;
+}
 
-.menu .item {
+/*.menu*/ .item {
   font-size: 22px;
   font-weight: bolder;
 
@@ -41,7 +49,7 @@ body {
   color: blueviolet;
 }
 
-.menu .item.chosen {
+/*.menu */.item.chosen {
   background-color: blueviolet;
   color: white;
 }
@@ -174,7 +182,7 @@ button a:active { text-decoration: none; }
 }
 
 .Audience-item .field-picker {
-  width: 250px;
+  width: 225px;
   min-height: 80px;
 }
 
@@ -330,6 +338,9 @@ button a:active { text-decoration: none; }
 }
 
 .list {
+
+}
+.limited {
   height: 350px;
   overflow-y: scroll;
 }
@@ -367,6 +378,14 @@ button.toggle {
   min-height: 250px;
 }
 
+.vision-submenu {
+
+}
+
+.vision-submenu.chosen{
+  background-color: yellow;
+}
+
 .help{
   background-color: violet;
   color: white;
@@ -394,7 +413,7 @@ details > summary::-webkit-details-marker /* Safari */ {
   }
 
   .field-picker {
-    width: 250px;
+    width: 225px;
     min-height: 150px;
   }
 
@@ -407,7 +426,7 @@ details > summary::-webkit-details-marker /* Safari */ {
     top: calc(100vh - 45px)
   }
 
-  .menu .item {
+  /*.menu*/ .item {
     font-size: 12px;
   }
 

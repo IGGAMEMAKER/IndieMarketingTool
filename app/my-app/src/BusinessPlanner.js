@@ -30,14 +30,15 @@ export function BusinessPlanner({project, showAudiencesToo = true}) {
 
   if (!showAudiencesToo) {
     return <div>
-      <Panel id="Goals" header={"How much do you want to earn?".toUpperCase()} noHelp/>
+      <Panel id="Goals" header={"How much do you want to earn?"} noHelp/>
       <p>{desiredProfitPicker}$</p>
     </div>
   }
 
   return <div>
     <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} noHelp/>
-    <p>How much do you want to earn?<br/>{desiredProfitPicker}$</p>
+    {/*<p>How much do you want to earn?<br/>{desiredProfitPicker}$</p>*/}
+
     {/*{renderIncomeGoal(project, desiredProfit, "earn")}*/}
 
     {/*<p>Your monthly expenses?<br/>{monthlyExpensesPicker}</p>*/}
@@ -49,8 +50,8 @@ export function BusinessPlanner({project, showAudiencesToo = true}) {
     <center>
 
     {renderIncomeGoal(project, 1, '??', [
-      {goal: monthlyExpenses, name: 'Sustainable', color: 'orange'},
-      {goal: desiredProfit, name: 'Dream', color: 'green'},
+      {goal: monthlyExpenses, name: 'Sustainability', color: 'orange', editor: actions.editProjectMonthlyExpenses},
+      {goal: desiredProfit, name: 'Dream', color: 'green', editor: actions.editProjectDesiredProfit},
       // {goal: monthlyExpenses / timeTillBurnout, name: 'Survive', color: 'red'},
     ])}
     </center>

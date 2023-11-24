@@ -575,28 +575,6 @@ function IterationView({project, it, index, setChosenIterationId}) {
   </div>
 }
 
-const priorityMockup =     <div>
-  <h3>You can earn by</h3>
-  <center>
-    <table style={{textAlign: 'right'}}>
-      <tbody>
-      <tr>
-        <td><b>growing your audience</b></td>
-        <td>100%+</td>
-      </tr>
-      <tr>
-        <td>adding/tweaking monetization plans</td>
-        <td>10%+</td>
-      </tr>
-      <tr>
-        <td>by making features</td>
-        <td>1%+</td>
-      </tr>
-      </tbody>
-    </table>
-  </center>
-</div>
-
 
 export function IterationPlanner({project}) {
   var [chosenIterationId, setChosenIterationId] = useState(-1)
@@ -688,10 +666,8 @@ export function IterationPlanner({project}) {
 
   // style={{gridTemplateColumns: 'auto auto auto'}}
   return <div>
-    <Panel id="ITERATIONS" header="ITERATIONS" />
-    {/*<h3>Do the PROJECT, not just product</h3>*/}
-    {/*{priorityMockup}*/}
-    <br/>
+    {/*<Panel id="ITERATIONS" header="ITERATIONS" />*/}
+    {/*<br/>*/}
 
     <div className={"Iteration-Grid"}>
       {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}

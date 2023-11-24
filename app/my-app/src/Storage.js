@@ -111,6 +111,41 @@ class Storage extends EventEmitter {
   getProjectType              = () => this.getData().type
   getUsefulLinks              = () => this.getData().links || []
 
+  isDefaultName = project => {
+    const projectName = project.name.toLowerCase()
+
+    return projectName === "new game" || projectName === "new app"
+  }
+
+  getProjectFillingStats = (project) => {
+    const isFilledDescription = !!project?.description
+    const isFilledEssence     = project?.mainFeeling || project?.mainProblem
+    const isFilledAudiences   = project.audiences.length;
+    const hasPaidPlans        = project.monetizationPlans.filter(mp => mp.price > 0).length
+    // TODO rework same name
+    const isDefaultName       = this.isDefaultName(project)
+
+    // TODO decide if I can show specific panels in View files, not in storage
+    const canShowEssence = isFilledDescription;
+    const canShowAudiences = canShowEssence && isFilledEssence;
+    const canShowMonetization = canShowAudiences && isFilledAudiences
+    const canShowNamePicker = canShowMonetization && hasPaidPlans
+    const canShowSubmitProjectButton = canShowNamePicker && !isDefaultName
+
+    return {
+      isFilledDescription,
+      isFilledEssence,
+      isFilledAudiences,
+      isDefaultName,
+
+      canShowEssence,
+      canShowAudiences,
+      canShowMonetization,
+      canShowNamePicker,
+      canShowSubmitProjectButton,
+    }
+  }
+
   // isApp = () => this.getProject().type === 1
   // isGame = () => this.getProject().type === 2
 }

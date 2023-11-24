@@ -4,30 +4,25 @@ import actions from "./actions";
 import {Iteration} from "./Iteration";
 import {getNextID} from "./utils";
 
-export function RiskAdder({it, project}) {
-  const [name, onChangeName] = useState("");
 
+export function RiskAdder({it, project}) {
   return (
     <div className="Risk-item">
-      <FieldAdder onAdd={val => {
-        if (it) {
+      <FieldAdder
+        placeholder={"Add risk"}
+        defaultState={true}
+        autoFocus={false}
+
+        onAdd={val => {
           var nextRiskId = getNextID(project.risks)
           actions.addRisk(val)
-          actions.addIterationGoal(it.id, Iteration.createRiskGoal(project, nextRiskId))
-        } else {
-          actions.addRisk(val)
-        }
-      }} placeholder={"Add risk"}/>
-      {/*<textarea*/}
-      {/*  value={name}*/}
-      {/*  onChange={event => {*/}
-      {/*    var v = event.target.value*/}
 
-      {/*    onChangeName(v)*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<br />*/}
-      {/*<button onClick={() => {actions.addRisk(name); onChangeName("")}}>ADD</button>*/}
+          if (it) {
+            // if part of iteration, add it to iteration too
+            actions.addIterationGoal(it.id, Iteration.createRiskGoal(project, nextRiskId))
+          }
+        }}
+      />
     </div>
   )
 }

@@ -1,3 +1,6 @@
+import actions from "./actions";
+import {NumberPicker} from "./FieldPicker";
+
 export function renderIncomeGoal(project, goal, goalName, goals = []) {
   if (!goalName)
     goalName = <span>make <b>{goal}</b> monthly</span>
@@ -22,10 +25,22 @@ export function renderIncomeGoal(project, goal, goalName, goals = []) {
     //     </tr>
     //   })}
     // </table>
+
     return <table>
       <tr>
         <td></td>
-        {goals.map(g => <td><b>{g.name}</b><br/>{g.goal}$</td>)}
+        {/*{goals.map(g => <td><b>{g.name}</b><br/>{g.goal}$</td>)}*/}
+        {goals.map(g => <td>
+          <b>{g.name}</b>
+          <br/>
+          <NumberPicker
+            value={g.goal}
+            // normalValueRenderer={onEditClick => <label onClick={onEditClick}>{g.goal}$</label>}
+            placeholder={"Type your desired profit"}
+            onAction={val => g.editor(parseInt(val))}
+            defaultState={false}
+          />$
+        </td>)}
       </tr>
       {paidPlans.map(plan => {
         return <tr>

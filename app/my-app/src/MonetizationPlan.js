@@ -1,14 +1,24 @@
 import actions from "./actions";
 import {FieldPicker, NumberPicker} from "./FieldPicker";
 import {useState} from "react";
+import {FieldAdder} from "./FieldAdder";
 
 function BenefitAdder({index}) {
+  return <FieldAdder
+    onAdd={v => {
+      actions.addBenefitToMonetizationPlan(index, v)
+    }}
+    autoFocus={false}
+    defaultState={true}
+    placeholder="What will you offer?"
+  />
+
   var [benefit, onChange] = useState("");
   var [needsToAdd, setNeedsToAdd] = useState(false)
 
-  if (!needsToAdd) {
-    return <button onClick={() => setNeedsToAdd(true)}>+</button>
-  }
+  // if (!needsToAdd) {
+  //   return <button onClick={() => setNeedsToAdd(true)}>+</button>
+  // }
 
   return <div>
     <input value={benefit} placeholder={"What will you offer?"} onChange={ev => onChange(ev.target.value) }/>
@@ -124,6 +134,8 @@ export function MonetizationPlan({plan, index, audiences}) {
 
   var adder = <BenefitAdder index={planId} />
 
+  var maxAudienceHeight = 200
+
   return <div
     draggable
     onDragStart={e => {onStartDragging(e, true)}}
@@ -139,12 +151,8 @@ export function MonetizationPlan({plan, index, audiences}) {
     {/*<div>{LEFT}{namePicker}{RIGHT}</div>*/}
     <div>{namePicker}</div>
     <div>{moneyPicker}</div>
-    <br />
-    <div>{descriptionPicker}</div>
-    <div className={"Monetization-plan-benefits"}>{benefitPicker.length ? <ul>{benefitPicker}<li style={{textAlign: 'left'}}>{adder}</li></ul> : adder}</div>
-
     {!includedAudiences.length ? <div><label><br/>Who will use this plan?</label></div> : ''}
-    <div>
+    <div style={{minHeight: `${maxAudienceHeight}px`}}>
       <ul>
         {includedAudiences
           .map(audienceId => <li key={"incl"+audienceId} style={{color: 'green', textAlign: 'left'}}>
@@ -158,6 +166,15 @@ export function MonetizationPlan({plan, index, audiences}) {
           </li>)}
         {audienceSelect}
       </ul>
+    </div>
+    <br />
+    {/*<div>{descriptionPicker}</div>*/}
+    <div className={"Monetization-plan-benefits"}>{
+      benefitPicker.length ?
+        <ul>{benefitPicker}<div style={{textAlign: 'left'}}>{adder}</div></ul>
+        :
+        <div>{adder}</div>
+      }
     </div>
   </div>
 }
