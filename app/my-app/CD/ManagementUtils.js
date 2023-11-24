@@ -160,8 +160,8 @@ const uploadAndLog = async (ssh, local, remote, filename) => {
     });
 }
 
-const uploadCertificates = false
-const uploadDefaultFiles = false
+const uploadCertificates = true
+const uploadDefaultFiles = true
 
 const uploadConfigs = async (ssh, ip, check = {}) => {
   var pathToConfigs = gitPath + '/app/my-app/CD'
