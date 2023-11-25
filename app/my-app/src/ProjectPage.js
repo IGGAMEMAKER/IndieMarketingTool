@@ -595,9 +595,9 @@ function NotesList({project}) {
     <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />
     <br />
     <br />
-    <div className="list">
+    <ul className="list">
       {notes.map((n, i) => {
-        return <div
+        return <li
           key={"note" + n.id}
           className="left paddings"
         >
@@ -609,9 +609,9 @@ function NotesList({project}) {
             onRemove={() => {actions.removeNote(n.id)}}
           />
           {/*<button className={"right"} onClick={openNotePopup}>Convert To..</button>*/}
-        </div>
+        </li>
       })}
-    </div>
+    </ul>
   </div>
 }
 

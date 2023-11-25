@@ -164,7 +164,7 @@ const authenticate = async (req, res, next) => {
 const authGoogleUser = async (req, res) => {
   var {response} = req.body;
 
-  console.log('authGoogleUser', response)
+  // console.log('authGoogleUser', response)
   // if has userId in cookies, and has no email info
 
   var credentials = jwtDecode(response.credential)
@@ -178,28 +178,10 @@ const authGoogleUser = async (req, res) => {
   if (!user) {
     var u = new UserModel({email})
     var r = await u.save()
-
-    console.log({r})
   }
 
   await generateCookies(res, email, req)
   res.redirect('/profile')
-
-  // try {
-  //   var r = await u.save()
-  //
-  //   console.log({r})
-  //   await generateCookies(res, email, req)
-  //
-  //   res.redirect('/profile')
-  // } catch (e) {
-  //   console.log('probably exists?')
-  //   // console.error({e})
-  //   flushCookies(res, req)
-  //
-  //
-  //   res.redirect('/register?userExists=1')
-  // }
 }
 
 const createUser = async (req, res) => {
