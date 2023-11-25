@@ -1,19 +1,19 @@
 const {ProjectModel} = require("../Models");
 
-const updateProject = async (req, res) => {
+const canUpdateProjectMiddleware = async (req, res, next) => {
   var objectId = req.params.objectId;
   var canEdit = await ProjectModel.findOne({ownerId: req.userId, _id: objectId})
-  // console.log({canEdit})
 
-  var p = req.body.project;
-  // console.log({objectId}, p)
+  req.canEdit = !!canEdit
 
+  next()
+}
+
+const updateProject = async (req, res) => {
   var result;
 
-  if (!!canEdit)
-    await ProjectModel.findByIdAndUpdate(objectId, p)
-
-  // console.log({result})
+  if (req.canEdit)
+    result = await ProjectModel.findByIdAndUpdate(req.params.objectId, req.body.project)
 
   res.json({
     result
@@ -21,5 +21,6 @@ const updateProject = async (req, res) => {
 }
 
 module.exports = {
-  updateProject
+  updateProject,
+  canUpdateProjectMiddleware
 }

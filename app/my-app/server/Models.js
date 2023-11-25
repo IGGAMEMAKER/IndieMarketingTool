@@ -161,7 +161,5 @@ module.exports = {
   ScrappedGameModel,
   UserActionsModel,
 
-  // getServerConfigs,
-  // getCf
   ObjectId: mongoose.Types.ObjectId
 }

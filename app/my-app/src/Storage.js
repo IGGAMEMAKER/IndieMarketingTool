@@ -351,7 +351,7 @@ Dispatcher.register((p) => {
   }
 
   const saveUserAction = (p) => {
-    post('/stats/actions', {
+    post('/api/stats/actions', {
       action: p
     })
       .then(r => {

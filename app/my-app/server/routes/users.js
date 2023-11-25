@@ -4,13 +4,21 @@ const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 const {MY_MAIL} = require("../../CD/Configs");
 const {sendVerificationSuccess, sendResetPasswordEmail, sendVerificationEmail} = require("../mailer");
 
+const {isDevIP} = require("./isAdminMiddleware");
 const {createRandomPassword} = require("../createPassword");
 const {sha} = require("../security");
 
 const {UserModel} = require('../Models')
 
 
+const createSessionToken = (email) => {
+  return sha(email + Date.now())
+}
 
+const HASH = password => sha(password)
+const createVerificationLink = () => {
+  return HASH(createRandomPassword(35))
+}
 
 const getCookies = async req => {
   if (isDevIP(req)) {
@@ -59,75 +67,29 @@ const setCookies = (res, token, email) => {
   res.cookie('sessionToken', token)
   res.cookie('email', email)
 }
-
-const createSessionToken = (email) => {
-  return sha(email + Date.now())
-}
-
-const HASH = password => sha(password)
-const createVerificationLink = () => {
-  return HASH(createRandomPassword(35))
-}
-
 const printCookies = async (req, res) => {
   var {email, sessionToken} = await getCookies(req)
 
   console.log('printCookies', email, sessionToken)
 }
 
+
+
 const getUserId = user => user._id.toString()
+
+
+
 
 const logout = (req, res, next) => {
   flushCookies(res, req)
+
   // TODO remove sessionToken on server
   res.redirect('/')
 }
 
-let devIP;
-const getIP = (req) => {
-  const ipAddresses = req.header('x-forwarded-for');
-  return ipAddresses
-}
-const isDevIP = (req) => {
-  return getIP(req) === devIP
-  // return !!req.cookies["isDevIP"]
-}
-
-const isAdminMiddleware = (req, res, next) => {
-  if (isDevIP(req)) {
-    next()
-  } else {
-    next('access restricted')
-  }
-}
-
-const saveDevIP = (req, res) => {
-  const ipAddresses = getIP(req);
-  console.log({ipAddresses})
-  devIP = ipAddresses
-
-  // res.cookie('isDevIP', true)
-
-  res.json({
-    cookieSet: true,
-    ipAddresses
-  })
-}
-
-const flushDevIP = (req, res) => {
-  devIP = ''
-  // res.cookie('isDevIP', false)
-
-  res.json({
-    cookieFlushed: true
-  })
-}
-
-
 const logIn = async (req, res, next) => {
-  console.log('LOG IN')
-
   var {email, password} = req.body;
+
   console.log('LOG IN', {email, password})
   await printCookies(req, res)
 
@@ -150,9 +112,7 @@ const logIn = async (req, res, next) => {
         await printCookies(req, res)
         await generateCookies(res, email, req)
 
-        res.json({
-          ok: 1
-        })
+        res.json({ok: 1})
       } else {
         next(AUTHENTICATION_FAILED_ERROR)
       }
@@ -200,60 +160,6 @@ const authenticate = async (req, res, next) => {
     })
 }
 
-const verifyNewUser = async (req, res) => {
-  var {user, link} = req.query;
-  var email = user;
-  var verificationLink = link;
-  console.log(req.query, req.url, req.pathname)
-
-  try {
-    var r = await UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
-    console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
-
-    if (r.modifiedCount) {
-      // USER VERIFIED
-      sendVerificationSuccess(email)
-      await generateCookies(res, email, req)
-
-      // no redirect?
-      res.redirect('/profile')
-      return
-    }
-
-    await flushCookies(res, req)
-    res.redirect('/login?verificationFailed=1')
-  } catch (err) {
-    console.log('cannot verifyNewUser ERROR', {err})
-    await flushCookies(res, req)
-    res.redirect('/login?verificationFailed=2')
-  }
-}
-
-const resetPassword = async (req, res) => {
-  var {email} = req.body
-  var newPassword = createRandomPassword(20);
-
-  console.log({
-    newPassword
-  })
-
-  UserModel.updateOne({email}, {password: HASH(newPassword)})
-    .then(r => {
-      console.log({r})
-      sendResetPasswordEmail(email, newPassword)
-      console.log('sent reset password email')
-      // TODO SEND VERIFICATION EMAIL
-    })
-    .catch(err => {
-      console.log('cannot reset password', {err})
-    })
-    .finally(() => {
-      res.redirect('/login?resetPassword=1')
-    })
-}
-
-
-
 
 const createUser = async (req, res) => {
   var {email, password} = req.body;
@@ -287,14 +193,68 @@ const createUser = async (req, res) => {
     })
 }
 
+
+// TODO remove after login with socials
+const verifyNewUser = async (req, res) => {
+  var {user, link} = req.query;
+  var email = user;
+  var verificationLink = link;
+  console.log(req.query, req.url, req.pathname)
+
+  try {
+    var r = await UserModel.updateOne({email, verificationLink}, {verifiedAt: new Date()})
+    console.log('VERIFICATION RESULT', {email, verificationLink}, {r})
+
+    if (r.modifiedCount) {
+      // USER VERIFIED
+      sendVerificationSuccess(email)
+      await generateCookies(res, email, req)
+
+      // no redirect?
+      res.redirect('/profile')
+      return
+    }
+
+    await flushCookies(res, req)
+    res.redirect('/login?verificationFailed=1')
+  } catch (err) {
+    console.log('cannot verifyNewUser ERROR', {err})
+    await flushCookies(res, req)
+    res.redirect('/login?verificationFailed=2')
+  }
+}
+
+// TODO remove after login with socials
+const resetPassword = async (req, res) => {
+  var {email} = req.body
+  var newPassword = createRandomPassword(20);
+
+  console.log({newPassword})
+
+  UserModel.updateOne({email}, {password: HASH(newPassword)})
+    .then(r => {
+      console.log({r})
+      sendResetPasswordEmail(email, newPassword)
+      console.log('sent reset password email')
+      // TODO SEND VERIFICATION EMAIL
+    })
+    .catch(err => {
+      console.log('cannot reset password', {err})
+    })
+    .finally(() => {
+      res.redirect('/login?resetPassword=1')
+    })
+}
+
+
+
+
 module.exports = {
   authenticate,
-  isAdminMiddleware,
-
-  logout,
   logIn,
+  logout,
+
+  verifyNewUser,
   createUser,
   resetPassword,
-  saveDevIP,
-  flushDevIP,
 }

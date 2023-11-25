@@ -1,7 +1,7 @@
 import {post} from "./PingBrowser";
 
 export const saveUserUnderstandingStat = (userActionType, obj={}) => {
-  post('/stats/inputs', {
+  post('/api/stats/inputs', {
     action: Object.assign({
       actionType: userActionType
     }, obj)

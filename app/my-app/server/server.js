@@ -1,3 +1,4 @@
+const {canUpdateProjectMiddleware} = require("./routes/updateProject");
 const {app} = require('./expressGenerator')(3000);
 
 // if fails to find modules
@@ -8,7 +9,8 @@ const {app} = require('./expressGenerator')(3000);
 // https://stackoverflow.com/questions/9023672/how-do-i-resolve-cannot-find-module-error-using-node-js
 
 
-const {logout, isAdminMiddleware, authenticate, createUser, logIn, resetPassword, flushDevIP, saveDevIP} = require("./routes/users");
+const {logout, authenticate, createUser, logIn, resetPassword} = require("./routes/users");
+const {isAdminMiddleware, saveDevIP, flushDevIP} = require('routes/isAdminMiddleware')
 
 const {getUserProjects} = require("./routes/getUserProjects");
 const {getProject} = require("./routes/getProject");
@@ -27,22 +29,21 @@ const renderSPA = (req, res) => {
 }
 
 
-// ROUTES
+// --------------- ROUTES ------------------
 app.get('/', renderSPA)
-app.get('/projects/:objectId', authenticate, renderSPA)
-app.get('/profile', authenticate, renderSPA) // show user projects here
 app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
 app.get('/about', renderSPA)
-
-app.get('/admin/panel', isAdminMiddleware, renderSPA)
-
 app.get('/register', renderSPA)
 app.get('/login', renderSPA)
 app.get('/verify', renderSPA)
 app.get('/reset', renderSPA)
+
 app.get('/logout', logout, renderSPA)
+app.get('/projects/:objectId', authenticate, renderSPA)
+app.get('/profile', authenticate, renderSPA) // show user projects here
 app.get('/authenticated', authenticate, (req, res) => res.json({authenticated: !!req.userId}))
+app.get('/admin/panel', isAdminMiddleware, renderSPA)
 
 
 // ---------------- API ------------------------
@@ -56,6 +57,20 @@ app.get('/api/me/logout', flushDevIP)
 
 app.get('/api/projects', isAdminMiddleware, getUserProjects)
 
+// app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
+app.get   ('/api/profile',            authenticate, getProfile)
+app.post  ('/api/projects',           authenticate, createProject)
+
+app.get   ('/api/projects/:objectId', /*authenticate,*/ getProject) // TODO visibility settings
+app.put   ('/api/projects/:objectId', authenticate, canUpdateProjectMiddleware, updateProject) // save changes // TODO CHECK WHO CAN EDIT THE PROJECT
+app.delete('/api/projects/:objectId', authenticate, removeProject)
+
+app.post('/api/stats/actions', authenticate, saveUserActionRoute)
+app.post('/api/stats/inputs', authenticate, saveUserUnderstandingStatsRoute)
+
+// TODO protect that link with password too?
+app.post('/links/name', getLinkName)
+
 // TODO remove???
 app.get   ('/test/cookies/:str', (req, res) => {
   res.cookie("Cookieee", req.params.str)
@@ -66,21 +81,6 @@ app.get   ('/test/cookies', (req, res) => {
   console.log({v})
   res.json({ok: 1, v, cookies: req.cookies})
 })
-
-
-// app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
-app.get   ('/api/profile',            authenticate, getProfile)
-app.post  ('/api/projects',           authenticate, createProject)
-
-app.get   ('/api/projects/:objectId', /*authenticate,*/ getProject) // TODO visibility settings
-app.put   ('/api/projects/:objectId', authenticate, updateProject) // save changes // TODO CHECK WHO CAN EDIT THE PROJECT
-app.delete('/api/projects/:objectId', authenticate, removeProject)
-
-app.post('/stats/actions', authenticate, saveUserActionRoute)
-app.post('/stats/inputs', authenticate, saveUserUnderstandingStatsRoute)
-
-// TODO protect that link with password too?
-app.post('/links/name', getLinkName)
 
 
 
