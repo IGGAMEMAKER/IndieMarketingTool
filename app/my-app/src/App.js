@@ -12,6 +12,11 @@ import actions from "./actions";
 import {ButtonLink, col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
 import {isApp} from "./utils/projectUtils";
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { useGoogleOneTapLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+
 
 function RegisterForm({}) {
   var [email, setEmail] = useState("")
@@ -124,6 +129,9 @@ function LoginForm({}) {
   }
 
   function onSignIn(googleUser) {
+    console.log('onSignIn')
+    console.log(googleUser)
+
     var profile = googleUser.getBasicProfile();
     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
     console.log('Name: ' + profile.getName());
@@ -131,9 +139,31 @@ function LoginForm({}) {
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
   }
 
-  return <div>
-    <div className="g-signin2" data-onsuccess={onSignIn}>CLICK</div>
-    <h2>Log in</h2>
+  const oneTap = useGoogleOneTapLogin({
+    onSuccess: credentialResponse => {
+      console.log(credentialResponse);
+    },
+    onError: () => {
+      console.error('Login Failed');
+    },
+  });
+
+  const responseMessage = (response) => {
+    console.log('responseMessage', response);
+    var profile = jwtDecode(response.credential);
+
+    console.log(profile)
+  };
+  const errorMessage = (error) => {
+    console.error('google errorMessage', error);
+  };
+
+  // return <div>
+  //   {/*{oneTap}*/}
+  //   <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+  // </div>
+
+  const regularEmailForm = <div>
     {passwordWasResetText}
     {/*<form action="/api/login" method="post" onSubmit={() => {*/}
     <div>
@@ -180,6 +210,16 @@ function LoginForm({}) {
     <br/>
     <br/>
     <Link to={"/register"}>Don't have an account?</Link>
+  </div>
+
+  return <div>
+    {/*{oneTap}*/}
+    {/*<div className="g-signin2" data-onsuccess={"onSignIn"}></div>*/}
+    <h2>Log in via socials</h2>
+    <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+    {/*<br />*/}
+    {/*<br />*/}
+    {/*{regularEmailForm}*/}
   </div>
 }
 
