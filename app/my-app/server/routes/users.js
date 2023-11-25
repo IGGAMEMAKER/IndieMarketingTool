@@ -172,24 +172,34 @@ const authGoogleUser = async (req, res) => {
 
   var email = credentials.email;
 
-  var u = new UserModel({
-    email
-  })
+  let user = await UserModel.findOne({email})
+  if (!user) {
+    var u = new UserModel({email})
+    var r = await u.save()
 
-  u.save()
-    .then(async r => {
-      console.log({r})
-      await generateCookies(res, email, req)
+    console.log({r})
+  }
 
-      res.redirect('/profile')
-    })
-    .catch(e => {
-      console.error({e})
-      flushCookies(res, req)
+  await generateCookies(res, email, req)
+  res.redirect('/profile')
 
-      res.redirect('/register?userExists=1')
-    })
+  // try {
+  //   var r = await u.save()
+  //
+  //   console.log({r})
+  //   await generateCookies(res, email, req)
+  //
+  //   res.redirect('/profile')
+  // } catch (e) {
+  //   console.log('probably exists?')
+  //   // console.error({e})
+  //   flushCookies(res, req)
+  //
+  //
+  //   res.redirect('/register?userExists=1')
+  // }
 }
+
 const createUser = async (req, res) => {
   var {email, password} = req.body;
 
