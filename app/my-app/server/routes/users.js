@@ -172,6 +172,8 @@ const authGoogleUser = async (req, res) => {
 
   var email = credentials.email;
 
+
+
   let user = await UserModel.findOne({email})
   if (!user) {
     var u = new UserModel({email})

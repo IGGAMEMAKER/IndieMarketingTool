@@ -47,6 +47,8 @@ body {
   /*color: white;*/
   background-color: orange;
   color: blueviolet;
+
+  margin: 0;
 }
 
 /*.menu */.item.chosen {
