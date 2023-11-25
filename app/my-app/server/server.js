@@ -10,7 +10,7 @@ const {app} = require('./expressGenerator')(3000);
 
 
 const {logout, authenticate, createUser, logIn, resetPassword} = require("./routes/users");
-const {isAdminMiddleware, saveDevIP, flushDevIP} = require('routes/isAdminMiddleware')
+const {isAdminMiddleware, saveDevIP, flushDevIP} = require('./routes/isAdminMiddleware')
 
 const {getUserProjects} = require("./routes/getUserProjects");
 const {getProject} = require("./routes/getProject");
