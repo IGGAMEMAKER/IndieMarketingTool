@@ -4,6 +4,7 @@ const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 const {MY_MAIL} = require("../../CD/Configs");
 const {sendVerificationSuccess, sendResetPasswordEmail, sendVerificationEmail} = require("../mailer");
 
+const {jwtDecode} = require("jwt-decode")
 const {isDevIP} = require("./isAdminMiddleware");
 const {createRandomPassword} = require("../createPassword");
 const {sha} = require("../security");
@@ -160,7 +161,35 @@ const authenticate = async (req, res, next) => {
     })
 }
 
+const authGoogleUser = async (req, res) => {
+  var {response} = req.body;
 
+  console.log('authGoogleUser', response)
+  // if has userId in cookies, and has no email info
+
+  var credentials = jwtDecode(response.credential)
+  console.log('credentials', credentials)
+
+  var email = credentials.email;
+
+  var u = new UserModel({
+    email
+  })
+
+  u.save()
+    .then(async r => {
+      console.log({r})
+      await generateCookies(res, email, req)
+
+      res.redirect('/profile')
+    })
+    .catch(e => {
+      console.error({e})
+      flushCookies(res, req)
+
+      res.redirect('/register?userExists=1')
+    })
+}
 const createUser = async (req, res) => {
   var {email, password} = req.body;
 
@@ -254,7 +283,9 @@ module.exports = {
   logIn,
   logout,
 
-  verifyNewUser,
+  authGoogleUser,
+
   createUser,
+  verifyNewUser,
   resetPassword,
 }

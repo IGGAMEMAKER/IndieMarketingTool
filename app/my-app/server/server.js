@@ -1,3 +1,4 @@
+const {authGoogleUser} = require("./routes/users");
 const {canUpdateProjectMiddleware} = require("./routes/updateProject");
 const {app} = require('./expressGenerator')(3000);
 
@@ -49,6 +50,8 @@ app.get('/admin/panel', isAdminMiddleware, renderSPA)
 // ---------------- API ------------------------
 app.post  ('/api/login', logIn)
 app.post  ('/api/user', createUser)
+app.post  ('/api/user/google', authGoogleUser)
+
 app.post  ('/api/reset-password', resetPassword)
 // app.get   ('/api/users/verify', verifyNewUser)
 

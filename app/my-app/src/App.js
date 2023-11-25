@@ -6,7 +6,7 @@ import {Component, useState} from 'react';
 import {Link, Route, Routes} from 'react-router-dom';
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
-import {ping} from "./PingBrowser";
+import {ping, post} from "./PingBrowser";
 import {generatePassword} from "./secret";
 import actions from "./actions";
 import {ButtonLink, col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
@@ -16,6 +16,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useGoogleOneTapLogin } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import {navigate} from "./Navigate";
 
 
 function RegisterForm({}) {
@@ -149,19 +150,20 @@ function LoginForm({}) {
   });
 
   const responseMessage = (response) => {
+    post('/api/user/google', {response})
+      .then(r => {
+        navigate('/profile')
+      })
+
     console.log('responseMessage', response);
     var profile = jwtDecode(response.credential);
 
     console.log(profile)
   };
+
   const errorMessage = (error) => {
     console.error('google errorMessage', error);
   };
-
-  // return <div>
-  //   {/*{oneTap}*/}
-  //   <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
-  // </div>
 
   const regularEmailForm = <div>
     {passwordWasResetText}

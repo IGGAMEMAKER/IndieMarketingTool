@@ -68,12 +68,10 @@ import {
 import {ping, post, remove, update} from "./PingBrowser";
 import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
-import actions from "./actions";
-import {Iteration} from "./Iteration";
 import {isGame} from "./utils/projectUtils";
+import {navigate, openNewProject, refresh} from "./Navigate";
 
 const CE = 'CHANGE_EVENT';
-const domain = 'https://releasefaster.com'
 
 var projectId = ''
 
@@ -229,18 +227,7 @@ const removeById = (list, id) => {
 
 
 
-const refresh = (time = 800) => {
-  setTimeout(() => window.location.reload(true), time)
-}
 
-const openNewProject = newId => {
-  // var newUrl = 'http://www.indiemarketingtool.com/projects/' + newId
-  navigate('/projects/' + newId)
-}
-
-const navigate = url => {
-  window.location.href = domain + url
-}
 
 const fixProject = () => {
   var changeData = true
