@@ -132,7 +132,7 @@ function LoginForm({}) {
   }
 
   return <div>
-    <div className="g-signin2" data-onsuccess="onSignIn">CLICK</div>
+    <div className="g-signin2" data-onsuccess={onSignIn}>CLICK</div>
     <h2>Log in</h2>
     {passwordWasResetText}
     {/*<form action="/api/login" method="post" onSubmit={() => {*/}
