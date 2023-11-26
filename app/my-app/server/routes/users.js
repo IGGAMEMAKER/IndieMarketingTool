@@ -101,8 +101,9 @@ const convertGuestToNormalUser = async (req, res) => {
       await ProjectModel.updateMany({ownerId: userId}, {ownerId: getUserId(u) })
 
       flushCookies(res)
+
       // remove guest account
-      // await UserModel.findByIdAndRemove(userId)
+      await UserModel.findByIdAndRemove(userId)
     } else {
       // just assign an email
       await UserModel.updateOne(

@@ -25,6 +25,7 @@ class App extends Component {
             <Route path='/'                               element={<MainPage/>}/>
             <Route path='/profile'                        element={<ProfilePage/>}/>
             <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
+            <Route path='/projects'                       element={<ProjectPage/>}/>
             <Route path='/admin/panel'                    element={<AdminPage/>}/>
 
             <Route path='/mistakes'                       element={<MistakesPage />}/>

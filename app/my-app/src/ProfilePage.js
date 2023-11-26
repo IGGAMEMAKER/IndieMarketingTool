@@ -26,6 +26,13 @@ function NewProjectAdder({}) {
   </div>
 }
 
+export class NewProjectPage extends Component {
+  render() {
+    return <div>
+      <NewProjectAdder/>
+    </div>
+  }
+}
 
 export class ProfilePage extends Component {
   state = {
@@ -55,7 +62,7 @@ export class ProfilePage extends Component {
       <h1>PROFILE</h1>
       <br/>
       <br/>
-      <NewProjectAdder/>
+      <Link to={"/projects"}>New Project</Link>
       <br/>
       <ProjectList projectIDs={projectIDs}/>
       <br />
