@@ -23,6 +23,10 @@ class App extends Component {
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
             <Route path='/'                               element={<MainPage/>}/>
+            <Route path='/profile'                        element={<ProfilePage/>}/>
+            <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
+            <Route path='/admin/panel'                    element={<AdminPage/>}/>
+
             <Route path='/mistakes'                       element={<MistakesPage />}/>
             <Route path='/register'                       element={<RegisterForm/>}/>
             <Route path='/verify'                         element={<VerifyForm />}/>
@@ -33,9 +37,6 @@ class App extends Component {
 
             <Route path='/about'                          element={<About />}/>
 
-            <Route path='/profile'                        element={<ProfilePage/>}/>
-            <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
-            <Route path='/admin/panel'                    element={<AdminPage/>}/>
           </Routes>
         </header>
       </div>

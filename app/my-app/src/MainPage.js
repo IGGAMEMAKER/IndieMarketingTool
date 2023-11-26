@@ -33,8 +33,7 @@ export class MainPage extends Component {
       <Link to={"/login"}>Login</Link>
     </div>
 
-    var loginForm;
-    loginForm = authenticated ? profileLink : loginLink
+    var loginForm = authenticated ? profileLink : loginLink
 
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>

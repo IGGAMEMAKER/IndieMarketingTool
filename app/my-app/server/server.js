@@ -50,10 +50,10 @@ app.get('/reset', renderSPA)
 app.get('/logout',              logout, renderSPA)
 app.get('/projects/:objectId',  authenticate, renderSPA)
 app.get('/profile',             authenticate, renderSPA) // show user projects here
-app.get('/authenticated',       authenticate, (req, res) => res.json({authenticated: !!req.userId}))
 
 app.get('/admin/panel', isAdminMiddleware, renderSPA)
 
+app.get('/authenticated',       authenticate, (req, res) => res.json({authenticated: !!req.userId, isGuest: !!req.isGuest}))
 
 // ---------------- API ------------------------
 app.post  ('/api/user/google', authGoogleUser)

@@ -50,6 +50,7 @@ const authenticate = async (req, res, next) => {
     query = {
       _id: new ObjectId(userId)
     }
+    req.isGuest = true
   }
 
   UserModel.findOne(query)

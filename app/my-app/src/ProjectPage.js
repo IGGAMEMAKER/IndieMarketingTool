@@ -19,6 +19,7 @@ import {ProjectDescription} from "./ProjectDescription";
 import {ProjectEssence} from "./ProjectEssence";
 import {NamePicker} from "./NamePicker";
 import {UsefulLinks} from "./UsefulLinks";
+import {ping} from "./PingBrowser";
 
 const PROJECT_MODE_VISION = 1
 const PROJECT_MODE_DREAM = 5
@@ -198,6 +199,19 @@ export class ProjectPage extends Component {
     actions.loadProject(this.getProjectId())
   }
 
+  componentDidMount() {
+    ping('/authenticated', r => {
+      var {authenticated, isGuest} = r.body
+      // console.log({r}, authenticated)
+
+      this.setState({
+        authenticated,
+        isGuest
+        // loaded: true
+      })
+    })
+  }
+
   renderNotesPanel = (project, projectId) => {
     var removeProject = <div>
       <br/>
@@ -331,6 +345,10 @@ export class ProjectPage extends Component {
       return <div>Loading the project...</div>
 
     var project = this.state?.project
+    const profileLink = this.state.isGuest ?
+      <Link className={"item"} to="/save-progress">Save progress</Link>
+      :
+      <Link className={"item"} to="/profile">Profile</Link>
 
     return (
       <div className="App">
@@ -338,7 +356,7 @@ export class ProjectPage extends Component {
           <center>
             <div className="menu">
               {this.renderMenus(project)}
-              <Link className={"item"} to="/profile">Profile</Link>
+              {profileLink}
             </div>
             {/*<div className={"menu-input"}>*/}
             {/*  <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />*/}
