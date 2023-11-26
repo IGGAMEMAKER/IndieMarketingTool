@@ -128,7 +128,7 @@ const convertGuestToNormalUser = async (req, res) => {
   // UserModel.updateOne({_id: new ObjectId(userId)}, {isGuest: false, email})
 }
 
-const getEmailFromGoogleRequest = async (req, res) => {
+const getEmailFromGoogleRequest = (req, res) => {
   var {response} = req.body;
 
   var credential = jwtDecode(response.credential)
