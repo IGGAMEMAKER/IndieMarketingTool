@@ -28,7 +28,7 @@ const getCookies = async req => {
 
     return {
       email: MY_MAIL,
-      sessionToken: u.sessionToken
+      sessionToken: u?.sessionToken
     }
   }
 
