@@ -37,6 +37,7 @@ const getCookies = async req => {
     sessionToken: req.cookies["sessionToken"]
   })
 }
+
 const generateCookies = async (res, email, req) => {
   var token
 
@@ -48,6 +49,7 @@ const generateCookies = async (res, email, req) => {
   if (!u?.sessionToken || expired) {
     // no token or expired token => create new
     token = createSessionToken(email)
+
     var r = await UserModel.updateOne({
       email,
       // sessionToken: {$exists: false}
@@ -135,19 +137,19 @@ const authenticate = async (req, res, next) => {
     sessionToken
   }
 
+  if (isDevIP(req)) {
+    match = {
+      email: MY_MAIL
+    }
+  }
+
   UserModel.findOne(match)
     .then(user => {
       if (user) {
-        // if (!user.verifiedAt) {
-        //   sendVerificationEmail(email, createVerificationLink())
-        //   res.redirect('/verify')
-        // } else {
-        // VERIFIED USER, WELCOME
         console.log({user})
 
         req.userId = getUserId(user)
         next()
-        // }
       } else {
         console.log('user not found', match, req.cookies)
 
@@ -162,6 +164,43 @@ const authenticate = async (req, res, next) => {
     })
 }
 
+// const authenticate = async (req, res, next) => {
+//   console.log('\nauthenticate')
+//   var {email, sessionToken} = await getCookies(req)
+//   await printCookies(req, res)
+//
+//   var match = {
+//     email,
+//     sessionToken
+//   }
+//
+//   UserModel.findOne(match)
+//     .then(user => {
+//       if (user) {
+//         // if (!user.verifiedAt) {
+//         //   sendVerificationEmail(email, createVerificationLink())
+//         //   res.redirect('/verify')
+//         // } else {
+//         // VERIFIED USER, WELCOME
+//         console.log({user})
+//
+//         req.userId = getUserId(user)
+//         next()
+//         // }
+//       } else {
+//         console.log('user not found', match, req.cookies)
+//
+//         req.userId = ''
+//         next(AUTHENTICATION_FAILED_ERROR)
+//       }
+//     })
+//     .catch(err => {
+//       console.error('CANNOT AUTHENTICATE', err)
+//
+//       next(AUTHENTICATION_FAILED_ERROR)
+//     })
+// }
+
 const authGoogleUser = async (req, res) => {
   var {response} = req.body;
 
@@ -175,16 +214,16 @@ const authGoogleUser = async (req, res) => {
 
 
 
+
+
   let user = await UserModel.findOne({email})
   if (!user) {
     var u = new UserModel({email})
-    var r = await u.save()
+    await u.save()
   }
 
   await generateCookies(res, email, req)
   redirect(res, '/profile', false)
-  // res.json({ok: 1})
-  // res.redirect('/profile')
 }
 
 const createUser = async (req, res) => {

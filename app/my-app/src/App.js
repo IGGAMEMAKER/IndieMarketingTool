@@ -149,12 +149,7 @@ function LoginForm({}) {
 
   const responseMessage = (response) => {
     post('/api/user/google', {response})
-      .then(r => {
-        autoRedirect(r)
-        // if (r.ok) {
-        //   navigate('/profile')
-        // }
-      })
+      .then(autoRedirect)
 
     console.log('responseMessage', response);
     var profile = jwtDecode(response.credential);
