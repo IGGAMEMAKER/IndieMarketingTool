@@ -12,7 +12,7 @@ const saveUserAction = async (req, action) => {
 
   var v = await UserModel.findByIdAndUpdate(req.userId, {lastAction})
 
-  console.log('saveUserAction', {r})
+  // console.log('saveUserAction', {r})
 }
 
 module.exports = {

@@ -112,6 +112,7 @@ const convertGuestToNormalUser = async (req, res) => {
     }
 
     await generateCookies(res, newEmail)
+    redirect(res, '/profile', false)
 
     // await UserModel.updateOne({_id: new ObjectId(userId)}, {isGuest: false, email})
   }

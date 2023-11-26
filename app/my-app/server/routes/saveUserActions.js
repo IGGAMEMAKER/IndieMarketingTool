@@ -1,7 +1,7 @@
 const {saveUserAction} = require("../saveUserAction");
 
 const saveUserActionRoute = async (req, res) => {
-  console.log('saveUserActionRoute', req.body)
+  // console.log('saveUserActionRoute', req.body)
 
   res.json({ok: 1})
 
