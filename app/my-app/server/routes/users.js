@@ -33,10 +33,16 @@ const authAsGuest = async (req, res) => {
   var user = await u.save()
 
   setGuestUserIdCookie(res, getUserId(user))
+
+  redirect(res, '/profile', false)
 }
 
 const convertGuestToNormalUser = async (req, res) => {
-
+  // var userId
+  // var email
+  // isGuest = false;
+  //
+  // UserModel.updateOne({_id: new ObjectId(userId)}, {isGuest: false, email})
 }
 
 
@@ -114,6 +120,7 @@ module.exports = {
 
   // login as guest
   authAsGuest,
+  convertGuestToNormalUser,
 
   // // TODO remove log in with email
   // logIn,
