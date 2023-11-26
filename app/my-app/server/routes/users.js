@@ -89,6 +89,7 @@ const convertGuestToNormalUser = async (req, res) => {
 
   if (userId) {
     var newEmail = getEmailFromGoogleRequest(req)
+    console.log('got new mail for guest', newEmail)
 
     // var u = await UserModel.findOne({_id: new ObjectId(userId)})
     var u = await UserModel.findOne({email: newEmail})
