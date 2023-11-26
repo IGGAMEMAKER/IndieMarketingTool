@@ -1,3 +1,7 @@
+const {resetPassword, logIn, verifyNewUser, createUser} = require("./routes/emailAuthenticationRoutes");
+
+const {authenticate} = require("./routes/users");
+const {logout} = require("./routes/users");
 const {authAsGuest} = require("./routes/users");
 const {authGoogleUser} = require("./routes/users");
 const {canUpdateProjectMiddleware} = require("./routes/updateProject");
@@ -11,7 +15,7 @@ const {app} = require('./expressGenerator')(3000);
 // https://stackoverflow.com/questions/9023672/how-do-i-resolve-cannot-find-module-error-using-node-js
 
 
-const {logout, authenticate, createUser, logIn, resetPassword} = require("./routes/users");
+// const {logout, authenticate, createUser, logIn, resetPassword} = require("./routes/users");
 const {isAdminMiddleware, saveDevIP, flushDevIP} = require('./routes/isAdminMiddleware')
 
 const {getUserProjects} = require("./routes/getUserProjects");

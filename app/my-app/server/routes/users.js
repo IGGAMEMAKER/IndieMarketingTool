@@ -1,12 +1,10 @@
 const {ObjectId} = require("../Models");
-const {setGuestUserIdCookie} = require("./cookieHelpers");
 const {resetPassword, verifyNewUser, createUser} = require("./emailAuthenticationRoutes");
-const {logIn} = require("../../src/actions");
 
 // TODO duplicate in routes/errorHandlers.js
 const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 
-const {generateCookies, getCookies, flushCookies, printCookies} = require("./cookieHelpers");
+const {generateCookies, getCookies, flushCookies, printCookies, setGuestUserIdCookie} = require("./cookieHelpers");
 const {redirect} = require("./redirect");
 
 const {MY_MAIL} = require("../../CD/Configs");
@@ -112,9 +110,9 @@ module.exports = {
   // login as guest
   authAsGuest,
 
-  // TODO remove log in with email
-  logIn,
-  createUser,
-  verifyNewUser,
-  resetPassword,
+  // // TODO remove log in with email
+  // logIn,
+  // createUser,
+  // verifyNewUser,
+  // resetPassword,
 }
