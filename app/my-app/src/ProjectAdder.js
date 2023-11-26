@@ -1,13 +1,16 @@
 import {isGame} from "./utils/projectUtils";
 import {FieldAdder} from "./FieldAdder";
 import actions from "./actions";
+import {DEFAULT_APP_NAME, DEFAULT_GAME_NAME} from "./constants/constants";
+
+
 
 export function ProjectAdder({appType, defaultState}) {
   var defaultWord;
   if (isGame({type: appType}))
-    defaultWord = "new GAME"
+    defaultWord = DEFAULT_GAME_NAME
   else
-    defaultWord = "new APP"
+    defaultWord = DEFAULT_APP_NAME
 
   return <FieldAdder
     onAdd={name => {

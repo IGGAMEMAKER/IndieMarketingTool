@@ -56,6 +56,11 @@ body {
   color: white;
 }
 
+.new-project {
+  width: 220px;
+  height: 40px;
+}
+
 .chat-container {
   position: fixed;
   right: 15px;

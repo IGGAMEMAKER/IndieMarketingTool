@@ -67,7 +67,13 @@ import {
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 
-import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
+import {
+  APP_TYPE_GAME,
+  DEFAULT_APP_NAME,
+  DEFAULT_GAME_NAME,
+  GOAL_TYPE_FEATURES,
+  LINK_TYPE_DOCS
+} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
 import {isGame} from "./utils/projectUtils";
 import {autoRedirect, navigate, openNewProject, refresh} from "./Navigate";
@@ -113,7 +119,7 @@ class Storage extends EventEmitter {
   isDefaultName = project => {
     const projectName = project.name.toLowerCase()
 
-    return projectName === "new game" || projectName === "new app"
+    return projectName === DEFAULT_GAME_NAME.toLowerCase() || projectName === DEFAULT_APP_NAME.toLowerCase()
   }
 
   getProjectFillingStats = (project) => {

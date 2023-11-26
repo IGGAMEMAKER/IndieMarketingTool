@@ -1,18 +1,16 @@
 import {Component, useState} from "react";
 import {ping} from "./PingBrowser";
 import {ProjectList} from "./ProjectList";
-import {APP_TYPE_APP, APP_TYPE_GAME} from "./constants/constants";
+import {APP_TYPE_APP, APP_TYPE_GAME, DEFAULT_APP_NAME, DEFAULT_GAME_NAME} from "./constants/constants";
 import {Link} from "react-router-dom";
-import {ProjectAdder} from "./ProjectAdder";
 import actions from "./actions";
 
 
 function NewProjectAdder({}) {
-  const btn = (appType, name) => <button onClick={() => actions.addProject(name, appType)}>{name}</button>
+  const btn = (appType, name, btnName) => <button className={"new-project item"} onClick={() => actions.addProject(name, appType)}>{btnName}</button>
 
   return <div>
-    {btn(APP_TYPE_GAME, "GAME")}
-    {btn(APP_TYPE_APP, "App or Service")}
+    {btn(APP_TYPE_GAME, DEFAULT_GAME_NAME, `🎮 Game`)}  /  {btn(APP_TYPE_APP, DEFAULT_APP_NAME, `💡 Service`)}
   </div>
 
   // var [appType, setAppType] = useState(0)

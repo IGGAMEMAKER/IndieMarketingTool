@@ -10,3 +10,6 @@ export const GOAL_TYPE_INCOME = 1
 export const GOAL_TYPE_MONETIZATION = 2
 export const GOAL_TYPE_USERS = 3
 export const GOAL_TYPE_FEATURES = 4
+
+export const DEFAULT_GAME_NAME = "new GAME"
+export const DEFAULT_APP_NAME = "new APP"
