@@ -19,9 +19,9 @@ export function LoginAsGuestButton({}) {
   return <button onClick={() => {actions.loginAsGuest()}}>Continue as guest</button>
 }
 
-export function LoginViaGoogleButton({restoreGuest=false}) {
+export function LoginViaGoogleButton({saveGuest=false}) {
   const responseMessage = (response) => {
-    if (restoreGuest)
+    if (saveGuest)
       actions.attachGoogleAccountToGuest(response)
     else
       actions.loginViaGoogleOAuth(response)
@@ -137,6 +137,6 @@ export function LoginForm({}) {
 export function SaveGuestProgressForm({}) {
   return <div>
     <h2>Log in via socials</h2>
-    <LoginViaGoogleButton />
+    <LoginViaGoogleButton saveGuest={true} />
   </div>
 }
