@@ -16,6 +16,10 @@ const frontendURL = 'http://releasefaster.com'
 
 const {gitUsername, gitToken} = require('./Configs/Passwords');
 
+const uploadCertificates = false
+const uploadDefaultFiles = false
+
+
 const printStdOut = chunk => {
   console.log('stdout', chunk.toString('utf8'))
 }
@@ -160,8 +164,7 @@ const uploadAndLog = async (ssh, local, remote, filename) => {
     });
 }
 
-const uploadCertificates = false
-const uploadDefaultFiles = true
+
 
 const uploadConfigs = async (ssh, ip, check = {}) => {
   var pathToConfigs = gitPath + '/app/my-app/CD'

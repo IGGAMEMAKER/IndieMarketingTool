@@ -512,7 +512,6 @@ class AdminPage extends Component {
 class App extends Component {
   render() {
     return <div>
-      {document.cookie}
       <div className="App">
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
