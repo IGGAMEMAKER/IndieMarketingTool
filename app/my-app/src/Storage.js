@@ -66,6 +66,7 @@ import {
   RISK_SOLUTION_REMOVE, STRATEGY_EDIT, PROFILE_LOGIN_AS_GUEST, PROFILE_LOGIN_AS_GOOGLE
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
+
 import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
 import {isGame} from "./utils/projectUtils";

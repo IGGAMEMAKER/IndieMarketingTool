@@ -63,6 +63,7 @@ app.get('/api/me/logout', flushDevIP)
 
 app.get('/api/projects', isAdminMiddleware, getUserProjects)
 
+
 // app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
 app.get   ('/api/profile',            authenticate, getProfile)
 app.post  ('/api/projects',           authenticate, createProject)
