@@ -1,3 +1,4 @@
+const {convertGuestToNormalUser} = require("./routes/users");
 const {resetPassword, logIn, verifyNewUser, createUser} = require("./routes/emailAuthenticationRoutes");
 
 const {authenticate} = require("./routes/users");
@@ -41,6 +42,7 @@ app.get('/examples', renderSPA)
 app.get('/pricing', renderSPA)
 app.get('/about', renderSPA)
 app.get('/register', renderSPA)
+app.get('/save-progress', renderSPA)
 app.get('/login', renderSPA)
 app.get('/verify', renderSPA)
 app.get('/reset', renderSPA)
@@ -56,6 +58,7 @@ app.get('/admin/panel', isAdminMiddleware, renderSPA)
 // ---------------- API ------------------------
 app.post  ('/api/user/google', authGoogleUser)
 app.post  ('/api/user/guest', authAsGuest)
+app.post  ('/api/user/guest/auth', convertGuestToNormalUser)
 
 app.post  ('/api/user', createUser) // todo remove
 app.post  ('/api/login', logIn) // todo remove

@@ -15,10 +15,12 @@ const flushCookies = (res) => {
 const setGuestUserIdCookie = (res, userId) => {
   res.cookie('userId', userId)
 }
+
 const setCookies = (res, token, email) => {
   res.cookie('sessionToken', token)
   res.cookie('email', email)
 }
+
 const printCookies = async (req, res) => {
   var {email, sessionToken, userId} = await getCookies(req)
 
@@ -51,7 +53,7 @@ const getCookies = async req => {
   })
 }
 
-const generateCookies = async (res, email, req) => {
+const generateCookies = async (res, email) => {
   var token
 
   var u = await UserModel.findOne({email});

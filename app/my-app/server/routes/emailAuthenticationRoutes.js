@@ -79,7 +79,7 @@ const logIn = async (req, res, next) => {
         console.log('logIn', {user})
         // if has OK cookies, maybe send existing ones?
         await printCookies(req, res)
-        await generateCookies(res, email, req)
+        await generateCookies(res, email)
 
         res.json({ok: 1})
       } else {

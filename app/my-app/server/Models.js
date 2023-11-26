@@ -18,7 +18,7 @@ var UserSchema = new Schema({
   sessionCreatedAt: Date,
 
   verifiedAt: Date,
-  isGuest: Boolean,
+  isGuest: { type: Boolean, default: false },
 
   // payments, chosen plan (when)
   // shown interest in (plan...)

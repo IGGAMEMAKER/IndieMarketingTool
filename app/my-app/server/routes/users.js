@@ -1,6 +1,6 @@
+const {ProjectModel} = require("../Models");
 const {createRandomEmail} = require("../createPassword");
 const {ObjectId} = require("../Models");
-const {resetPassword, verifyNewUser, createUser} = require("./emailAuthenticationRoutes");
 
 // TODO duplicate in routes/errorHandlers.js
 const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
@@ -26,23 +26,6 @@ const logout = (req, res, next) => {
 
   // TODO remove sessionToken on server
   res.redirect('/')
-}
-
-const authAsGuest = async (req, res) => {
-  var u = new UserModel({email: createRandomEmail(20), isGuest: true })
-  var user = await u.save()
-
-  setGuestUserIdCookie(res, getUserId(user))
-
-  redirect(res, '/profile', false)
-}
-
-const convertGuestToNormalUser = async (req, res) => {
-  // var userId
-  // var email
-  // isGuest = false;
-  //
-  // UserModel.updateOne({_id: new ObjectId(userId)}, {isGuest: false, email})
 }
 
 
@@ -91,8 +74,59 @@ const authenticate = async (req, res, next) => {
     })
 }
 
+const authAsGuest = async (req, res) => {
+  var u = new UserModel({email: createRandomEmail(20), isGuest: true })
+  var user = await u.save()
 
-const authGoogleUser = async (req, res) => {
+  setGuestUserIdCookie(res, getUserId(user))
+
+  redirect(res, '/profile', false)
+}
+
+const convertGuestToNormalUser = async (req, res) => {
+  var {userId} = await getCookies(req)
+
+  if (userId) {
+    var newEmail = getEmailFromGoogleRequest(req)
+
+    // var u = await UserModel.findOne({_id: new ObjectId(userId)})
+    var u = await UserModel.findOne({email: newEmail})
+
+    if (u) {
+      // email registered, so merge accounts
+
+      // transfer projects
+      await ProjectModel.updateMany({ownerId: userId}, {ownerId: getUserId(u) })
+
+      flushCookies(res)
+      // remove guest account
+      // await UserModel.findByIdAndRemove(userId)
+    } else {
+      // just assign an email
+      await UserModel.updateOne(
+        {_id: new ObjectId(userId)},
+        {email: newEmail, isGuest: false}
+      )
+    }
+
+    await generateCookies(res, newEmail)
+
+    // await UserModel.updateOne({_id: new ObjectId(userId)}, {isGuest: false, email})
+  }
+
+  // 1) guest + new email = attach email normally
+  // 2) guest + existing email: merge accounts?
+
+  // remove userId from cookies
+
+  // var userId
+  // var email
+  // isGuest = false;
+  //
+  // UserModel.updateOne({_id: new ObjectId(userId)}, {isGuest: false, email})
+}
+
+const getEmailFromGoogleRequest = async (req, res) => {
   var {response} = req.body;
 
   var credential = jwtDecode(response.credential)
@@ -100,13 +134,25 @@ const authGoogleUser = async (req, res) => {
 
   var email = credential.email;
 
+  return email;
+}
+
+const authGoogleUser = async (req, res) => {
+  // var {response} = req.body;
+  //
+  // var credential = jwtDecode(response.credential)
+  // console.log('credential', credential)
+  //
+  // var email = credential.email;
+  var email = getEmailFromGoogleRequest(req)
+
   let user = await UserModel.findOne({email})
   if (!user) {
     var u = new UserModel({email})
     await u.save()
   }
 
-  await generateCookies(res, email, req)
+  await generateCookies(res, email)
   redirect(res, '/profile', false)
 }
 
