@@ -63,13 +63,13 @@ import {
   RISK_SOLUTION_ADD,
   RISK_SOLUTION_EDIT,
   RISK_SOLUTION_ORDER_CHANGE,
-  RISK_SOLUTION_REMOVE, STRATEGY_EDIT
+  RISK_SOLUTION_REMOVE, STRATEGY_EDIT, PROFILE_LOGIN_AS_GUEST, PROFILE_LOGIN_AS_GOOGLE
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 import {APP_TYPE_GAME, GOAL_TYPE_FEATURES, LINK_TYPE_DOCS} from "./constants/constants";
 import {getIndexByID, getNextID} from "./utils";
 import {isGame} from "./utils/projectUtils";
-import {navigate, openNewProject, refresh} from "./Navigate";
+import {autoRedirect, navigate, openNewProject, refresh} from "./Navigate";
 
 const CE = 'CHANGE_EVENT';
 
@@ -381,6 +381,15 @@ Dispatcher.register((p) => {
           }
         })
       break
+
+    case PROFILE_LOGIN_AS_GUEST:
+      post('/api/user/guest').then(autoRedirect)
+      break;
+
+    case PROFILE_LOGIN_AS_GOOGLE:
+      post('/api/user/google', {response: p.response}).then(autoRedirect)
+      break;
+
     case PROJECT_LOAD:
       console.log('loading project', p.projectId)
       projectId = p.projectId

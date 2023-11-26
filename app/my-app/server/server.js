@@ -1,3 +1,4 @@
+const {authAsGuest} = require("./routes/users");
 const {authGoogleUser} = require("./routes/users");
 const {canUpdateProjectMiddleware} = require("./routes/updateProject");
 const {app} = require('./expressGenerator')(3000);
@@ -40,20 +41,22 @@ app.get('/login', renderSPA)
 app.get('/verify', renderSPA)
 app.get('/reset', renderSPA)
 
-app.get('/logout', logout, renderSPA)
-app.get('/projects/:objectId', authenticate, renderSPA)
-app.get('/profile', authenticate, renderSPA) // show user projects here
-app.get('/authenticated', authenticate, (req, res) => res.json({authenticated: !!req.userId}))
+app.get('/logout',              logout, renderSPA)
+app.get('/projects/:objectId',  authenticate, renderSPA)
+app.get('/profile',             authenticate, renderSPA) // show user projects here
+app.get('/authenticated',       authenticate, (req, res) => res.json({authenticated: !!req.userId}))
+
 app.get('/admin/panel', isAdminMiddleware, renderSPA)
 
 
 // ---------------- API ------------------------
-app.post  ('/api/login', logIn)
-app.post  ('/api/user', createUser)
 app.post  ('/api/user/google', authGoogleUser)
+app.post  ('/api/user/guest', authAsGuest)
 
-app.post  ('/api/reset-password', resetPassword)
-// app.get   ('/api/users/verify', verifyNewUser)
+app.post  ('/api/user', createUser) // todo remove
+app.post  ('/api/login', logIn) // todo remove
+app.post  ('/api/reset-password', resetPassword) // todo remove
+// app.get   ('/api/users/verify', verifyNewUser) // todo remove
 
 app.get('/api/me/login', saveDevIP)
 app.get('/api/me/logout', flushDevIP)

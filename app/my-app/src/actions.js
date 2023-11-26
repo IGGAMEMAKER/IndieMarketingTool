@@ -71,7 +71,11 @@ import {
   ITERATIONS_SOLVE,
   STRATEGY_EDIT,
   ITERATIONS_GOAL_EXECUTION_TIME_EDIT,
-  ITERATIONS_GOAL_DESCRIPTION_EDIT, ITERATIONS_GROWTH_DESCRIPTION_EDIT, PROJECT_EDIT_ESSENCE
+  ITERATIONS_GOAL_DESCRIPTION_EDIT,
+  ITERATIONS_GROWTH_DESCRIPTION_EDIT,
+  PROJECT_EDIT_ESSENCE,
+  PROFILE_LOGIN_AS_GUEST,
+  PROFILE_LOGIN_AS_GOOGLE
 } from './constants/actionConstants';
 
 const DO = (actionType, obj={}) => Dispatcher.dispatch(Object.assign({actionType}, obj))
@@ -490,11 +494,21 @@ export function logIn(email, password) {
   })
 }
 
+export function loginAsGuest() {
+  DO(PROFILE_LOGIN_AS_GUEST)
+}
+
+export function loginViaGoogleOAuth(response) {
+  DO(PROFILE_LOGIN_AS_GOOGLE, {response})
+}
+
 
 export default {
   logIn,
   loadProject,
   loadProfile,
+  loginAsGuest,
+  loginViaGoogleOAuth,
 
 
   addProject,

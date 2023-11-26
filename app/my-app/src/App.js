@@ -7,7 +7,7 @@ import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {ping, post} from "./PingBrowser";
 import {generatePassword} from "./secret";
-import actions from "./actions";
+import actions, {loginViaGoogleOAuth} from "./actions";
 import {ButtonLink, col1, col2, TryItButton, ReleaseFaster, SimpleLink} from "./UI";
 import {isApp} from "./utils/projectUtils";
 
@@ -148,8 +148,9 @@ function LoginForm({}) {
 
 
   const responseMessage = (response) => {
-    post('/api/user/google', {response})
-      .then(autoRedirect)
+    actions.loginViaGoogleOAuth(response)
+    // post('/api/user/google', {response})
+    //   .then(autoRedirect)
 
     console.log('responseMessage', response);
     var profile = jwtDecode(response.credential);
@@ -215,6 +216,7 @@ function LoginForm({}) {
     {/*<div className="g-signin2" data-onsuccess={"onSignIn"}></div>*/}
     <h2>Log in via socials</h2>
     <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+    <button onClick={() => {actions.loginAsGuest()}}>Continue as guest</button>
     {/*<br />*/}
     {/*<br />*/}
     {/*{regularEmailForm}*/}
