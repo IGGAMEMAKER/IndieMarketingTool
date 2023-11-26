@@ -75,7 +75,7 @@ import {
   ITERATIONS_GROWTH_DESCRIPTION_EDIT,
   PROJECT_EDIT_ESSENCE,
   PROFILE_LOGIN_AS_GUEST,
-  PROFILE_LOGIN_AS_GOOGLE
+  PROFILE_LOGIN_AS_GOOGLE, PROFILE_ATTACH_GOOGLE_TO_GUEST
 } from './constants/actionConstants';
 
 const DO = (actionType, obj={}) => Dispatcher.dispatch(Object.assign({actionType}, obj))
@@ -502,6 +502,10 @@ export function loginViaGoogleOAuth(response) {
   DO(PROFILE_LOGIN_AS_GOOGLE, {response})
 }
 
+export function attachGoogleAccountToGuest(response) {
+  DO(PROFILE_ATTACH_GOOGLE_TO_GUEST, {response})
+}
+
 
 export default {
   logIn,
@@ -509,6 +513,7 @@ export default {
   loadProfile,
   loginAsGuest,
   loginViaGoogleOAuth,
+  attachGoogleAccountToGuest,
 
 
   addProject,

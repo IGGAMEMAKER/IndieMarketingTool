@@ -63,7 +63,7 @@ import {
   RISK_SOLUTION_ADD,
   RISK_SOLUTION_EDIT,
   RISK_SOLUTION_ORDER_CHANGE,
-  RISK_SOLUTION_REMOVE, STRATEGY_EDIT, PROFILE_LOGIN_AS_GUEST, PROFILE_LOGIN_AS_GOOGLE
+  RISK_SOLUTION_REMOVE, STRATEGY_EDIT, PROFILE_LOGIN_AS_GUEST, PROFILE_LOGIN_AS_GOOGLE, PROFILE_ATTACH_GOOGLE_TO_GUEST
 } from "./constants/actionConstants";
 import {ping, post, remove, update} from "./PingBrowser";
 
@@ -389,6 +389,10 @@ Dispatcher.register((p) => {
 
     case PROFILE_LOGIN_AS_GOOGLE:
       post('/api/user/google', {response: p.response}).then(autoRedirect)
+      break;
+
+    case PROFILE_ATTACH_GOOGLE_TO_GUEST:
+      post('/api/user/guest/auth', {response: p.response}).then(autoRedirect)
       break;
 
     case PROJECT_LOAD:

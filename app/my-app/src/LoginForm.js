@@ -19,9 +19,12 @@ export function LoginAsGuestButton({}) {
   return <button onClick={() => {actions.loginAsGuest()}}>Continue as guest</button>
 }
 
-export function LoginViaGoogleButton({}) {
+export function LoginViaGoogleButton({restoreGuest=false}) {
   const responseMessage = (response) => {
-    actions.loginViaGoogleOAuth(response)
+    if (restoreGuest)
+      actions.attachGoogleAccountToGuest(response)
+    else
+      actions.loginViaGoogleOAuth(response)
     // post('/api/user/google', {response})
     //   .then(autoRedirect)
 
