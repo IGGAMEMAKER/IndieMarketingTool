@@ -4,7 +4,7 @@ import './App.css';
 import {Component} from 'react';
 import {Route, Routes} from 'react-router-dom';
 
-import {ProfilePage} from "./ProfilePage";
+import {NewProjectPage, ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {LoginForm, SaveGuestProgressForm} from "./LoginForm";
 import {About} from "./About";
@@ -25,7 +25,7 @@ class App extends Component {
             <Route path='/'                               element={<MainPage/>}/>
             <Route path='/profile'                        element={<ProfilePage/>}/>
             <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
-            <Route path='/projects/'                       element={<ProjectPage/>}/>
+            <Route path='/projects'                       element={<NewProjectPage/>}/>
             <Route path='/admin/panel'                    element={<AdminPage/>}/>
 
             <Route path='/mistakes'                       element={<MistakesPage />}/>
