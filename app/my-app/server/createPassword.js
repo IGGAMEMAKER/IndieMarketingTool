@@ -8,7 +8,10 @@ const createRandomPassword = (
     .map((x) => wishlist[x % wishlist.length])
     .join('')
 
+const createRandomEmail = (len) => createRandomPassword(len) + "_" + Date.now()
+
 // console.log(generatePassword())
 module.exports = {
   createRandomPassword,
+  createRandomEmail
 }

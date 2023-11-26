@@ -1,3 +1,4 @@
+const {createRandomEmail} = require("../createPassword");
 const {ObjectId} = require("../Models");
 const {resetPassword, verifyNewUser, createUser} = require("./emailAuthenticationRoutes");
 
@@ -28,10 +29,14 @@ const logout = (req, res, next) => {
 }
 
 const authAsGuest = async (req, res) => {
-  var u = new UserModel({})
+  var u = new UserModel({email: createRandomEmail(20), isGuest: true })
   var user = await u.save()
 
   setGuestUserIdCookie(res, getUserId(user))
+}
+
+const convertGuestToNormalUser = async (req, res) => {
+
 }
 
 
