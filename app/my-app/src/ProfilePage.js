@@ -4,31 +4,40 @@ import {ProjectList} from "./ProjectList";
 import {APP_TYPE_APP, APP_TYPE_GAME} from "./constants/constants";
 import {Link} from "react-router-dom";
 import {ProjectAdder} from "./ProjectAdder";
+import actions from "./actions";
 
 
 function NewProjectAdder({}) {
-  var [appType, setAppType] = useState(0)
-  var isChosen = appType !== 0
-
-  var chooseTypeForm
-
-  if (!isChosen) {
-    var newGameButton = <button onClick={() => setAppType(APP_TYPE_GAME)}>NEW GAME</button>
-    var newAppButton = <button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP/SERVICE</button>
-
-    chooseTypeForm = <div>{newGameButton}{newAppButton}</div>
-  } else {
-    chooseTypeForm = <ProjectAdder appType={appType} defaultState={true}/>
-  }
+  const btn = (appType, name) => <button onClick={() => actions.addProject(name, appType)}>{name}</button>
 
   return <div>
-    {chooseTypeForm}
+    {btn(APP_TYPE_GAME, "GAME")}
+    {btn(APP_TYPE_APP, "App or Service")}
   </div>
+
+  // var [appType, setAppType] = useState(0)
+  // var isChosen = appType !== 0
+  //
+  // var chooseTypeForm
+  //
+  // if (!isChosen) {
+  //   var newGameButton = <button onClick={() => setAppType(APP_TYPE_GAME)}>NEW GAME</button>
+  //   var newAppButton = <button onClick={() => setAppType(APP_TYPE_APP)}>NEW APP/SERVICE</button>
+  //
+  //   chooseTypeForm = <div>{newGameButton}{newAppButton}</div>
+  // } else {
+  //   chooseTypeForm = <ProjectAdder appType={appType} defaultState={true}/>
+  // }
+  //
+  // return <div>
+  //   {chooseTypeForm}
+  // </div>
 }
 
 export class NewProjectPage extends Component {
   render() {
     return <div>
+      <h1>Create new project</h1>
       <NewProjectAdder/>
     </div>
   }
