@@ -181,7 +181,8 @@ const authGoogleUser = async (req, res) => {
   }
 
   await generateCookies(res, email, req)
-  res.redirect('/profile')
+  res.json({ok: 1})
+  // res.redirect('/profile')
 }
 
 const createUser = async (req, res) => {

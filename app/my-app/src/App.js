@@ -2,19 +2,16 @@
 import './App.css';
 
 import {Component, useState} from 'react';
-// import { BrowserRouter } from 'react-router-dom';
 import {Link, Route, Routes} from 'react-router-dom';
 import {ProfilePage} from "./ProfilePage";
 import {ProjectPage} from "./ProjectPage";
 import {ping, post} from "./PingBrowser";
 import {generatePassword} from "./secret";
 import actions from "./actions";
-import {ButtonLink, col1, col2, CTAButtons, ReleaseFaster, SimpleLink} from "./UI";
+import {ButtonLink, col1, col2, TryItButton, ReleaseFaster, SimpleLink} from "./UI";
 import {isApp} from "./utils/projectUtils";
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { useGoogleOneTapLogin } from '@react-oauth/google';
-import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleOneTapLogin, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import {navigate} from "./Navigate";
 
@@ -152,7 +149,9 @@ function LoginForm({}) {
   const responseMessage = (response) => {
     post('/api/user/google', {response})
       .then(r => {
-        navigate('/profile')
+        if (r.ok) {
+          navigate('/profile')
+        }
       })
 
     console.log('responseMessage', response);
@@ -413,8 +412,6 @@ class MainPage extends Component {
     var loginForm;
     loginForm = authenticated ? profileLink : loginLink
 
-    // const linkToMistakes =
-
     return <div className="App">
       <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
         <h1>
@@ -448,14 +445,12 @@ class MainPage extends Component {
         <div><b>{col1("Project management tool")}</b></div>
         <ul className="left">
           <li>Workflow {col1("designed specifically")} to avoid <SimpleLink url={"/mistakes"} text={"common mistakes indie hackers make"} /> {/*<Link style={{color: 'white'}} to={"/mistakes"}>common mistakes</Link> <b>{col2("indie hackers make")}</b>*/}</li>
-          {/*<li>, indie devs make /!*(myself included)*!/</li>*/}
           <li>Answer main questions about your new idea and get help if you can't give clear answers</li>
           <li>Find out if your project has chances {col1("BEFORE WASTING YEARS")} on it</li>
-          {/*<li>DROP it if it has no potential, cause life is too</li>*/}
         </ul>
 
 
-        <CTAButtons />
+        <TryItButton />
       </header>
     </div>
   }

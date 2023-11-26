@@ -28,7 +28,7 @@ export function ButtonLink ({url, text}) {
   return b
 }
 
-export function CTAButtons() {
+export function TryItButton() {
   return <div>
     <table>
       <tr>
