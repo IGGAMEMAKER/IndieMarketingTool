@@ -1,4 +1,5 @@
 // TODO duplicate in routes/errorHandlers.js
+const {redirect} = require("./redirect");
 const AUTHENTICATION_FAILED_ERROR = 'AUTHENTICATION_FAILED_ERROR'
 
 const {MY_MAIL} = require("../../CD/Configs");
@@ -181,7 +182,8 @@ const authGoogleUser = async (req, res) => {
   }
 
   await generateCookies(res, email, req)
-  res.json({ok: 1})
+  redirect(res, '/profile', false)
+  // res.json({ok: 1})
   // res.redirect('/profile')
 }
 

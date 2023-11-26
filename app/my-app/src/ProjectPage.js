@@ -547,9 +547,7 @@ function AudienceSourcesPanel({channels, audiences}) {
                 </div>
               }
 
-              return <div className="editable" onClick={() => onEdit(true)}>
-                  {s.name}
-                </div>
+              return <div className="editable" onClick={() => onEdit(true)}>{s.name}</div>
             }}
             placeholder={"How will you reach them?"}
             onAction={newStrategy => actions.editAudienceStrategy(newStrategy, id, strategyId)}

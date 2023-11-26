@@ -13,7 +13,7 @@ import {isApp} from "./utils/projectUtils";
 
 import { useGoogleOneTapLogin, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
-import {navigate} from "./Navigate";
+import {autoRedirect, navigate} from "./Navigate";
 
 
 function RegisterForm({}) {
@@ -146,12 +146,14 @@ function LoginForm({}) {
     },
   });
 
+
   const responseMessage = (response) => {
     post('/api/user/google', {response})
       .then(r => {
-        if (r.ok) {
-          navigate('/profile')
-        }
+        autoRedirect(r)
+        // if (r.ok) {
+        //   navigate('/profile')
+        // }
       })
 
     console.log('responseMessage', response);
@@ -515,6 +517,7 @@ class AdminPage extends Component {
 class App extends Component {
   render() {
     return <div>
+      {document.cookie}
       <div className="App">
         <header className="App-header" style={{height: '100%', minHeight: '100vh'}}>
           <Routes>
