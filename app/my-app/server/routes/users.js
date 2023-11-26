@@ -137,6 +137,7 @@ const authenticate = async (req, res, next) => {
     sessionToken
   }
 
+  console.log('check isDevIP')
   if (isDevIP(req)) {
     match = {
       email: MY_MAIL
