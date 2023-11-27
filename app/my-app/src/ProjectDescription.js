@@ -7,7 +7,7 @@ export function ProjectDescription({project, projectId}) {
     <Panel id="Description" header={"What are you doing?"} noHelp/>
     <FieldPicker
       value={project?.description || ""}
-      placeholder={"What will you create?"}
+      placeholder={"What will you create? Just dream. No filters and limitations"}
       onAction={val => {
         actions.editDescription(projectId, val)
       }}

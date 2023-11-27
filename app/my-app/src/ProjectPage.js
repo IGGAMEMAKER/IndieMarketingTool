@@ -218,8 +218,8 @@ export class ProjectPage extends Component {
 
   renderDreamPanel = (project, projectId) => {
     return <div>
-      <h1>Let's dream</h1>
-      <h2>No filters and limitations</h2>
+      {/*<h1>Let's dream</h1>*/}
+      {/*<h2>No filters and limitations</h2>*/}
       <ProjectDescription project={project} projectId={projectId}/>
       <NamePicker project={project} projectId={projectId} />
       {/*<FeatureList noTiming project={project} />*/}
