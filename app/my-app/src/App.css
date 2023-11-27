@@ -61,6 +61,18 @@ body {
   height: 40px;
 }
 
+svg {
+  width:15px;
+  height:15px;
+  stroke-width:10;
+  stroke:red;
+  fill:transparent;
+}
+
+.required-users {
+  color: white;
+}
+
 .chat-container {
   position: fixed;
   right: 15px;

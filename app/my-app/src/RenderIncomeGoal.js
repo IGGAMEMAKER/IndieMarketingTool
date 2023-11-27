@@ -44,10 +44,14 @@ export function renderIncomeGoal(project, goal, goalName, goals = []) {
       </tr>
       {paidPlans.map(plan => {
         return <tr>
-          <td style={{textAlign: 'right'}}>{plan.name}</td>
+          <td style={{textAlign: 'right'}}>{plan.name}'s</td>
           {goals.map(g => {
             return <td key={"plan-in-incomeee." + plan.id + "." + g.name} style={{color: g.color || 'white'}}>
-              {Math.ceil(g.goal / plan.price)}
+              {Math.ceil(g.goal / plan.price)} <span className={"required-users"}>👤</span>
+              {/*<svg viewBox="0 0 150 300">*/}
+              {/*  <circle cx="75" cy="55" r="50"/>*/}
+              {/*  <path d="M75,105 L75,200 L25,300 M75,200 L125,300 M0,150 L150,150"></path>*/}
+              {/*</svg>*/}
             </td>
           })}
         </tr>

@@ -170,11 +170,5 @@ module.exports = {
 
   // login as guest
   authAsGuest,
-  convertGuestToNormalUser,
-
-  // // TODO remove log in with email
-  // logIn,
-  // createUser,
-  // verifyNewUser,
-  // resetPassword,
+  convertGuestToNormalUser
 }

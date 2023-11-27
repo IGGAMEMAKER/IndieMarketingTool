@@ -88,7 +88,7 @@ const createProject = async (req, res) => {
   if (isGame) {
     risks = [
       {name: "Won't be interested"},
-      {name: "Won't understand"},
+      // {name: "Won't understand"},
       {name: "Won't get enough numbers (wishlists, community)"},
       {name: "Dev will take too much time", solutions: ['MAKE SMALL GAME', 'SMALLER', 'TINY']},
       {name: "Won't buy it"},
@@ -98,7 +98,9 @@ const createProject = async (req, res) => {
   } else {
     risks = [
       {name: "Won't be interested"},
-      {name: "Won't understand"},
+      {name: "Won't get enough numbers (wishlists, community)"},
+      {name: "Dev will take too much time", solutions: ['MAKE SMALL APP', 'SMALLER', 'TINY']},
+      // {name: "Won't understand"},
       {name: "Won't buy it"},
       {name: "Won't like it"},
       {name: "Won't recommend it"},
@@ -121,8 +123,8 @@ const createProject = async (req, res) => {
     links: [],
     risks: risks.map(r => r.solutions ? Object.assign({}, r, {solutions: []}) : r),
 
-    desiredProfit: 10000,
-    monthlyExpenses: 500,
+    desiredProfit: 0,
+    monthlyExpenses: 0,
     timeTillBurnout: 1,
 
     iterations: [],

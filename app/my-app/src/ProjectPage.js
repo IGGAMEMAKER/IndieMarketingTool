@@ -54,7 +54,7 @@ const renderCodependentPanels = panels => {
   return actualPanels
 }
 
-function VisionPanel({project, projectId, monetizationPlans, audiences, name}) {
+function VisionPanel({project, projectId, monetizationPlans, audiences}) {
   const VISION_MODE_ESSENCE = "Essence";
   const VISION_MODE_AUDIENCE = "Audience";
   const VISION_MODE_MONETIZATION = "Monetization";
@@ -69,6 +69,7 @@ function VisionPanel({project, projectId, monetizationPlans, audiences, name}) {
   } = storage.getProjectFillingStats(project)
 
   var subModes = [VISION_MODE_ESSENCE] //, VISION_MODE_AUDIENCE, VISION_MODE_MONETIZATION]
+
   if (isFilledEssence)
     subModes.push(VISION_MODE_AUDIENCE)
 
@@ -89,10 +90,9 @@ function VisionPanel({project, projectId, monetizationPlans, audiences, name}) {
     content = <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
 
   return <div>
-    {/*<div className={"menu"}>*/}
-      {subModes.map(m => <button className={`item ${visionMode === m ? 'chosen' : ''}`} onClick={() => {setVisionMode(m)}}>{m}</button>)}
+    {/*<h1>Let's think</h1>*/}
+    {subModes.map(m => <button className={`item ${visionMode === m ? 'chosen' : ''}`} onClick={() => {setVisionMode(m)}}>{m}</button>)}
     <br />
-    {/*</div>*/}
     <br />
     {content}
   </div>
@@ -104,42 +104,8 @@ function VisionPanel({project, projectId, monetizationPlans, audiences, name}) {
   addPanel(panels, canShowNamePicker, 'create at least one PAID plan', '') // <NamePicker project={project} projectId={projectId} name={name} />)
   // addPanel(panels, canShowSubmitProjectButton, 'Change project name', <div><Button text={"REVIEW"}/></div>)
 
-  // const panels = [
-  //   {
-  //     canShow: canShowEssence, error: 'type what are you doing first',
-  //     c: <ProjectEssence project={project} projectId={projectId} />
-  //   },
-  //   {
-  //     canShow: canShowAudiences, error: 'main problem is super important. Type it first',
-  //     c: <AudiencesList audiences={audiences} monetizationPlans={monetizationPlans} project={project} />
-  //   },
-  //   {
-  //     canShow: canShowMonetization, error: 'create at least one audience',
-  //     c: <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
-  //   },
-  //   {
-  //     canShow: canShowNamePicker, error: 'create at least one PAID plan',
-  //     c: <NamePicker project={project} projectId={projectId} name={name} />
-  //   },
-  //   {
-  //     canShow: canShowSubmitProjectButton, error: 'Change project name',
-  //     c: <div><Button text={"REVIEW"}/></div>
-  //   }
-  // ]
-  //
-  // var actualPanels = [];
-  // for (var i = 0; i < panels.length; i++) {
-  //   var p = panels[i];
-  //
-  //   if (p.canShow) {
-  //     actualPanels.push(p.c)
-  //   } else {
-  //     actualPanels.push(<div className="error">To continue, {p.error}</div>)
-  //     i = 10000000
-  //   }
-  // }
-
   return <div>
+    {/*<h2>No filters and limitations</h2>*/}
     {renderCodependentPanels(panels)}
 
     {/*<BusinessPlanner project={this.state.project}/>*/}
@@ -158,21 +124,31 @@ export class ProjectPage extends Component {
   }
 
   copyState = () => {
+    const project = storage.getProject();
+
     this.setState({
       loaded: true,
 
-      audiences: storage.getAudiences(),
-      monetizationPlans: storage.getMonetizationPlans(),
-      channels: storage.getChannels(),
-      risks: storage.getRisks(),
-      name: storage.getProjectName(),
-      appType: storage.getProjectType(),
-      links: storage.getUsefulLinks(),
+      audiences:          storage.getAudiences(),
+      monetizationPlans:  storage.getMonetizationPlans(),
+      channels:           storage.getChannels(),
+      risks:              storage.getRisks(),
+      name:               storage.getProjectName(),
+      appType:            storage.getProjectType(),
+      links:              storage.getUsefulLinks(),
 
-      project: storage.getProject()
+      project,
     })
 
-    document.title = storage.getProject().name
+    var {
+      justStarted
+    } = storage.getProjectFillingStats(project)
+
+    if (justStarted) {
+      this.setState({mode: PROJECT_MODE_DREAM})
+    }
+
+    document.title = project.name
   }
 
   getProjectId = () => {
@@ -242,6 +218,8 @@ export class ProjectPage extends Component {
 
   renderDreamPanel = (project, projectId) => {
     return <div>
+      <h1>Let's dream</h1>
+      <h2>No filters and limitations</h2>
       <ProjectDescription project={project} projectId={projectId}/>
       <NamePicker project={project} projectId={projectId} />
       {/*<FeatureList noTiming project={project} />*/}
@@ -252,11 +230,8 @@ export class ProjectPage extends Component {
 
   renderStrategyMode = (project, channels, links)=> {
     const StrategyPanel = <div>
-      {/*<button onClick={() => this.setMode(PROJECT_MODE_EXECUTION)}>ITERATIONS</button>*/}
-      {/*<br />*/}
-
-      <MessagePlanner project={this.state}/>
       <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
+      <MessagePlanner project={this.state}/>
       {/*<GlobalStrategyPlanner project={this.state.project}/>*/}
       {/*<BusinessPlanner project={this.state.project} />*/}
       <UsefulLinks links={links} />
@@ -292,7 +267,7 @@ export class ProjectPage extends Component {
   }
 
   renderMenus = (project) => {
-    const menus = []
+    var menus = []
 
     // Notes, Vision, Execution
     // Notes - notes, links, sources???, features???
@@ -301,20 +276,37 @@ export class ProjectPage extends Component {
     // const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
     // const menus = ["Notes", "Vision", "Execution",  "Profile"]
 
-    var {canShowSubmitProjectButton} = storage.getProjectFillingStats(project)
+    var {
+      canShowSubmitProjectButton, justStarted,
+      filledOutDreamPanel, filledOutVisionPanel, filledOutResearchPanel, filledOutRiskPanel
+    } = storage.getProjectFillingStats(project)
+
     const addMenu = (mode, name) => menus.push({name, mode})
 
-    if (canShowSubmitProjectButton) {
+    if (filledOutResearchPanel) {
       // addMenu(PROJECT_MODE_STRATEGY, "Growth")
       addMenu(PROJECT_MODE_EXECUTION, "DO")
     }
-    // addMenu(PROJECT_MODE_RESEARCH, "Research")
-    addMenu(PROJECT_MODE_STRATEGY, "Research")
-    addMenu(PROJECT_MODE_RISK, "Risks")
-    addMenu(PROJECT_MODE_VISION, "Vision")
+
+    if (filledOutRiskPanel && filledOutVisionPanel && filledOutDreamPanel) {
+      // addMenu(PROJECT_MODE_RESEARCH, "Research")
+      addMenu(PROJECT_MODE_STRATEGY, "Research")
+      addMenu(PROJECT_MODE_NOTES, "Notes")
+    }
+
+    if (filledOutVisionPanel)
+      addMenu(PROJECT_MODE_RISK, "Risks")
+
+    if (filledOutDreamPanel)
+      addMenu(PROJECT_MODE_VISION, "Vision")
+
     addMenu(PROJECT_MODE_DREAM, "Dream")
 
-    addMenu(PROJECT_MODE_NOTES, "Notes")
+    if (justStarted) {
+      menus = []
+      return []
+      // addMenu()
+    }
 
     return menus.map(m => <button
       className={`item ${this.state.mode === m.mode ? 'chosen' : ''}`}
@@ -322,17 +314,33 @@ export class ProjectPage extends Component {
     >{m.name}</button>)
   }
 
+  renderMenuBar = project => {
+    const profileLink = this.state.isGuest ?
+      <Link className={"item"} to="/save-progress">Save progress</Link>
+      :
+      <Link className={"item"} to="/profile">Profile</Link>
+
+    var menus = this.renderMenus(project)
+    if (!menus.length)
+      return []
+
+    return <div className="menu">
+      {menus}
+      {profileLink}
+    </div>
+  }
+
   renderMainContent = (project) => {
     var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
     var projectId = this.getProjectId()
 
     switch (this.state.mode) {
-      case PROJECT_MODE_NOTES: return this.renderNotesPanel(project, projectId);
-      case PROJECT_MODE_DREAM: return this.renderDreamPanel(project, projectId);
-      case PROJECT_MODE_STRATEGY: return this.renderStrategyMode(project, channels, links);
-      case PROJECT_MODE_EXECUTION: return this.renderExecution(project)
-      case PROJECT_MODE_RISK: return this.renderRiskPanel(project, risks)
-      case PROJECT_MODE_RESEARCH: return this.renderResearchPanel(project, links)
+      case PROJECT_MODE_NOTES:      return this.renderNotesPanel(project, projectId);
+      case PROJECT_MODE_DREAM:      return this.renderDreamPanel(project, projectId);
+      case PROJECT_MODE_STRATEGY:   return this.renderStrategyMode(project, channels, links);
+      case PROJECT_MODE_EXECUTION:  return this.renderExecution(project)
+      case PROJECT_MODE_RISK:       return this.renderRiskPanel(project, risks)
+      case PROJECT_MODE_RESEARCH:   return this.renderResearchPanel(project, links)
 
       case PROJECT_MODE_VISION:
       default: return <VisionPanel project={project} projectId={projectId} monetizationPlans={monetizationPlans} audiences={audiences} />
@@ -345,19 +353,12 @@ export class ProjectPage extends Component {
       return <div>Loading the project...</div>
 
     var project = this.state?.project
-    const profileLink = this.state.isGuest ?
-      <Link className={"item"} to="/save-progress">Save progress</Link>
-      :
-      <Link className={"item"} to="/profile">Profile</Link>
 
     return (
       <div className="App">
         <div>
           <center>
-            <div className="menu">
-              {this.renderMenus(project)}
-              {profileLink}
-            </div>
+            {this.renderMenuBar(project)}
             {/*<div className={"menu-input"}>*/}
             {/*  <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />*/}
             {/*</div>*/}
@@ -429,7 +430,7 @@ function MonetizationAdder({}) {
     <div className="Audience-item">
       <textarea
         value={planName}
-        placeholder={"monetization plan"}
+        placeholder={"monetization name f.e: starter, demo, pro"}
         onChange={event => {
           onChangeName(event.target.value)
         }}
@@ -723,10 +724,11 @@ function RisksPanel({risks}) {
 
 function MonetizationPanel({plans, audiences}) {
   // var content = <div>How will you make money? <MonetizationAdder /></div>
-  var content = <div>How will you make money?</div>
+  // var content = <div>How will you make money?</div>
+  var content = <div>Who will pay and for what?</div>
   return <div>
     <Panel id="Monetization" header={content} />
-    <h6>WHO WILL PAY & FOR WHAT?</h6>
+    {/*<h6>WHO WILL PAY & FOR WHAT?</h6>*/}
     {/*<br />*/}
     {/*<br />*/}
     <div className="Audience-Container">
@@ -815,10 +817,7 @@ function Validator({project}) {
 
   if (isApp(project)) {
     essenceCheck = <p>
-      Does the problem exist? Who has that problem?
-
-      <br />
-      <br />
+      <h2>Does the problem exist?</h2>
       {saasThing}
       {/*<br />*/}
       {/*{gameplayThing}*/}

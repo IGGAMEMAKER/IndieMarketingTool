@@ -388,7 +388,7 @@ const renderIncomeTab = (project, it, income, setDesiredIncome, monetizationPlan
   }
 
   return <div>
-    <h3>How much do you want to earn?</h3>
+    <h3>How much do you want to earn monthly/onetime?</h3>
     {income === sustainability ? '' : <button onClick={() => onIncomeSet(sustainability)}>Survive</button>}
     {income === dream          ? '' : <button onClick={() => onIncomeSet(dream)}>Dream</button>}
     <NumberPicker

@@ -36,7 +36,7 @@ export function BusinessPlanner({project, showAudiencesToo = true}) {
   }
 
   return <div>
-    <Panel id="Goals" header={"Can you get these numbers?".toUpperCase()} noHelp/>
+    <Panel id="Goals" header={"Can you get this many users?"} noHelp/>
     {/*<p>How much do you want to earn?<br/>{desiredProfitPicker}$</p>*/}
 
     {/*{renderIncomeGoal(project, desiredProfit, "earn")}*/}

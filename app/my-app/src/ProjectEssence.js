@@ -10,7 +10,7 @@ export function ProjectEssence({project}) {
 
   if (isGame(project)) {
     essence = project?.mainFeeling;
-    header = "Which emotion/feel do you want to create?"
+    header = "Which feel do you want to create?"
     placeholder = "main feel"
   } else {
     essence = project?.mainProblem;

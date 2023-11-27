@@ -10,7 +10,7 @@ function BenefitAdder({index}) {
     }}
     autoFocus={false}
     defaultState={true}
-    placeholder="What will you offer?"
+    placeholder="Problems, features, limits e.t.c."
   />
 
   var [benefit, onChange] = useState("");
@@ -34,6 +34,7 @@ export function MonetizationPlan({plan, index, audiences}) {
   const indexName = "monetizationIndex"
   var [isDragging, setDragging] = useState(false)
   var [isDraggingTarget, setDraggingTarget] = useState(false)
+
   var isCorrectTypeDrag = e => {
     try {
       var d = parseInt(e.dataTransfer.getData(indexName))
@@ -169,7 +170,9 @@ export function MonetizationPlan({plan, index, audiences}) {
     </div>
     <br />
     {/*<div>{descriptionPicker}</div>*/}
-    <div className={"Monetization-plan-benefits"}>{
+    <div className={"Monetization-plan-benefits"}>
+      <div>What will you offer?</div>
+      {
       benefitPicker.length ?
         <ul>{benefitPicker}<div style={{textAlign: 'left'}}>{adder}</div></ul>
         :

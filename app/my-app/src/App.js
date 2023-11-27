@@ -24,8 +24,8 @@ class App extends Component {
           <Routes>
             <Route path='/'                               element={<MainPage/>}/>
             <Route path='/profile'                        element={<ProfilePage/>}/>
-            <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
             <Route path='/projects'                       element={<NewProjectPage/>}/>
+            <Route path='/projects/:projectId'            element={<ProjectPage/>}/>
             <Route path='/admin/panel'                    element={<AdminPage/>}/>
 
             <Route path='/mistakes'                       element={<MistakesPage />}/>
@@ -37,7 +37,6 @@ class App extends Component {
             <Route path='/reset'                          element={<ResetPasswordForm />}/>
 
             <Route path='/about'                          element={<About />}/>
-
           </Routes>
         </header>
       </div>

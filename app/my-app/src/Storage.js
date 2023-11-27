@@ -126,9 +126,18 @@ class Storage extends EventEmitter {
     const isFilledDescription = !!project?.description
     const isFilledEssence     = project?.mainFeeling || project?.mainProblem
     const isFilledAudiences   = project.audiences.length;
-    const hasPaidPlans        = project.monetizationPlans.filter(mp => mp.price > 0).length
-    // TODO rework same name
+    const hasPaidPlans        = project.monetizationPlans.filter(mp => mp.price > 0 && mp.audiences.length).length
     const isDefaultName       = this.isDefaultName(project)
+
+    const justStarted         = isDefaultName || !isFilledDescription
+
+    const filledOutDreamPanel = !isDefaultName && isFilledDescription && project.desiredProfit > 0
+    const filledOutVisionPanel = isFilledEssence && isFilledAudiences && hasPaidPlans
+    const filledOutRiskPanel = true
+    const filledOutResearchPanel = false
+
+
+    // TODO rework same name
 
     // TODO decide if I can show specific panels in View files, not in storage
     const canShowEssence = isFilledDescription;
@@ -148,6 +157,13 @@ class Storage extends EventEmitter {
       canShowMonetization,
       canShowNamePicker,
       canShowSubmitProjectButton,
+
+      filledOutDreamPanel,
+      filledOutVisionPanel,
+      filledOutRiskPanel,
+      filledOutResearchPanel,
+
+      justStarted
     }
   }
 
