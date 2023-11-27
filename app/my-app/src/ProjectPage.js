@@ -595,6 +595,12 @@ function AudienceSourcesPanel({channels, audiences}) {
     <div className="Audience-Container">
       {audiences.map(a => renderAudienceStrats(a))}
     </div>
+    <AudienceChannelsList channels={channels} />
+  </div>
+}
+
+function AudienceChannelsList({channels}) {
+  return <div>
     <h3>Where will you find your audience?</h3>
     <div className="Container">
       <ChannelList channels={channels} />
