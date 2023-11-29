@@ -31,6 +31,10 @@ const sslFiles = [
   "releasefaster_com_chain.crt",
   "releasefaster_com.ca-bundle"
 ]
+// await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
+// await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
+// await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
+// await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
 
 const hostJSONPath = "./Configs/hosts.json";
 // customs?
@@ -44,6 +48,7 @@ const RunSystem = async () => {
   // FRONTEND
   await RestartFrontend();
 }
+
 
 const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
 
@@ -92,7 +97,7 @@ const refreshTokens = () => {
   servers.REMOTE.forEach(async ip => {
     var ssh = await conn(ip);
 
-    await uploadConfigs(ssh, ip, {});
+    await uploadConfigs(ssh, ip);
     await sleep(1);
 
     // try {
@@ -105,7 +110,6 @@ const refreshTokens = () => {
 
     console.log('updated??!', ip)
   })
-  // console.log('ALL DONE. You can CTrl-C')
 }
 
 const prepareServer = async (ip, forceProjectRemoval = false) => {
@@ -172,16 +176,12 @@ const uploadAndLog = async (ssh, local, remote, filename) => {
 
 
 
-const uploadConfigs = async (ssh, ip, check = {}) => {
+const uploadConfigs = async (ssh, ip) => {
   // Main Configs
   if (uploadDefaultFiles) {
-    await uploadAndLog(ssh, './Configs/confs.json', pathToConfigs + '/Configs/confs.json', 'confs.json')
-
-    // Passwords.js
+    await uploadAndLog(ssh, './Configs/confs.json',   pathToConfigs + '/Configs/confs.json', 'confs.json')
     await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js', 'Passwords.js')
-
-    // hosts.json
-    await uploadAndLog(ssh, './Configs/hosts.json', pathToConfigs + '/Configs/hosts.json', 'hosts.json')
+    await uploadAndLog(ssh, './Configs/hosts.json',   pathToConfigs + '/Configs/hosts.json', 'hosts.json')
 
 
     // Server IP
@@ -196,18 +196,13 @@ const uploadConfigs = async (ssh, ip, check = {}) => {
     sslFiles.forEach(async f => {
       await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f, f)
     })
-
-    // await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
-    // await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
-    // await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
-    // await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
   }
 }
 
 const gitPull = async (ssh, ip, updateNPMLibs = false, check = {}) => {
   console.log('trying to UPDATE CODE');
 
-  await uploadConfigs(ssh, ip, check);
+  await uploadConfigs(ssh, ip);
 
   //await cloneRepo(ssh);
   // await ssh.exec('rm -fr ".git/rebase-apply"', [], crawlerOptions)
@@ -336,6 +331,7 @@ const encodeToken = str => {
 
   return str;
 }
+
 const cloneRepo = async (ssh) => {
   const clone = `git clone https://${encodeToken(gitToken)}@github.com/${gitUsername}/${projectName}.git`
 
@@ -445,8 +441,7 @@ const StopServer = async (ssh) => {
 
 const BuildFrontendApp = async (ssh) => {
   var check = {}
-  // await ssh.exec('cd app/my-app/', [], crawlerOptions)
-  //   .finally()
+
   await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
     .then(r => {
       check['pull'] = true;
@@ -461,21 +456,18 @@ const BuildFrontendApp = async (ssh) => {
 }
 
 const RestartFrontend = async () => {
-  const ssh = new NodeSSH();
-
   console.log('RestartFrontend');
 
-  await ssh.connect(getSSHConfig(servers.FRONTEND_IP))
+  // const ssh = new NodeSSH();
+  //
+  // await ssh.connect(getSSHConfig(servers.FRONTEND_IP))
+  const ssh = await conn(servers.FRONTEND_IP)
 
   await BuildFrontendApp(ssh)
 
-  const url = frontendURL
-  // console.log('Trying to open', url);
-  //
   // await countdown(2);
 
-  console.log('You can start using website');
-  await open(url);
+  await open(frontendURL);
 }
 
 const RunService = async (ip, scriptName, appName) => {
