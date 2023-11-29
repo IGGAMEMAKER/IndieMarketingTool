@@ -458,9 +458,6 @@ const BuildFrontendApp = async (ssh) => {
 const RestartFrontend = async () => {
   console.log('RestartFrontend');
 
-  // const ssh = new NodeSSH();
-  //
-  // await ssh.connect(getSSHConfig(servers.FRONTEND_IP))
   const ssh = await conn(servers.FRONTEND_IP)
 
   await BuildFrontendApp(ssh)
@@ -471,35 +468,43 @@ const RestartFrontend = async () => {
 }
 
 const RunService = async (ip, scriptName, appName) => {
-  const ssh = new NodeSSH();
-
   console.log('Trying to run service ' + scriptName + ' on ' + ip);
 
-  await ssh.connect(getSSHConfig(ip))
-    .then(async r => {
-      // stop service
-      await ssh.exec(`pm2 delete ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
-        .then(r => {
-          console.log('deleted service ' + scriptName + '.js on ' + ip);
-        })
-        .catch(err => {
-          logError({}, 'cannot delete ' + scriptName + '.js on ' + ip, err);
-        });
+  // const ssh = new NodeSSH();
+  //
+  // await ssh.connect(getSSHConfig(ip))
 
-      console.log('Stopped service ' + appName + ' on ' + ip)
+  try {
+    const ssh = await conn(ip)
 
-      // start service
-      await ssh.exec(`pm2 start ${scriptName}.js --name ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
-        .then(r => {
-          console.log('started ' + scriptName + '.js on ' + ip);
-        })
-        .catch(err => {
-          logError({}, 'cannot start ' + scriptName + '.js on ' + ip, err);
-        });
-    })
-    .catch(err => {
-      console.error('ERROR WHEN RUNNING SERVICE', ip, scriptName, err);
-    })
+    // stop service (if had any)
+    await ssh.exec(`pm2 delete ${appName}`, [], {cwd: gitPath, onStderr, onStdout})
+      .then(r => {
+        console.log('deleted service ' + scriptName + '.js on ' + ip);
+      })
+      .catch(err => {
+        logError({}, 'cannot delete ' + scriptName + '.js on ' + ip, err);
+      });
+
+    console.log('Stopped service ' + appName + ' on ' + ip)
+
+    // start service
+    await ssh.exec(`pm2 start ${scriptName}.js --name ${appName}`, [], {cwd: gitPath, onStderr, onStdout})
+      .then(r => {
+        console.log('started ' + scriptName + '.js on ' + ip);
+      })
+      .catch(err => {
+        logError({}, 'cannot start ' + scriptName + '.js on ' + ip, err);
+      });
+  } catch (err) {
+    console.error('ERROR WHEN RUNNING SERVICE', ip, scriptName, err);
+  }
+
+  // .then(async r => {
+  // })
+  // .catch(err => {
+  //   console.error('ERROR WHEN RUNNING SERVICE', ip, scriptName, err);
+  // })
 }
 
 const HealthCheck = () => {
