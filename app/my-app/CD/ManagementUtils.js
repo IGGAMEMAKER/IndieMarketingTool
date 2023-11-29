@@ -79,7 +79,6 @@ const refreshTokens = () => {
     await sleep(1);
 
     // try {
-    //   customBlock()
     //   // https://stackoverflow.com/questions/2432764/how-to-change-the-uri-url-for-a-remote-git-repository
     //   // await ssh.exec(`git remote set-url origin https://${gitToken}@github.com/${gitUsername}/${gitFile}`, [], crawlerOptions)
     // }
@@ -446,20 +445,8 @@ const RunFullSystem = async () => {
 const RunSystem = async () => {
   customBlock()
 
-  /*// LOGGER
-  await RunService(servers.LOGGER_IP, 'LogServer', 'LG');
-  await sleep(2);*/
-
-  // WORKERS
-  // servers.WORKERS_IP.forEach(ip => {
-  //   RunService(ip, 'Worker', 'WK')
-  // })
-
-  // await sleep(3)
-
   // DB
   await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
-  // await sleep(10);
 
   // FRONTEND
   await RestartFrontend();
@@ -526,8 +513,7 @@ const refreshIPs = () => {
   const ipStringified = JSON.stringify(IPonly, null, 2);
 
   customBlock()
-  const data = `// Logger\n// DB\n// FRONTEND\n// WEB3\n\nconst IPs = ${ipStringified}\n\nmodule.exports = IPs;\n`;
-  //console.log(data);
+  const data = `// Is automatically generated from hosts.json\n\nconst IPs = ${ipStringified}\n\nmodule.exports = IPs;\n`;
 
   fs.writeFileSync("./Configs/IPs.js", data)
 }
