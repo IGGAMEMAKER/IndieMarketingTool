@@ -1,17 +1,22 @@
 const fs = require('fs')
-const servers = require("./Configs/servers");
-const {formatServerName} = require("./Configs/servers");
+const open = require('open')
 const {NodeSSH} = require('node-ssh')
 
-const open = require('open')
-const {isLogger} = require("./Configs/servers");
-
-const customBlock = () => {}
+const servers = require("./Configs/servers");
+const {formatServerName} = require("./Configs/servers");
 
 const {gitUsername, gitToken} = require('./Configs/Passwords');
 
+const customBlock = () => {}
+
 // customs?
 customBlock()
+
+const mainConfigs = [
+  'confs.json',
+  'Passwords.js',
+  'hosts.json',
+]
 
 const projectDir = '/usr/marketing/';
 const projectName = 'IndieMarketingTool'
@@ -24,6 +29,7 @@ const frontendURL = 'http://releasefaster.com'
 
 const uploadCertificates = false
 const uploadDefaultFiles = false
+const uploadNginxConfig  = false
 
 const sslFiles = [
   "releasefaster_com.crt",
@@ -31,12 +37,24 @@ const sslFiles = [
   "releasefaster_com_chain.crt",
   "releasefaster_com.ca-bundle"
 ]
+
+
+// await uploadAndLog(ssh, './Configs/confs.json',   pathToConfigs + '/Configs/confs.json')
+// await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js')
+// await uploadAndLog(ssh, './Configs/hosts.json',   pathToConfigs + '/Configs/hosts.json')
+
+// sslFiles.forEach(async f => {
+//   await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f)
+// })
+
 // await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
 // await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
 // await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
 // await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
 
 const hostJSONPath = "./Configs/hosts.json";
+const goToFrontendRoot = 'cd app/my-app/ ;'
+
 // customs?
 
 const RunSystem = async () => {
@@ -48,6 +66,8 @@ const RunSystem = async () => {
   // FRONTEND
   await RestartFrontend();
 }
+
+
 
 
 const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
@@ -164,38 +184,51 @@ const prepareServer = async (ip, forceProjectRemoval = false) => {
 //     })
 // }
 
-const uploadAndLog = async (ssh, local, remote, filename) => {
+const uploadAndLog = async (ssh, local, remote) => {
   return ssh.putFile(local, remote) // uploadFile(ssh, local, remote)
     .then(r => {
-      console.log(`${filename} uploaded OK`);
+      console.log(`${local} uploaded OK`);
     })
     .catch(err => {
-      logError({}, `${filename} upload failed`, err);
+      logError({}, `${local} upload failed`, err);
     });
 }
 
-
+const uploadFileFromConfigsFolder = async (ssh, file) => {
+  await uploadAndLog(ssh, './Configs/' + file, pathToConfigs + '/Configs/' + file);
+}
+const uploadFiles = (ssh, files) => {
+  files.forEach(async f => {
+    // await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f)
+    await uploadFileFromConfigsFolder(ssh, f)
+  })
+}
 
 const uploadConfigs = async (ssh, ip) => {
   // Main Configs
   if (uploadDefaultFiles) {
-    await uploadAndLog(ssh, './Configs/confs.json',   pathToConfigs + '/Configs/confs.json', 'confs.json')
-    await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js', 'Passwords.js')
-    await uploadAndLog(ssh, './Configs/hosts.json',   pathToConfigs + '/Configs/hosts.json', 'hosts.json')
-
+    uploadFiles(ssh, mainConfigs)
 
     // Server IP
     const myHost = `./Configs/myHost-${ip}.js`;
     const content = `module.exports = { ip: "${ip}" };` // module.exports = { ip: 'http://localhost' };
     fs.writeFileSync(myHost, content)
 
-    await uploadAndLog(ssh, myHost, pathToConfigs + '/Configs/myHost.js', 'myHost.js')
+    await uploadAndLog(ssh, myHost, pathToConfigs + '/Configs/myHost.js')
   }
 
   if (uploadCertificates) {
-    sslFiles.forEach(async f => {
-      await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f, f)
-    })
+    uploadFiles(ssh, sslFiles)
+  }
+
+  if (uploadNginxConfig) {
+    await uploadFileFromConfigsFolder(ssh, './Configs/nginx', pathToConfigs + '/Configs/' + projectName)
+
+    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
   }
 }
 
@@ -208,6 +241,7 @@ const gitPull = async (ssh, ip, updateNPMLibs = false, check = {}) => {
   // await ssh.exec('rm -fr ".git/rebase-apply"', [], crawlerOptions)
   //   .finally()
   // await ssh.exec('git checkout\ngit pull --rebase --autostash', [], crawlerOptions)
+
   await ssh.exec('git pull', [], crawlerOptions)
     .then(r => {
       check['pull'] = true;
@@ -400,14 +434,8 @@ const UpdateSystem = async (updateNPMLibs = false) => {
   setTimeout(RunFullSystem, 8000);
 }
 
-const StopSystem = async (forceLogStopping = false) => {
-  var stoppable = servers.REMOTE.filter(ip => {
-    var logger = isLogger(ip);
-
-    return !logger || forceLogStopping;
-  })
-
-  stoppable.forEach(async ip => {
+const StopSystem = async () => {
+  servers.REMOTE.forEach(async ip => {
     const ssh = await conn(ip);
 
     StopServer(ssh);
@@ -438,11 +466,10 @@ const StopServer = async (ssh) => {
   console.log('stopped server');
 }
 
-
 const BuildFrontendApp = async (ssh) => {
   var check = {}
 
-  await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
+  await ssh.exec(`${goToFrontendRoot} npm run build`, [], crawlerOptions)
     .then(r => {
       check['pull'] = true;
 
