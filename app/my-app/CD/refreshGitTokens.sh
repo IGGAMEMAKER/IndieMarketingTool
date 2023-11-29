@@ -1,2 +1,2 @@
-nvm use 16
+source nvmuse
 node serverManager.js refreshTokens
