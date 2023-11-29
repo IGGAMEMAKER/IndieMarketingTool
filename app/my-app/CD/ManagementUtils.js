@@ -491,7 +491,13 @@ const RunService = async (ip, scriptName, appName) => {
   await ssh.connect(getSSHConfig(ip))
     .then(async r => {
       // await StopServer(ssh);
-      await ssh.exec(`pm2 delete ${appName}`)
+      await ssh.exec(`pm2 delete ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
+        .then(r => {
+          console.log('deleted service ' + scriptName + '.js on ' + ip);
+        })
+        .catch(err => {
+          logError({}, 'cannot delete ' + scriptName + '.js on ' + ip, err);
+        });
 
       console.log('Stopped server ' + ip)
 
