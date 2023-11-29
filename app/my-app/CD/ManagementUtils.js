@@ -19,6 +19,8 @@ const {gitUsername, gitToken} = require('./Configs/Passwords');
 const uploadCertificates = false
 const uploadDefaultFiles = false
 
+const hostJSONPath = "./Configs/hosts.json";
+const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
 
 const printStdOut = chunk => {
   console.log('stdout', chunk.toString('utf8'))
@@ -42,27 +44,6 @@ const conn = async ip => {
   try {
     console.log(`CONNECTED to ${ip}!`);
     return ssh.connect(getSSHConfig(ip));
-
-    return ssh;
-  } catch (err) {
-    console.error('Connection failed', err);
-
-    return null;
-  }
-}
-
-const conn2 = async (ip, username, password) => {
-  const ssh = new NodeSSH()
-
-  var conf2 = {
-    host: ip,
-    username,
-    password,
-  }
-
-  try {
-    console.log(`CONNECTED to ${ip}!`);
-    return ssh.connect(conf2);
 
     return ssh;
   } catch (err) {
@@ -234,20 +215,6 @@ const gitPull = async (ssh, ip, updateNPMLibs = false, check = {}) => {
   }
 }
 
-const resetGitDirectory = async (ssh, ip) => {
-  await ssh.exec(`rm ${projectDir}`, [], crawlerOptions)
-    .catch(err => err);
-
-  console.log('RM dir')
-
-  await ssh.mkdir(projectDir)
-    .catch(err => err);
-
-  console.log('made a dir')
-
-  await cloneRepo(ssh);
-}
-
 
 const installNodeWithN = async ssh => {
   await ssh.exec('n i lts', [], handlers);
@@ -410,14 +377,6 @@ const UpdateCode = async (updateNPMLibs = false) => {
   })
 };
 
-const UpdateRepos = async (updateNPMLibs = false) => {
-  servers.REMOTE.forEach(async ip => {
-    const ssh = await conn(ip);
-
-    resetGitDirectory(ssh, ip);
-  })
-}
-
 const UpdateSystem = async (updateNPMLibs = false) => {
   UpdateCode(updateNPMLibs);
 
@@ -516,6 +475,7 @@ const StopServer = async (ssh) => {
   await ssh.exec('pm2 delete all', [], handlers)
     .then(r => r)
     .catch(r => r);
+
   await ssh.exec('pm2 flush', [], handlers)
     .then(r => r)
     .catch(r => r);
@@ -523,14 +483,15 @@ const StopServer = async (ssh) => {
   console.log('stopped server');
 }
 
-const RunService = async (ip, scriptName, appName = scriptName) => {
+const RunService = async (ip, scriptName, appName) => {
   const ssh = new NodeSSH();
 
   console.log('Trying to run service ' + scriptName + ' on ' + ip);
 
   await ssh.connect(getSSHConfig(ip))
     .then(async r => {
-      await StopServer(ssh);
+      // await StopServer(ssh);
+      await ssh.exec(`pm2 delete ${appName}`)
 
       console.log('Stopped server ' + ip)
 
@@ -559,9 +520,6 @@ const HealthCheck = () => {
       })
   })
 }
-
-const hostJSONPath = "./Configs/hosts.json";
-const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
 
 const refreshIPs = () => {
   // make IPs file from hosts

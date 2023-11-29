@@ -22,18 +22,28 @@ console.log('serverManger got args', args);
 
 refreshIPs();
 
+
 switch (mode) {
+  case 'install': prepareAll(); break;
+
   case 'stop': StopSystem(true); break;
   case 'run': RunFullSystem(); break;
   case 'info': HealthCheck(); break;
-
-  case 'install': prepareAll(); break;
-
-  // .commit.sh MOST OFTEN USE
-  case 'update': UpdateSystem(args.length >= 2 && args[1] === "l"); break;
   case 'updateCodeAndLibs': UpdateCode(true); break;
   case 'refreshTokens': refreshTokens(); break;
 
+
+  // .commit.sh MOST OFTEN USE
+  case 'update': UpdateSystem(args.length >= 2 && args[1] === "l"); break;
+  case 'site':
+    UpdateCodeOnFrontend(false).finally()
+
+    // FRONTEND
+    sleep(5)
+      .then(async r => {
+        await RestartFrontend()
+      })
+    break;
 
   case 'add':
     if (args.length <= 3) {
@@ -49,16 +59,6 @@ switch (mode) {
     console.log('ips', ips);
 
     addIPs(username, password, ips);
-    break;
-
-  case 'site':
-    UpdateCodeOnFrontend(false).finally()
-
-    // FRONTEND
-    sleep(5)
-      .then(async r => {
-        await RestartFrontend()
-      })
     break;
 
   default: console.log('unknown mode'); break;
