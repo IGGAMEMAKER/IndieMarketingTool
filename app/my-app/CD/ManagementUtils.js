@@ -12,7 +12,7 @@ const {gitUsername, gitToken} = require('./Configs/Passwords');
 
 // customs?
 customBlock()
-const gitFile = 'OpenseaCrawler.git'
+
 const projectDir = '/usr/marketing/';
 const projectName = 'IndieMarketingTool'
 
@@ -25,8 +25,25 @@ const frontendURL = 'http://releasefaster.com'
 const uploadCertificates = false
 const uploadDefaultFiles = false
 
+const sslFiles = [
+  "releasefaster_com.crt",
+  "releasefaster.com.key",
+  "releasefaster_com_chain.crt",
+  "releasefaster_com.ca-bundle"
+]
+
 const hostJSONPath = "./Configs/hosts.json";
 // customs?
+
+const RunSystem = async () => {
+  customBlock()
+
+  // DB
+  await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
+
+  // FRONTEND
+  await RestartFrontend();
+}
 
 const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
 
@@ -80,7 +97,7 @@ const refreshTokens = () => {
 
     // try {
     //   // https://stackoverflow.com/questions/2432764/how-to-change-the-uri-url-for-a-remote-git-repository
-    //   // await ssh.exec(`git remote set-url origin https://${gitToken}@github.com/${gitUsername}/${gitFile}`, [], crawlerOptions)
+    //   // await ssh.exec(`git remote set-url origin https://${gitToken}@github.com/${gitUsername}/OpenseaCrawler.git`, [], crawlerOptions)
     // }
     // catch (err) {
     //   console.error('UPDATE GITHUB TOKEN', err);
@@ -176,11 +193,14 @@ const uploadConfigs = async (ssh, ip, check = {}) => {
   }
 
   if (uploadCertificates) {
-    customBlock()
-    await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
-    await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
-    await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
-    await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
+    sslFiles.forEach(async f => {
+      await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f, f)
+    })
+
+    // await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
+    // await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
+    // await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
+    // await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
   }
 }
 
@@ -398,38 +418,6 @@ const StopSystem = async (forceLogStopping = false) => {
   })
 }
 
-const RestartFrontend = async () => {
-  const ssh = new NodeSSH();
-
-  var ip = servers.FRONTEND_IP
-
-  console.log('RestartFrontend on ' + ip);
-
-  await ssh.connect(getSSHConfig(ip))
-
-  var check = {}
-  // await ssh.exec('cd app/my-app/', [], crawlerOptions)
-  //   .finally()
-  await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
-    .then(r => {
-      check['pull'] = true;
-
-      console.log('BUILT')
-    })
-    .catch(err => {
-      check['pull'] = false;
-
-      logError(check, 'BUILD failed', err);
-    })
-
-  const url = frontendURL
-  console.log('Trying to open', url);
-
-  await countdown(2);
-
-  console.log('You can start using website');
-  await open(url);
-}
 
 const countdown = async seconds => {
   for (var i = seconds; i >= 0; i--) {
@@ -440,16 +428,6 @@ const countdown = async seconds => {
 
 const RunFullSystem = async () => {
   await RunSystem();
-}
-
-const RunSystem = async () => {
-  customBlock()
-
-  // DB
-  await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
-
-  // FRONTEND
-  await RestartFrontend();
 }
 
 const StopServer = async (ssh) => {
@@ -464,6 +442,42 @@ const StopServer = async (ssh) => {
   console.log('stopped server');
 }
 
+
+const BuildFrontendApp = async (ssh) => {
+  var check = {}
+  // await ssh.exec('cd app/my-app/', [], crawlerOptions)
+  //   .finally()
+  await ssh.exec('cd app/my-app/ ; npm run build', [], crawlerOptions)
+    .then(r => {
+      check['pull'] = true;
+
+      console.log('BUILT')
+    })
+    .catch(err => {
+      check['pull'] = false;
+
+      logError(check, 'BUILD failed', err);
+    })
+}
+
+const RestartFrontend = async () => {
+  const ssh = new NodeSSH();
+
+  console.log('RestartFrontend');
+
+  await ssh.connect(getSSHConfig(servers.FRONTEND_IP))
+
+  await BuildFrontendApp(ssh)
+
+  const url = frontendURL
+  // console.log('Trying to open', url);
+  //
+  // await countdown(2);
+
+  console.log('You can start using website');
+  await open(url);
+}
+
 const RunService = async (ip, scriptName, appName) => {
   const ssh = new NodeSSH();
 
@@ -471,6 +485,7 @@ const RunService = async (ip, scriptName, appName) => {
 
   await ssh.connect(getSSHConfig(ip))
     .then(async r => {
+      // stop service
       await ssh.exec(`pm2 delete ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
         .then(r => {
           console.log('deleted service ' + scriptName + '.js on ' + ip);
@@ -481,6 +496,7 @@ const RunService = async (ip, scriptName, appName) => {
 
       console.log('Stopped service ' + appName + ' on ' + ip)
 
+      // start service
       await ssh.exec(`pm2 start ${scriptName}.js --name ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
         .then(r => {
           console.log('started ' + scriptName + '.js on ' + ip);
@@ -512,7 +528,6 @@ const refreshIPs = () => {
 
   const ipStringified = JSON.stringify(IPonly, null, 2);
 
-  customBlock()
   const data = `// Is automatically generated from hosts.json\n\nconst IPs = ${ipStringified}\n\nmodule.exports = IPs;\n`;
 
   fs.writeFileSync("./Configs/IPs.js", data)
