@@ -4,7 +4,6 @@ const {
   prepareAll,
   UpdateSystem,
   UpdateCode,
-  UpdateCodeOnServer,
   UpdateCodeOnFrontend,
   StopSystem,
   RunSystem,

@@ -1,25 +1,33 @@
 const fs = require('fs')
-const path = require('path')
 const servers = require("./Configs/servers");
-const {getServerType, formatServerName} = require("./Configs/servers");
+const {formatServerName} = require("./Configs/servers");
 const {NodeSSH} = require('node-ssh')
 
 const open = require('open')
 const {isLogger} = require("./Configs/servers");
 
+const customBlock = () => {}
+
+const {gitUsername, gitToken} = require('./Configs/Passwords');
+
+// customs?
+customBlock()
+const gitFile = 'OpenseaCrawler.git'
 const projectDir = '/usr/marketing/';
 const projectName = 'IndieMarketingTool'
+
 const gitPath = `${projectDir}${projectName}`;
+const pathToConfigs = gitPath + '/app/my-app/CD'
 
 // const frontendURL = 'http://www.indiemarketingtool.com'
 const frontendURL = 'http://releasefaster.com'
-
-const {gitUsername, gitToken} = require('./Configs/Passwords');
 
 const uploadCertificates = false
 const uploadDefaultFiles = false
 
 const hostJSONPath = "./Configs/hosts.json";
+// customs?
+
 const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
 
 const printStdOut = chunk => {
@@ -70,13 +78,14 @@ const refreshTokens = () => {
     await uploadConfigs(ssh, ip, {});
     await sleep(1);
 
-    try {
-      // https://stackoverflow.com/questions/2432764/how-to-change-the-uri-url-for-a-remote-git-repository
-      await ssh.exec(`git remote set-url origin https://${gitToken}@github.com/${gitUsername}/OpenseaCrawler.git`, [], crawlerOptions)
-    }
-    catch (err) {
-      console.error('UPDATE GITHUB TOKEN', err);
-    }
+    // try {
+    //   customBlock()
+    //   // https://stackoverflow.com/questions/2432764/how-to-change-the-uri-url-for-a-remote-git-repository
+    //   // await ssh.exec(`git remote set-url origin https://${gitToken}@github.com/${gitUsername}/${gitFile}`, [], crawlerOptions)
+    // }
+    // catch (err) {
+    //   console.error('UPDATE GITHUB TOKEN', err);
+    // }
 
     console.log('updated??!', ip)
   })
@@ -125,18 +134,18 @@ const prepareServer = async (ip, forceProjectRemoval = false) => {
   await checkEnvironmentStatus(ssh, ip)
 }
 
-const uploadFile = (ssh, local, remote) => {
-  return ssh.putFile(local, remote)
-    .then(r => {
-      //console.log(`UPLOADED ${remote}`);
-    })
-    .catch(r => {
-      //console.log(`FAILED to upload ${remote}`)
-    })
-}
+// const uploadFile = (ssh, local, remote) => {
+//   return ssh.putFile(local, remote)
+//     .then(r => {
+//       //console.log(`UPLOADED ${remote}`);
+//     })
+//     .catch(r => {
+//       //console.log(`FAILED to upload ${remote}`)
+//     })
+// }
 
 const uploadAndLog = async (ssh, local, remote, filename) => {
-  return uploadFile(ssh, local, remote)
+  return ssh.putFile(local, remote) // uploadFile(ssh, local, remote)
     .then(r => {
       console.log(`${filename} uploaded OK`);
     })
@@ -148,8 +157,6 @@ const uploadAndLog = async (ssh, local, remote, filename) => {
 
 
 const uploadConfigs = async (ssh, ip, check = {}) => {
-  var pathToConfigs = gitPath + '/app/my-app/CD'
-
   // Main Configs
   if (uploadDefaultFiles) {
     await uploadAndLog(ssh, './Configs/confs.json', pathToConfigs + '/Configs/confs.json', 'confs.json')
@@ -170,10 +177,11 @@ const uploadConfigs = async (ssh, ip, check = {}) => {
   }
 
   if (uploadCertificates) {
-    await uploadAndLog(ssh, './Configs/releasefaster_com.crt', pathToConfigs + '/Configs/releasefaster_com.crt', 'releasefaster_com.crt')
-    await uploadAndLog(ssh, './Configs/releasefaster.com.key', pathToConfigs + '/Configs/releasefaster.com.key', 'releasefaster.com.key')
-    await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt', pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
-    await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle', pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
+    customBlock()
+    await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
+    await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
+    await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
+    await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
   }
 }
 
@@ -285,14 +293,11 @@ const installPM2 = async (ssh, check) => {
 
 
 const openPorts = async (ssh) => {
-  await openPort(ssh, servers.PORT_LOGGER);
-  await openPort(ssh, servers.PORT_DB);
-  await openPort(ssh, servers.PORT_FRONTEND);
-  await openPort(ssh, servers.PORT_WORKER);
-  await openPort(ssh, servers.PORT_WEB3);
-  await openPort(ssh, servers.PORT_FLOOR_TRACKER);
-  //await openPort(ssh, servers.PORT_SERVER_MANAGER);
+  servers.PORTS.forEach(async p => {
+    await openPort(ssh, p)
+  })
 }
+
 const openPort = async (ssh, port) => await ssh.exec(`ufw allow ${port}/tcp`, [], handlers);
 
 const encodeToken = str => {
@@ -371,9 +376,6 @@ const UpdateCodeOnFrontend = async (updateNPMLibs = false) => {
 const UpdateCode = async (updateNPMLibs = false) => {
   servers.REMOTE.forEach(async ip => {
     await UpdateCodeOnServer(ip, updateNPMLibs)
-    // const ssh = await conn(ip);
-    //
-    // gitPull(ssh, ip, updateNPMLibs, {});
   })
 };
 
@@ -438,23 +440,15 @@ const countdown = async seconds => {
 }
 
 const RunFullSystem = async () => {
-  /*await RunService(servers.SERVER_MANAGER_IP, 'ManagementUtils', 'Core');
-  await sleep(2);*/
-
-  // LOGGER (Which is MANAGER SERVER, actually)
-  // await RunService(servers.LOGGER_IP, 'LogServer', 'LG');
-  // await sleep(2);
-
   await RunSystem();
 }
 
 const RunSystem = async () => {
+  customBlock()
+
   /*// LOGGER
   await RunService(servers.LOGGER_IP, 'LogServer', 'LG');
   await sleep(2);*/
-
-  // FLOOR TRACKER
-  // await RunService(servers.FLOOR_TRACKER_IP, 'FloorTracker', 'TR')
 
   // WORKERS
   // servers.WORKERS_IP.forEach(ip => {
@@ -490,7 +484,6 @@ const RunService = async (ip, scriptName, appName) => {
 
   await ssh.connect(getSSHConfig(ip))
     .then(async r => {
-      // await StopServer(ssh);
       await ssh.exec(`pm2 delete ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
         .then(r => {
           console.log('deleted service ' + scriptName + '.js on ' + ip);
@@ -499,7 +492,7 @@ const RunService = async (ip, scriptName, appName) => {
           logError({}, 'cannot delete ' + scriptName + '.js on ' + ip, err);
         });
 
-      console.log('Stopped server ' + ip)
+      console.log('Stopped service ' + appName + ' on ' + ip)
 
       await ssh.exec(`pm2 start ${scriptName}.js --name ${appName}`, [], { cwd: gitPath, onStderr, onStdout })
         .then(r => {
@@ -518,7 +511,6 @@ const HealthCheck = () => {
   servers.REMOTE.forEach(async ip => {
     const ssh = await conn(ip);
 
-
     await ssh.exec(`pm2 list`, [], { cwd: gitPath, onStderr, onStdout: idle })
       .then(async r => {
         console.log(formatServerName(ip));
@@ -532,8 +524,8 @@ const refreshIPs = () => {
   const IPonly = getHostsManually().map(h => h.ip);
 
   const ipStringified = JSON.stringify(IPonly, null, 2);
-  //console.log(ipStringified);
 
+  customBlock()
   const data = `// Logger\n// DB\n// FRONTEND\n// WEB3\n\nconst IPs = ${ipStringified}\n\nmodule.exports = IPs;\n`;
   //console.log(data);
 
