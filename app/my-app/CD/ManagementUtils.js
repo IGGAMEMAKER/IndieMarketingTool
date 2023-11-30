@@ -39,6 +39,16 @@ const sslFiles = [
 const hostsJSONPath = "./Configs/hosts.json";
 // customs?
 
+const RunSystem = async () => {
+  customBlock()
+
+  // DB
+  await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
+
+  // FRONTEND
+  await RestartFrontend();
+}
+
 const RestartFrontend = async () => {
   console.log('RestartFrontend');
 
@@ -50,18 +60,6 @@ const RestartFrontend = async () => {
 
   await open(frontendURL);
 }
-
-const RunSystem = async () => {
-  customBlock()
-
-  // DB
-  await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
-
-  // FRONTEND
-  await RestartFrontend();
-}
-
-
 
 
 /// STANDARD stuff
