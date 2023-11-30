@@ -6,17 +6,15 @@ const servers = require("./Configs/servers");
 const {formatServerName} = require("./Configs/servers");
 
 const {gitUsername, gitToken} = require('./Configs/Passwords');
-
-const customBlock = () => {}
-
-// customs?
-customBlock()
-
 const mainConfigs = [
   'confs.json',
   'Passwords.js',
   'hosts.json',
 ]
+
+const customBlock = () => {}
+
+customBlock()
 
 const projectDir = '/usr/marketing/';
 const projectName = 'IndieMarketingTool'
@@ -24,8 +22,8 @@ const projectName = 'IndieMarketingTool'
 const gitPath = `${projectDir}${projectName}`;
 const pathToConfigs = gitPath + '/app/my-app/CD'
 
-// const frontendURL = 'http://www.indiemarketingtool.com'
 const frontendURL = 'http://releasefaster.com'
+const goToFrontendRoot = 'cd app/my-app/ ;'
 
 const uploadCertificates = false
 const uploadDefaultFiles = false
@@ -38,24 +36,20 @@ const sslFiles = [
   "releasefaster_com.ca-bundle"
 ]
 
-
-// await uploadAndLog(ssh, './Configs/confs.json',   pathToConfigs + '/Configs/confs.json')
-// await uploadAndLog(ssh, './Configs/Passwords.js', pathToConfigs + '/Configs/Passwords.js')
-// await uploadAndLog(ssh, './Configs/hosts.json',   pathToConfigs + '/Configs/hosts.json')
-
-// sslFiles.forEach(async f => {
-//   await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f)
-// })
-
-// await uploadAndLog(ssh, './Configs/releasefaster_com.crt',        pathToConfigs + '/Configs/releasefaster_com.crt',       'releasefaster_com.crt')
-// await uploadAndLog(ssh, './Configs/releasefaster.com.key',        pathToConfigs + '/Configs/releasefaster.com.key',       'releasefaster.com.key')
-// await uploadAndLog(ssh, './Configs/releasefaster_com_chain.crt',  pathToConfigs + '/Configs/releasefaster_com_chain.crt', 'releasefaster_com_chain.crt')
-// await uploadAndLog(ssh, './Configs/releasefaster_com.ca-bundle',  pathToConfigs + '/Configs/releasefaster_com.ca-bundle', 'releasefaster_com.ca-bundle')
-
-const hostJSONPath = "./Configs/hosts.json";
-const goToFrontendRoot = 'cd app/my-app/ ;'
-
+const hostsJSONPath = "./Configs/hosts.json";
 // customs?
+
+const RestartFrontend = async () => {
+  console.log('RestartFrontend');
+
+  const ssh = await conn(servers.FRONTEND_IP)
+
+  await BuildFrontendApp(ssh)
+
+  // await countdown(2);
+
+  await open(frontendURL);
+}
 
 const RunSystem = async () => {
   customBlock()
@@ -70,8 +64,7 @@ const RunSystem = async () => {
 
 
 
-const getHostsManually = () => JSON.parse(fs.readFileSync(hostJSONPath));
-
+/// STANDARD stuff
 const printStdOut = chunk => {
   console.log('stdout', chunk.toString('utf8'))
 }
@@ -119,14 +112,6 @@ const refreshTokens = () => {
 
     await uploadConfigs(ssh, ip);
     await sleep(1);
-
-    // try {
-    //   // https://stackoverflow.com/questions/2432764/how-to-change-the-uri-url-for-a-remote-git-repository
-    //   // await ssh.exec(`git remote set-url origin https://${gitToken}@github.com/${gitUsername}/OpenseaCrawler.git`, [], crawlerOptions)
-    // }
-    // catch (err) {
-    //   console.error('UPDATE GITHUB TOKEN', err);
-    // }
 
     console.log('updated??!', ip)
   })
@@ -199,13 +184,11 @@ const uploadFileFromConfigsFolder = async (ssh, file) => {
 }
 const uploadFiles = (ssh, files) => {
   files.forEach(async f => {
-    // await uploadAndLog(ssh, './Configs/' + f, pathToConfigs + '/Configs/' + f)
     await uploadFileFromConfigsFolder(ssh, f)
   })
 }
 
 const uploadConfigs = async (ssh, ip) => {
-  // Main Configs
   if (uploadDefaultFiles) {
     uploadFiles(ssh, mainConfigs)
 
@@ -222,7 +205,7 @@ const uploadConfigs = async (ssh, ip) => {
   }
 
   if (uploadNginxConfig) {
-    await uploadFileFromConfigsFolder(ssh, './Configs/nginx', pathToConfigs + '/Configs/' + projectName)
+    await uploadFileFromConfigsFolder(ssh, 'nginx', projectName)
 
     console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
     console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
@@ -382,6 +365,7 @@ const cloneRepo = async (ssh) => {
     })
 }
 
+const getHostsManually = () => JSON.parse(fs.readFileSync(hostsJSONPath));
 
 const getIPProfile = (ip) => {
   return getHostsManually().find(h => h.ip === ip);
@@ -482,18 +466,6 @@ const BuildFrontendApp = async (ssh) => {
     })
 }
 
-const RestartFrontend = async () => {
-  console.log('RestartFrontend');
-
-  const ssh = await conn(servers.FRONTEND_IP)
-
-  await BuildFrontendApp(ssh)
-
-  // await countdown(2);
-
-  await open(frontendURL);
-}
-
 const RunService = async (ip, scriptName, appName) => {
   console.log('Trying to run service ' + scriptName + ' on ' + ip);
 
@@ -504,6 +476,7 @@ const RunService = async (ip, scriptName, appName) => {
   try {
     const ssh = await conn(ip)
     await StopServer(ssh)
+
     // stop service (if had any)
     await ssh.exec(`pm2 delete ${appName}-${projectName}`, [], {cwd: gitPath, onStderr, onStdout})
       .then(r => {
@@ -570,7 +543,7 @@ const addIPs = async (username, password, IPs) => {
       hosts.push(h)
   })
 
-  fs.writeFileSync(hostJSONPath, JSON.stringify(hosts, null, 2));
+  fs.writeFileSync(hostsJSONPath, JSON.stringify(hosts, null, 2));
   refreshIPs();
 
   IPs.forEach(ip => {

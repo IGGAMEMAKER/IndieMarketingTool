@@ -1,3 +1,4 @@
+const {PORTS} = require("../CD/Configs/servers");
 const {convertGuestToNormalUser} = require("./routes/users");
 const {resetPassword, logIn, verifyNewUser, createUser} = require("./routes/emailAuthenticationRoutes");
 
@@ -6,7 +7,8 @@ const {logout} = require("./routes/users");
 const {authAsGuest} = require("./routes/users");
 const {authGoogleUser} = require("./routes/users");
 const {canUpdateProjectMiddleware} = require("./routes/updateProject");
-const {app} = require('./expressGenerator')(3000);
+
+const {app} = require('./expressGenerator')(PORTS.PORT_DB);
 
 // if fails to find modules
 // npm cache clean -force
