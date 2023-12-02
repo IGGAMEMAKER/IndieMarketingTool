@@ -36,7 +36,9 @@ export class TryItButton extends Component {
   // }
 
   render() {
-    const hasCookies = document.cookie("userId") || document.cookie("email")
+    const hasCookie = m => document.cookie.length > 0
+    const hasCookies = hasCookie("userId") || hasCookie("email")
+
     let authButton = <ButtonLink url={"/login"} text={"Try it!"} />
     if (hasCookies)
       authButton = <ButtonLink url={"/profile"} text={"Profile"} />
@@ -45,6 +47,7 @@ export class TryItButton extends Component {
       <table>
         <tr>
           {/*<td>{loginForm}</td>*/}
+          {document.cookie}
           <td>
             {authButton}
           </td>

@@ -11,7 +11,7 @@ const goToFrontendRoot = 'cd app/my-app/ ;'
 
 const uploadCertificates = false
 const uploadDefaultFiles = false
-const uploadNginxConfig  = true
+const uploadNginxConfig  = false
 
 const sslFiles = [
   "releasefaster_com.crt",
