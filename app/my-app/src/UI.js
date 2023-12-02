@@ -31,12 +31,8 @@ export function ButtonLink ({url, text}) {
 }
 
 export class TryItButton extends Component {
-  // componentDidMount() {
-  //
-  // }
-
   render() {
-    const hasCookie = m => document.cookie.length > 0
+    const hasCookie = m => document.cookie.includes(m)
     const hasCookies = hasCookie("userId") || hasCookie("email")
 
     let authButton = <ButtonLink url={"/login"} text={"Try it!"} />
@@ -47,10 +43,10 @@ export class TryItButton extends Component {
       <table>
         <tr>
           {/*<td>{loginForm}</td>*/}
-          {document.cookie}
           <td>
             {authButton}
           </td>
+          {document.cookie}
           {/*<td></td>*/}
           {/*<td></td>*/}
           {/*<td>*/}
