@@ -47,7 +47,7 @@ app.get('/verify', renderSPA)
 app.get('/reset', renderSPA)
 
 
-app.get('/create',              createGuestAccountIfHasNoCookies/*, async (req, res, next) => {
+app.get('/create'/*,              createGuestAccountIfHasNoCookies*//*, async (req, res, next) => {
   await createGuestAccount(req, res);
   next()
 }*/, renderSPA)
@@ -77,7 +77,7 @@ app.get('/api/projects', isAdminMiddleware, getUserProjects)
 
 // app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
 app.get   ('/api/profile',            authenticate, getProfile)
-app.post  ('/api/projects',           authenticate, createProject)
+app.post  ('/api/projects',           createGuestAccountIfHasNoCookies, authenticate, createProject)
 
 app.get   ('/api/projects/:objectId', /*authenticate,*/ getProject) // TODO visibility settings
 app.put   ('/api/projects/:objectId', authenticate, canUpdateProjectMiddleware, updateProject) // save changes // TODO CHECK WHO CAN EDIT THE PROJECT
