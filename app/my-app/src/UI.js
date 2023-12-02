@@ -41,9 +41,12 @@ export class TryItButton extends Component {
     }
     const hasCookies = hasCookie("userId") || hasCookie("email")
 
-    let authButton = <ButtonLink url={"/login"} text={"Try it!"} />
+    const loginBtn = <ButtonLink url={"/login"} text={"Try it!"} />
+    let authButton = loginBtn
     if (hasCookies)
       authButton = <ButtonLink url={"/profile"} text={"Profile"} />
+    else
+      console.log(document.cookie)
 
     return <div>
       <table>
@@ -52,7 +55,6 @@ export class TryItButton extends Component {
           <td>
             {authButton}
           </td>
-          {document.cookie}
           {/*<td></td>*/}
           {/*<td></td>*/}
           {/*<td>*/}
@@ -65,13 +67,3 @@ export class TryItButton extends Component {
     </div>
   }
 }
-
-// module.exports = {
-//   Button,
-//   ButtonLink,
-//   SimpleLink,
-//   CTAButtons,
-//   ReleaseFaster,
-//   col1,
-//   col2, col3
-// }
