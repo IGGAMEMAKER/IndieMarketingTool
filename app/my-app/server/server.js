@@ -46,7 +46,7 @@ app.get('/reset', renderSPA)
 
 app.get('/logout',              logout, renderSPA)
 app.get('/projects/:objectId',  authenticate, renderSPA)
-app.get('/projects',            authenticate, renderSPA)
+app.get('/create',            authenticate, renderSPA)
 app.get('/profile',             authenticate, renderSPA) // show user projects here
 
 app.get('/admin/panel', isAdminMiddleware, renderSPA)

@@ -69,7 +69,7 @@ export class ProfilePage extends Component {
       <h1>PROFILE</h1>
       <br/>
       <br/>
-      <Link to={"/projects"}>New Project</Link>
+      <Link to={"/create"}>New Project</Link>
       <br/>
       <ProjectList projectIDs={projectIDs}/>
       <br />
