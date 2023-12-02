@@ -2,23 +2,23 @@
 # Hi, zyabl!
 
 server {
-        listen 80;
-        listen [::]:80;
+        listen 80 default_server;
+        listen [::]:80 default_server;
 
         server_name releasefaster.com www.releasefaster.com indiemarketingtool.com www.indiemarketingtool.com;
-        root /usr/marketing;
 
         return 301 https://$server_name$request_uri;
 }
 
 server {
-        listen 443 ssl;
-        listen [::]:443 ssl;
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
 
         ssl_certificate /usr/marketing/IndieMarketingTool/app/my-app/CD/Configs/releasefaster_com_chain.crt;
         ssl_certificate_key /usr/marketing/IndieMarketingTool/app/my-app/CD/Configs/releasefaster.com.key;
 
-        root /usr/marketing;
+        # TODO doesn't work??? path doesn't exist
+        root /usr/marketingtool;
 
         # Add index.php to the list if you are using PHP
         index index.html index.htm index.nginx-debian.html;

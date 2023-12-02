@@ -1,15 +1,11 @@
 // const {PORTS} = require("../CD/Configs/servers");
-const {convertGuestToNormalUser} = require("./routes/users");
-const {resetPassword, logIn, createUser} = require("./routes/emailAuthenticationRoutes");
-
-const {authenticate} = require("./routes/users");
-const {logout} = require("./routes/users");
-const {authAsGuest} = require("./routes/users");
-const {authGoogleUser} = require("./routes/users");
-const {canUpdateProjectMiddleware} = require("./routes/updateProject");
-
 // const {app} = require('./expressGenerator')(PORTS.PORT_DB);
 const {app} = require('./expressGenerator')(3000);
+
+const {resetPassword, logIn, createUser} = require("./routes/emailAuthenticationRoutes");
+
+const {authenticate, authAsGuest, authGoogleUser, convertGuestToNormalUser, logout} = require("./routes/users");
+const {canUpdateProjectMiddleware} = require("./routes/updateProject");
 
 // if fails to find modules
 // npm cache clean -force
@@ -18,8 +14,6 @@ const {app} = require('./expressGenerator')(3000);
 // npm i --save --legacy-peer-deps
 // https://stackoverflow.com/questions/9023672/how-do-i-resolve-cannot-find-module-error-using-node-js
 
-
-// const {logout, authenticate, createUser, logIn, resetPassword} = require("./routes/users");
 const {isAdminMiddleware, saveDevIP, flushDevIP} = require('./routes/isAdminMiddleware')
 
 const {getUserProjects} = require("./routes/getUserProjects");

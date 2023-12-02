@@ -4,46 +4,21 @@ const {NodeSSH} = require('node-ssh')
 
 const servers = require("./Configs/servers");
 const {formatServerName} = require("./Configs/servers");
+const {hostsJSONPath, serviceList, mainConfigs, pathToConfigs, sslFiles, projectName, uploadNginxConfig, uploadCertificates, uploadDefaultFiles, gitPath, projectDir, runFrontendConfigs, frontendURL, goToFrontendRoot} = require("./ManagementUtilsConfigs");
 
 const {gitUsername, gitToken} = require('./Configs/Passwords');
-const mainConfigs = [
-  'confs.json',
-  'Passwords.js',
-  'hosts.json',
-]
 
-const customBlock = () => {}
-
-customBlock()
-
-const projectDir = '/usr/marketing/';
-const projectName = 'IndieMarketingTool'
-
-const gitPath = `${projectDir}${projectName}`;
-const pathToConfigs = gitPath + '/app/my-app/CD'
-
-const frontendURL = 'http://releasefaster.com'
-const goToFrontendRoot = 'cd app/my-app/ ;'
-
-const uploadCertificates = false
-const uploadDefaultFiles = false
-const uploadNginxConfig  = false
-
-const sslFiles = [
-  "releasefaster_com.crt",
-  "releasefaster.com.key",
-  "releasefaster_com_chain.crt",
-  "releasefaster_com.ca-bundle"
-]
-
-const hostsJSONPath = "./Configs/hosts.json";
-// customs?
+const runServices = services => {
+  services.forEach(async cfg => {
+    await RunService(cfg.ip, cfg.scriptName, cfg.app)
+  })
+}
 
 const RunSystem = async () => {
-  customBlock()
+  runServices(serviceList)
 
   // DB
-  await RunService(servers.DB_IP, 'app/my-app/server/server', 'DB');
+  // await RunService(servers.DB_IP, 'server/server', 'DB');
 
   // FRONTEND
   await RestartFrontend();
@@ -53,6 +28,8 @@ const RestartFrontend = async () => {
   console.log('RestartFrontend');
 
   const ssh = await conn(servers.FRONTEND_IP)
+
+  runServices(runFrontendConfigs)
 
   await BuildFrontendApp(ssh)
 
@@ -115,6 +92,16 @@ const refreshTokens = () => {
   })
 }
 
+const loadLibs = async (ssh, check={}) => {
+  await updateAPT(ssh, check);
+
+
+  await installNPM(ssh, check);
+  await installPM2(ssh, check);
+  await installN(ssh, check);
+
+  await installNodeWithN(ssh, check);
+}
 const prepareServer = async (ip, forceProjectRemoval = false) => {
   const check = {};
 
@@ -143,32 +130,15 @@ const prepareServer = async (ip, forceProjectRemoval = false) => {
   await openPorts(ssh);
   check['opened_ports'] = true;
 
-  await updateAPT(ssh, check);
-
-
-  await installNPM(ssh, check);
-  await installPM2(ssh, check);
-  await installN(ssh, check);
-
-  await installNodeWithN(ssh, check);
+  await loadLibs(ssh, check)
 
   await gitPull(ssh, ip, true);
 
   await checkEnvironmentStatus(ssh, ip)
 }
 
-// const uploadFile = (ssh, local, remote) => {
-//   return ssh.putFile(local, remote)
-//     .then(r => {
-//       //console.log(`UPLOADED ${remote}`);
-//     })
-//     .catch(r => {
-//       //console.log(`FAILED to upload ${remote}`)
-//     })
-// }
-
 const uploadAndLog = async (ssh, local, remote) => {
-  return ssh.putFile(local, remote) // uploadFile(ssh, local, remote)
+  return ssh.putFile(local, remote)
     .then(r => {
       console.log(`${local} uploaded OK`);
     })
@@ -203,13 +173,25 @@ const uploadConfigs = async (ssh, ip) => {
   }
 
   if (uploadNginxConfig) {
-    await uploadFileFromConfigsFolder(ssh, 'nginx', projectName)
+    const nginxName = projectName.toLowerCase()
 
-    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
-    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
-    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
-    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
-    console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+    try {
+      await uploadAndLog(ssh, './Configs/nginx', '/etc/nginx/sites-available/' + nginxName)
+      await ssh.exec(`ln -s /etc/nginx/sites-available/${nginxName} /etc/nginx/sites-enabled/${nginxName}`, [], crawlerOptions)
+    } catch (e) {
+      console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+      console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+      console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+      console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+      console.log('MAKE A SYMLINK FOR NGINX CONFIG! + RESTART NGINX MAYBE?')
+    }
+
+    try{
+      await ssh.exec(`nginx -t`, [], crawlerOptions)
+    } catch (e) {}
+    try {
+      await ssh.exec(`service nginx restart`, [], crawlerOptions)
+    } catch (e) {}
   }
 }
 
@@ -322,7 +304,7 @@ const installPM2 = async (ssh, check) => {
 
 
 const openPorts = async (ssh) => {
-  servers.PORTS.forEach(async p => {
+  Object.values(servers.PORTS).forEach(async p => {
     await openPort(ssh, p)
   })
 }
@@ -473,7 +455,7 @@ const RunService = async (ip, scriptName, appName) => {
 
   try {
     const ssh = await conn(ip)
-    await StopServer(ssh)
+    // await StopServer(ssh)
 
     // stop service (if had any)
     await ssh.exec(`pm2 delete ${appName}-${projectName}`, [], {cwd: gitPath, onStderr, onStdout})
