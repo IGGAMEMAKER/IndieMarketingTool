@@ -31,26 +31,20 @@ const logout = (req, res, next) => {
 
 const authenticate = async (req, res, next) => {
   console.log('\nauthenticate')
-  var {email, sessionToken, userId} = await getCookies(req)
+
   await printCookies(req, res)
 
-  var query = {
-    email,
-    sessionToken
-  }
+  var query;
+  var {email, sessionToken, userId} = await getCookies(req)
 
-  console.log('check isDevIP')
   if (isDevIP(req)) {
-    query = {
-      email: MY_MAIL
-    }
-  }
-
-  if (userId) {
-    query = {
-      _id: new ObjectId(userId)
-    }
+    // used for localhost
+    query = {email: MY_MAIL}
+  } else if (userId) {
+    query = {_id: new ObjectId(userId)}
     req.isGuest = true
+  } else {
+    query = {email, sessionToken}
   }
 
   UserModel.findOne(query)
@@ -75,13 +69,30 @@ const authenticate = async (req, res, next) => {
     })
 }
 
-const authAsGuest = async (req, res) => {
+const createGuestAccount = async (req, res) => {
   var u = new UserModel({email: createRandomEmail(20), isGuest: true })
   var user = await u.save()
 
   setGuestUserIdCookie(res, getUserId(user))
+}
+const authAsGuest = async (req, res) => {
+  await createGuestAccount(req, res)
+  // var u = new UserModel({email: createRandomEmail(20), isGuest: true })
+  // var user = await u.save()
+  //
+  // setGuestUserIdCookie(res, getUserId(user))
 
   redirect(res, '/profile', false)
+}
+
+const createGuestAccountIfHasNoCookies = async (req, res, next) => {
+  var {email, sessionToken, userId} = await getCookies(req)
+
+  var hasUserInfo = userId || (email && sessionToken)
+  if (!hasUserInfo)
+    await createGuestAccount(req, res)
+
+  next();
 }
 
 const convertGuestToNormalUser = async (req, res) => {
@@ -170,5 +181,7 @@ module.exports = {
 
   // login as guest
   authAsGuest,
+  createGuestAccount,
+  createGuestAccountIfHasNoCookies,
   convertGuestToNormalUser
 }

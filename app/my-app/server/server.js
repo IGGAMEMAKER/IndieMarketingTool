@@ -1,5 +1,7 @@
 // const {PORTS} = require("../CD/Configs/servers");
 // const {app} = require('./expressGenerator')(PORTS.PORT_DB);
+const {createGuestAccountIfHasNoCookies} = require("./routes/users");
+const {createGuestAccount} = require("./routes/users");
 const {app} = require('./expressGenerator')(3000);
 
 const {resetPassword, logIn, createUser} = require("./routes/emailAuthenticationRoutes");
@@ -44,10 +46,14 @@ app.get('/login', renderSPA)
 app.get('/verify', renderSPA)
 app.get('/reset', renderSPA)
 
-app.get('/logout',              logout, renderSPA)
+
+app.get('/create',              createGuestAccountIfHasNoCookies/*, async (req, res, next) => {
+  await createGuestAccount(req, res);
+  next()
+}*/, renderSPA)
 app.get('/projects/:objectId',  authenticate, renderSPA)
-app.get('/create',            authenticate, renderSPA)
 app.get('/profile',             authenticate, renderSPA) // show user projects here
+app.get('/logout',              logout, renderSPA)
 
 app.get('/admin/panel', isAdminMiddleware, renderSPA)
 

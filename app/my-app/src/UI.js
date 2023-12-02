@@ -41,7 +41,8 @@ export class TryItButton extends Component {
     }
     const hasCookies = hasCookie("userId") || hasCookie("email")
 
-    const loginBtn = <ButtonLink url={"/login"} text={"Try it!"} />
+    // const loginBtn = <ButtonLink url={"/login"} text={"Try it!"} />
+    const loginBtn = <ButtonLink url={"/create"} text={"Try it!"} />
     let authButton = loginBtn
     if (hasCookies)
       authButton = <ButtonLink url={"/profile"} text={"Profile"} />
