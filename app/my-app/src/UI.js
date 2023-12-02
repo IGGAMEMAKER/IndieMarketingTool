@@ -32,8 +32,12 @@ export function ButtonLink ({url, text}) {
 export class TryItButton extends Component {
   render() {
     const hasCookie = m => {
+      const c = document.cookie;
+      if (c.endsWith(m + "="))
+        return false;
+
       // has cookie and it's not empty
-      return document.cookie.includes(m) && !document.cookie.includes(m+"=;")
+      return c.includes(m) && !c.includes(m + "=;")
     }
     const hasCookies = hasCookie("userId") || hasCookie("email")
 
