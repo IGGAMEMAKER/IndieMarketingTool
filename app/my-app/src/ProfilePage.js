@@ -1,5 +1,5 @@
 import {Component, useState} from "react";
-import {ping} from "./PingBrowser";
+import {ping, post} from "./PingBrowser";
 import {ProjectList} from "./ProjectList";
 import {APP_TYPE_APP, APP_TYPE_GAME, DEFAULT_APP_NAME, DEFAULT_GAME_NAME} from "./constants/constants";
 import {Link} from "react-router-dom";
@@ -33,6 +33,13 @@ function NewProjectAdder({}) {
 }
 
 export class NewProjectPage extends Component {
+  componentDidMount() {
+    post('/api/guest/auth', {})
+      .then(r => {
+
+      })
+  }
+
   render() {
     return <div>
       <h1>Create new project</h1>

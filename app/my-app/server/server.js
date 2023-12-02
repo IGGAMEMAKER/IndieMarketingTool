@@ -60,6 +60,7 @@ app.get('/admin/panel', isAdminMiddleware, renderSPA)
 app.get('/authenticated',       authenticate, (req, res) => res.json({authenticated: !!req.userId, isGuest: !!req.isGuest}))
 
 // ---------------- API ------------------------
+app.post  ('/api/guest/auth', createGuestAccountIfHasNoCookies, (req, res) => res.json({ok: 1}))
 app.post  ('/api/user/google', authGoogleUser)
 app.post  ('/api/user/guest', authAsGuest)
 app.post  ('/api/user/guest/auth', convertGuestToNormalUser)
@@ -75,9 +76,8 @@ app.get('/api/me/logout', flushDevIP)
 app.get('/api/projects', isAdminMiddleware, getUserProjects)
 
 
-// app.get   ('/api/passwords', (req, res) => res.json({pass: 'WWWWW'}))
 app.get   ('/api/profile',            authenticate, getProfile)
-app.post  ('/api/projects',           createGuestAccountIfHasNoCookies, authenticate, createProject)
+app.post  ('/api/projects',           authenticate, createProject)
 
 app.get   ('/api/projects/:objectId', /*authenticate,*/ getProject) // TODO visibility settings
 app.put   ('/api/projects/:objectId', authenticate, canUpdateProjectMiddleware, updateProject) // save changes // TODO CHECK WHO CAN EDIT THE PROJECT
