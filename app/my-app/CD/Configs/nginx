@@ -18,12 +18,12 @@ server {
         ssl_certificate /usr/marketing/IndieMarketingTool/app/my-app/CD/Configs/releasefaster_com_chain.crt;
         ssl_certificate_key /usr/marketing/IndieMarketingTool/app/my-app/CD/Configs/releasefaster.com.key;
 
+        server_name releasefaster.com www.releasefaster.com indiemarketingtool.com www.indiemarketingtool.com;
         root /usr/marketing;
 
         # Add index.php to the list if you are using PHP
         index index.html index.htm index.nginx-debian.html;
 
-        server_name releasefaster.com www.releasefaster.com indiemarketingtool.com www.indiemarketingtool.com;
 
         location / {
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
