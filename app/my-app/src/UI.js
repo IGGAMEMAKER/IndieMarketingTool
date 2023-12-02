@@ -1,6 +1,7 @@
 import {Link} from "react-router-dom";
 import {Component} from "react";
-import {render} from "react-dom";
+
+import cookieParser from 'cookie-parser'
 
 export const col1 = t => <span className="color1">{t}</span>
 export const col2 = t => <span className="color2">{t}</span>
@@ -32,7 +33,10 @@ export function ButtonLink ({url, text}) {
 
 export class TryItButton extends Component {
   render() {
-    const hasCookie = m => document.cookie.includes(m)
+    const hasCookie = m => {
+      // has cookie and it's not empty
+      return document.cookie.includes(m) && !document.cookie.includes(m+"=;")
+    }
     const hasCookies = hasCookie("userId") || hasCookie("email")
 
     let authButton = <ButtonLink url={"/login"} text={"Try it!"} />
