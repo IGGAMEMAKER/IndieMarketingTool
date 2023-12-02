@@ -1,8 +1,6 @@
 import {Link} from "react-router-dom";
 import {Component} from "react";
 
-import cookieParser from 'cookie-parser'
-
 export const col1 = t => <span className="color1">{t}</span>
 export const col2 = t => <span className="color2">{t}</span>
 export const col3 = t => <span className="">{t}</span>
