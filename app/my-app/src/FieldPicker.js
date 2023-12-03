@@ -71,6 +71,7 @@ export function NumberPicker({value, onAction, placeholder, normalValueRenderer,
 
   return <div>
     <textarea
+      className={"number-picker"}
       value={newValue}
       placeholder={placeholder}
       onChange={event => {

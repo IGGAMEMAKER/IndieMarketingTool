@@ -405,6 +405,10 @@ button.toggle {
   background-color: yellow;
 }
 
+textarea.monetisation {
+  max-width: 100%;
+}
+
 .help{
   background-color: violet;
   color: white;

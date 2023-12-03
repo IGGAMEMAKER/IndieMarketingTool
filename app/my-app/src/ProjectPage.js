@@ -223,7 +223,7 @@ export class ProjectPage extends Component {
     } = storage.getProjectFillingStats(project)
 
     addPanel(panels, project?.description?.length > 0, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
-    addPanel(panels, !isDefaultName, 'make an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+    addPanel(panels, !isDefaultName, 'create an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
 
     return <div>
       <ProjectDescription project={project} projectId={projectId}/>
@@ -441,6 +441,7 @@ function MonetizationAdder({}) {
   return (
     <div className="Audience-item">
       <textarea
+        className={"monetisation"}
         value={planName}
         placeholder={"monetization name f.e: starter, demo, pro"}
         onChange={event => {
