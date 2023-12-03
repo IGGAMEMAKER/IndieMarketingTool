@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
 import {Component} from "react";
+import {hasCookies} from "./utils/frontendCookieHelper";
 
 export const col1 = t => <span className="color1">{t}</span>
 export const col2 = t => <span className="color2">{t}</span>
@@ -29,22 +30,13 @@ export function ButtonLink ({url, text}) {
   return b
 }
 
+
 export class TryItButton extends Component {
   render() {
-    const hasCookie = m => {
-      const c = document.cookie;
-      if (c.endsWith(m + "="))
-        return false;
-
-      // has cookie and it's not empty
-      return c.includes(m) && !c.includes(m + "=;")
-    }
-    const hasCookies = hasCookie("userId") || hasCookie("email")
-
     // const loginBtn = <ButtonLink url={"/login"} text={"Try it!"} />
     const loginBtn = <ButtonLink url={"/create"} text={"Try it!"} />
     let authButton = loginBtn
-    if (hasCookies)
+    if (hasCookies())
       authButton = <ButtonLink url={"/profile"} text={"Profile"} />
     else
       console.log(document.cookie)

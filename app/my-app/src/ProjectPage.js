@@ -20,6 +20,7 @@ import {ProjectEssence} from "./ProjectEssence";
 import {NamePicker} from "./NamePicker";
 import {UsefulLinks} from "./UsefulLinks";
 import {ping} from "./PingBrowser";
+import {isAuthenticatedGoogleUser, isGuest} from "./utils/frontendCookieHelper";
 
 const PROJECT_MODE_VISION = 1
 const PROJECT_MODE_DREAM = 5
@@ -321,8 +322,8 @@ export class ProjectPage extends Component {
     const saveProfileLink = <Link className={"item"} to="/save-progress">Save progress</Link>
     const pLink = <Link className={"item"} to="/profile">Profile</Link>
 
-    const {isGuest} = this.state
-    const profileLink = isGuest ? saveProfileLink : pLink
+    const isNormalUser = isAuthenticatedGoogleUser()
+    const profileLink = isNormalUser ? pLink : saveProfileLink
 
 
     var menus = this.renderMenus(project)
@@ -333,7 +334,7 @@ export class ProjectPage extends Component {
     var profileLinkResult
     var {filledOutDreamPanel} = storage.getProjectFillingStats(project)
 
-    if (filledOutDreamPanel || !isGuest)
+    if (filledOutDreamPanel || isNormalUser)
       profileLinkResult = profileLink
 
     return <div className="menu">
@@ -343,7 +344,7 @@ export class ProjectPage extends Component {
   }
 
   renderMainContent = (project) => {
-    var {audiences, monetizationPlans, risks, channels, name, appType, links} = this.state;
+    var {audiences, monetizationPlans, risks, channels, links} = this.state;
     var projectId = this.getProjectId()
 
     switch (this.state.mode) {
