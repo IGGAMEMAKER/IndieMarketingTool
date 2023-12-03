@@ -217,14 +217,27 @@ export class ProjectPage extends Component {
 
 
   renderDreamPanel = (project, projectId) => {
-    return <div>
-      {/*<h1>Let's dream</h1>*/}
-      {/*<h2>No filters and limitations</h2>*/}
-      <ProjectDescription project={project} projectId={projectId}/>
-      <NamePicker project={project} projectId={projectId} />
-      {/*<FeatureList noTiming project={project} />*/}
+    let panels = []
+    var {
+      canShowSubmitProjectButton, canShowNamePicker,
+      canShowMonetization, canShowAudiences, canShowEssence,
 
-      <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>
+      isFilledDescription, isFilledEssence, isFilledAudiences, isDefaultName
+    } = storage.getProjectFillingStats(project)
+
+    addPanel(panels, true, 'type what are you doing first', <ProjectDescription project={project} projectId={projectId}/>)
+    addPanel(panels, project.description.length > 0, 'main problem is super important. Type it first', <NamePicker project={project} projectId={projectId} />)
+    addPanel(panels, project.name.length > 0, 'No dream, no result', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+
+    return <div>
+      {renderCodependentPanels(panels)}
+      {/*/!*<h1>Let's dream</h1>*!/*/}
+      {/*/!*<h2>No filters and limitations</h2>*!/*/}
+      {/*<ProjectDescription project={project} projectId={projectId}/>*/}
+      {/*<NamePicker project={project} projectId={projectId} />*/}
+      {/*/!*<FeatureList noTiming project={project} />*!/*/}
+
+      {/*<BusinessPlanner project={this.state.project} showAudiencesToo={false}/>*/}
     </div>
   }
 
@@ -269,10 +282,6 @@ export class ProjectPage extends Component {
   renderMenus = (project) => {
     var menus = []
 
-    // Notes, Vision, Execution
-    // Notes - notes, links, sources???, features???
-    // Execution - Iterations, Risks, Goals, Growth strategy???
-
     // const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
     // const menus = ["Notes", "Vision", "Execution",  "Profile"]
 
@@ -305,7 +314,6 @@ export class ProjectPage extends Component {
     if (justStarted) {
       menus = []
       return []
-      // addMenu()
     }
 
     return menus.map(m => <button
@@ -315,18 +323,27 @@ export class ProjectPage extends Component {
   }
 
   renderMenuBar = project => {
-    const profileLink = this.state.isGuest ?
-      <Link className={"item"} to="/save-progress">Save progress</Link>
-      :
-      <Link className={"item"} to="/profile">Profile</Link>
+    const saveProfileLink = <Link className={"item"} to="/save-progress">Save progress</Link>
+    const pLink = <Link className={"item"} to="/profile">Profile</Link>
+
+    const {isGuest} = this.state
+    const profileLink = isGuest ? saveProfileLink : pLink
+
 
     var menus = this.renderMenus(project)
+
     if (!menus.length)
       return []
 
+    var profileLinkResult
+    var {filledOutDreamPanel} = storage.getProjectFillingStats(project)
+
+    if (filledOutDreamPanel || !isGuest)
+      profileLinkResult = profileLink
+
     return <div className="menu">
       {menus}
-      {profileLink}
+      {profileLinkResult}
     </div>
   }
 

@@ -40,6 +40,8 @@ const authenticate = async (req, res, next) => {
   if (isDevIP(req)) {
     // used for localhost
     query = {email: MY_MAIL}
+  } else if (email && sessionToken) {
+    query = {email, sessionToken}
   } else if (userId) {
     query = {_id: new ObjectId(userId)}
     req.isGuest = true

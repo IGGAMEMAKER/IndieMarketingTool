@@ -84,7 +84,7 @@ export class ProfilePage extends Component {
       <br />
       <br />
       <br />
-      <Link to={"/logout"}>Logout</Link>
+      {/*<Link to={"/logout"}>Logout</Link>*/}
     </div>
   }
 }
