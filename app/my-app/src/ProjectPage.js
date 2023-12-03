@@ -219,15 +219,12 @@ export class ProjectPage extends Component {
   renderDreamPanel = (project, projectId) => {
     let panels = []
     var {
-      canShowSubmitProjectButton, canShowNamePicker,
-      canShowMonetization, canShowAudiences, canShowEssence,
-
-      isFilledDescription, isFilledEssence, isFilledAudiences, isDefaultName
+      isDefaultName
     } = storage.getProjectFillingStats(project)
 
     addPanel(panels, true, 'type what are you doing first', <ProjectDescription project={project} projectId={projectId}/>)
     addPanel(panels, project?.description?.length > 0, 'main problem is super important. Type it first', <NamePicker project={project} projectId={projectId} />)
-    addPanel(panels, project?.name?.length > 0, 'No dream, no result', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+    addPanel(panels, !isDefaultName, 'No dream, no result', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
 
     return <div>
       {renderCodependentPanels(panels)}
