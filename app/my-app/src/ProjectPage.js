@@ -223,8 +223,8 @@ export class ProjectPage extends Component {
     } = storage.getProjectFillingStats(project)
 
     addPanel(panels, true, 'type what are you doing first', <ProjectDescription project={project} projectId={projectId}/>)
-    addPanel(panels, project?.description?.length > 0, 'main problem is super important. Type it first', <NamePicker project={project} projectId={projectId} />)
-    addPanel(panels, !isDefaultName, 'No dream, no result', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+    addPanel(panels, project?.description?.length > 0, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
+    addPanel(panels, !isDefaultName, 'Make an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
 
     return <div>
       {renderCodependentPanels(panels)}
