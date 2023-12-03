@@ -102,13 +102,13 @@ const convertGuestToNormalUser = async (req, res) => {
 
   if (userId) {
     var newEmail = getEmailFromGoogleRequest(req)
-    console.log('got new mail for guest', newEmail)
+    console.log('convertGuestToNormalUser', newEmail)
 
     // var u = await UserModel.findOne({_id: new ObjectId(userId)})
     var u = await UserModel.findOne({email: newEmail})
 
     if (u) {
-      // email registered, so merge accounts
+      // email is registered already, so merge accounts
 
       // transfer projects
       await ProjectModel.updateMany({ownerId: userId}, {ownerId: getUserId(u) })
@@ -118,7 +118,7 @@ const convertGuestToNormalUser = async (req, res) => {
       // remove guest account
       await UserModel.findByIdAndRemove(userId)
     } else {
-      // just assign an email
+      // user with such email not found, so let's just attach an email
       await UserModel.updateOne(
         {_id: new ObjectId(userId)},
         {email: newEmail, isGuest: false}
@@ -155,12 +155,6 @@ const getEmailFromGoogleRequest = (req, res) => {
 }
 
 const authGoogleUser = async (req, res) => {
-  // var {response} = req.body;
-  //
-  // var credential = jwtDecode(response.credential)
-  // console.log('credential', credential)
-  //
-  // var email = credential.email;
   var email = getEmailFromGoogleRequest(req)
 
   let user = await UserModel.findOne({email})

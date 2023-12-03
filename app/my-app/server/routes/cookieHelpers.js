@@ -26,9 +26,8 @@ const printCookies = async (req, res) => {
 
   if (userId) {
     console.log('cookies of guest #' + userId)
-  } else {
-    console.log('printCookies', email, sessionToken)
   }
+  console.log('printCookies', email, sessionToken)
 }
 
 const getCookies = async req => {
