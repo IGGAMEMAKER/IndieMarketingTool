@@ -29,9 +29,9 @@ const PROJECT_MODE_NOTES = 3
 const PROJECT_MODE_RISK = 6
 const PROJECT_MODE_RESEARCH = 7
 
-const addPanel = (panels, canShow, error, c) => {
+const addPanel = (panels, canShow, whyItCannotBeShown, c) => {
   panels.push({
-    canShow, error, c
+    canShow, error: whyItCannotBeShown, c
   })
   
   return panels
@@ -222,11 +222,11 @@ export class ProjectPage extends Component {
       isDefaultName
     } = storage.getProjectFillingStats(project)
 
-    addPanel(panels, true, 'type what are you doing first', <ProjectDescription project={project} projectId={projectId}/>)
     addPanel(panels, project?.description?.length > 0, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
-    addPanel(panels, !isDefaultName, 'Make an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+    addPanel(panels, !isDefaultName, 'make an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
 
     return <div>
+      <ProjectDescription project={project} projectId={projectId}/>
       {renderCodependentPanels(panels)}
       {/*/!*<h1>Let's dream</h1>*!/*/}
       {/*/!*<h2>No filters and limitations</h2>*!/*/}
@@ -287,6 +287,9 @@ export class ProjectPage extends Component {
       filledOutDreamPanel, filledOutVisionPanel, filledOutResearchPanel, filledOutRiskPanel
     } = storage.getProjectFillingStats(project)
 
+    if (justStarted)
+      return []
+
     const addMenu = (mode, name) => menus.push({name, mode})
 
     if (filledOutResearchPanel) {
@@ -307,11 +310,6 @@ export class ProjectPage extends Component {
       addMenu(PROJECT_MODE_VISION, "Vision")
 
     addMenu(PROJECT_MODE_DREAM, "Dream")
-
-    if (justStarted) {
-      menus = []
-      return []
-    }
 
     return menus.map(m => <button
       className={`item ${this.state.mode === m.mode ? 'chosen' : ''}`}

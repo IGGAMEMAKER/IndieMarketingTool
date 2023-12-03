@@ -119,7 +119,7 @@ class Storage extends EventEmitter {
   isDefaultName = project => {
     const projectName = project.name.toLowerCase()
 
-    return projectName === DEFAULT_GAME_NAME.toLowerCase() || projectName === DEFAULT_APP_NAME.toLowerCase()
+    return projectName === DEFAULT_GAME_NAME.toLowerCase() || projectName === DEFAULT_APP_NAME.toLowerCase() || !projectName.length
   }
 
   getProjectFillingStats = (project) => {
@@ -129,9 +129,10 @@ class Storage extends EventEmitter {
     const hasPaidPlans        = project.monetizationPlans.filter(mp => mp.price > 0 && mp.audiences.length).length
     const isDefaultName       = this.isDefaultName(project)
 
-    const justStarted         = isDefaultName || !isFilledDescription
 
-    const filledOutDreamPanel = !isDefaultName && isFilledDescription && project.desiredProfit > 0
+    const justStarted         = isDefaultName || !isFilledDescription || project.desiredProfit <= 0
+    const filledOutDreamPanel = !justStarted
+
     const filledOutVisionPanel = isFilledEssence && isFilledAudiences && hasPaidPlans
     const filledOutRiskPanel = true
     const filledOutResearchPanel = false
