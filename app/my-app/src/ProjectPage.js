@@ -801,9 +801,9 @@ function Validator({project}) {
   const saasThing = <div>
     <center>
       <table>
-        <tr><td className="left">hour</td><td></td><td></td><td>1) Who has that problem? Google forms + Search (SEO + Gum)</td></tr>
-        <tr><td className="left">hours</td><td></td><td></td><td>2) Who has that problem? Landing page</td></tr>
-        <tr><td className="left">days</td><td></td><td></td><td>If enough people subbed, split em (half for free testing / half for paid)</td></tr>
+        <tr><td className="left">hours</td><td></td><td></td><td>1) Who has that problem? Google forms + Search (SEO + Gum)</td></tr>
+        <tr><td className="left">days</td><td></td><td></td><td>2) Who has that problem? Landing page</td></tr>
+        <tr><td className="left">week?</td><td></td><td></td><td>If enough people subbed, split em (half for free testing / half for paid)</td></tr>
         {/*<tr><td className="left">days</td><td></td><td></td><td>Screenshots</td></tr>*/}
         {/*<tr><td className="left">week</td><td></td><td></td><td>Fake Gameplay Trailer</td></tr>*/}
         {/*<tr><td className="left">day/week</td><td></td><td></td><td>Prototype</td></tr>*/}

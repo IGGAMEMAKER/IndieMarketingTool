@@ -55,6 +55,8 @@ export class ProfilePage extends Component {
 
   componentWillMount() {
     this.loadProfiles()
+
+    console.log(document.cookie)
   }
 
   loadProfiles() {
