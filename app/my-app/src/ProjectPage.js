@@ -29,9 +29,9 @@ const PROJECT_MODE_NOTES = 3
 const PROJECT_MODE_RISK = 6
 const PROJECT_MODE_RESEARCH = 7
 
-const addPanel = (panels, canShow, err, c) => {
+const addPanel = (panels, canShow, error, c) => {
   panels.push({
-    canShow, err, c
+    canShow, error, c
   })
   
   return panels
