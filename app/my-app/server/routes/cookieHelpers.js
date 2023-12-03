@@ -41,15 +41,11 @@ const getCookies = async req => {
     }
   }
 
-  if (req.cookies["userId"]) {
-    return Promise.resolve({
-      userId: req.cookies["userId"]
-    })
-  }
-
   return Promise.resolve({
     email: req.cookies["email"],
-    sessionToken: req.cookies["sessionToken"]
+    sessionToken: req.cookies["sessionToken"],
+
+    userId: req.cookies["userId"]
   })
 }
 
