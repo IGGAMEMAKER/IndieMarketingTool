@@ -134,8 +134,8 @@ class Storage extends EventEmitter {
     const filledOutDreamPanel = !justStarted
 
     const filledOutVisionPanel = isFilledEssence && isFilledAudiences && hasPaidPlans
-    const filledOutRiskPanel = true
-    const filledOutResearchPanel = false
+    const filledOutRiskPanel = !!project.risks.find(r => !!r.solutions.length)
+    const filledOutResearchPanel = true
 
 
     // TODO rework same name
