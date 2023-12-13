@@ -1,2 +1,2 @@
-# IndieMarketingTool
-Stop wasting years making games noone needs
+# Project Management Tool
+Stop wasting years making projects noone needs
