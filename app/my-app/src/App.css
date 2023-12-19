@@ -446,7 +446,8 @@ details > summary::-webkit-details-marker /* Safari */ {
     grid-template-columns: repeat(7, minmax(0, 1fr));
     height: 45px;
     bottom: 0;
-    top: calc(100vh - 45px)
+    top: calc(100vh - 45px);
+    position: fixed;
   }
 
   /*.menu*/ .item {
