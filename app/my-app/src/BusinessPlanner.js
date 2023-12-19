@@ -3,7 +3,7 @@ import actions from "./actions";
 import {Panel} from "./Panel";
 import {renderIncomeGoal} from "./RenderIncomeGoal";
 
-export function BusinessPlanner({project, showAudiencesToo = true}) {
+export function BusinessPlanner({project, showAudiencesToo = true, mustSetDesiredIncome = false}) {
   var {desiredProfit = 10000, monthlyExpenses = 500, timeTillBurnout = 1} = project
 
   var desiredProfitPicker = <NumberPicker
@@ -29,8 +29,14 @@ export function BusinessPlanner({project, showAudiencesToo = true}) {
   />
 
   if (!showAudiencesToo) {
+    const needsToSetDesiredIncome = project?.desiredProfit <= 0;
+
+    let moneyError;
+    if (needsToSetDesiredIncome)
+      moneyError = <div className={"error"}>Set your desired income to continue</div>
     return <div>
       <Panel id="Goals" header={"How much do you want to earn?"} noHelp/>
+      {moneyError}
       <p>{desiredProfitPicker}$</p>
     </div>
   }

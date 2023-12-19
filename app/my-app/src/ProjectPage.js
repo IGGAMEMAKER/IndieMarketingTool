@@ -156,19 +156,14 @@ export class ProjectPage extends Component {
 
     const canShowNamePicker = project?.description?.length > 0
     const canShowMoneyGoalPlanner = !isDefaultName
-    const needsToSetDesiredIncome = project?.desiredProfit <= 0;
 
-    let moneyError;
-    if (canShowMoneyGoalPlanner && needsToSetDesiredIncome)
-      moneyError = <div className={"error"}>Set your desired income to continue</div>
 
     addPanel(panels, canShowNamePicker, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
-    addPanel(panels, canShowMoneyGoalPlanner, 'create an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+    addPanel(panels, canShowMoneyGoalPlanner, 'create an awesome name!', <BusinessPlanner mustSetDesiredIncome={true} project={this.state.project} showAudiencesToo={false}/>)
 
     return <div>
       <ProjectDescription project={project} projectId={projectId}/>
       {renderQueuedPanels(panels)}
-      {moneyError}
     </div>
   }
 
