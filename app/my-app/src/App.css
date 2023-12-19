@@ -460,7 +460,7 @@ details > summary::-webkit-details-marker /* Safari */ {
     width: 100%;
     bottom: 0;
     height: 45px;
-    top: calc(100vh - 45px);
+    /*top: calc(100vh - 45px);*/
   }
 
   .item {
