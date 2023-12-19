@@ -21,7 +21,7 @@ export function NamePicker({project, projectId, name}) {
         actions.editName(projectId, val)
       }}
       // normalValueRenderer={onEdit => <h1 onClick={onEdit}>{name}</h1>}
-      normalValueRenderer={onEdit => <h1 onClick={onEdit}>{project?.name}</h1>}
+      normalValueRenderer={onEdit => <p onClick={onEdit}>{project?.name}</p>}
     />
   </div>
 }

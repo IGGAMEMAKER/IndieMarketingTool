@@ -34,6 +34,7 @@ export function BusinessPlanner({project, showAudiencesToo = true, mustSetDesire
     let moneyError;
     if (needsToSetDesiredIncome)
       moneyError = <div className={"error"}>Set your desired income to continue</div>
+
     return <div>
       <Panel id="Goals" header={"How much do you want to earn?"} noHelp/>
       {moneyError}
