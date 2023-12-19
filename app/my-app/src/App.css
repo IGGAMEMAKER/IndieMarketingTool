@@ -17,11 +17,13 @@ body {
   color: white;
 }
 
-.menu {
+.menu-grid {
   display: grid;
-  background-color: orange;
   /*grid-template-columns: auto auto auto auto auto auto auto auto;*/
   grid-template-columns: auto auto auto auto auto auto auto;
+}
+.menu {
+  background-color: orange;
 
   position: fixed;
   height: 5vh;
@@ -29,6 +31,8 @@ body {
   top: 0;
   left: 0;
   right: 0;
+
+  bottom: 0;
 }
 .menu-input {
   position: fixed;
@@ -440,13 +444,24 @@ details > summary::-webkit-details-marker /* Safari */ {
     min-height: 150px;
   }
 
-  /*.menu {*/
-  /*  grid-template-columns: repeat(7, minmax(0, 1fr));*/
-  /*  height: 45px;*/
-  /*  bottom: 0;*/
-  /*  top: calc(100vh - 45px);*/
-  /*  position: fixed;*/
-  /*}*/
+  .menu-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .menu {
+    position: fixed;
+    /*height: 5vh;*/
+    /*width: 100%;*/
+    /*top: 0;*/
+    left: 0;
+    right: 0;
+
+    /*bottom: 0;*/
+
+    width: 100%;
+    bottom: 0;
+    height: 45px;
+    top: calc(100vh - 45px);
+  }
 
   .item {
     font-size: 12px;
