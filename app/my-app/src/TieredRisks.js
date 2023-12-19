@@ -30,7 +30,7 @@ export function TieredRisks({project}) {
         {getTieredRisk("hours", "Intro post (I want to make game like X, but Y; genre & main features)")}
         {getTieredRisk("hours", "Intro WITH screenshot")}
         {getTieredRisk("days", "Screenshots")}
-        {getTieredRisk("week", "Fake Gameplay Trailer")}
+        {getTieredRisk("week", "Trailer")}
         {getTieredRisk("day/week", "Prototype")}
         {/*<tr><td className="left">hour</td><td></td><td></td><td>1 sentence</td></tr>*/}
         {/*<tr><td className="left">hours</td><td></td><td></td><td>Intro post (I want to make game like X, but Y; genre & main features)</td></tr>*/}
