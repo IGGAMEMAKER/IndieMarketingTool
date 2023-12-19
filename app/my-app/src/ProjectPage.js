@@ -695,6 +695,7 @@ function AudiencesList({audiences, monetizationPlans, project}) {
 
 
 
+
 class Chat extends Component {
   render() {
     var {isOpened} = this.props;
