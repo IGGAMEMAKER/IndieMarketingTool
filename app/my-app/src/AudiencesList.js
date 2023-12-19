@@ -16,8 +16,13 @@ export function AudiencesList({audiences, monetizationPlans, project}) {
     audiencePhrase = 'Who will use your service?'
   }
 
+  var needAtLeastOneAudience;
+  if (!audiences.length)
+    needAtLeastOneAudience = <div className={"error"}>Type at least one user profile!</div>
+
   return <div>
     <Panel id="Audiences" header={audiencePhrase}/>
+    {needAtLeastOneAudience}
     <div className="Audience-Container">
       {audiences.map((a, i) => {
           var usages = getAudienceUsageCount(monetizationPlans, a)
