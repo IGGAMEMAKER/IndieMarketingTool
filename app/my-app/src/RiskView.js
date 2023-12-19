@@ -5,12 +5,12 @@ import {RiskAdder} from "./RiskAdder";
 import {ARROW_DOWN, ARROW_UP} from "./constants/symbols";
 import {useState} from "react";
 
-export function RiskList({risks}) {
+export function RiskList({risks, project}) {
   // key={"risk-list." + r.id}
   return (
     <ol className="list">
       {risks.map((r, index) => <RiskView risk={r} index={index} />)}
-      <li><RiskAdder /></li>
+      <li><RiskAdder project={project} /></li>
     </ol>
   )
 }

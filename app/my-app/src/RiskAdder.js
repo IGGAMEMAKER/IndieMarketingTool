@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {FieldAdder} from "./FieldAdder";
 import actions from "./actions";
 import {Iteration} from "./Iteration";

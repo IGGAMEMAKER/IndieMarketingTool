@@ -254,7 +254,7 @@ export class ProjectPage extends Component {
     return <div>
       <TieredRisks project={project} />
       <BusinessPlanner project={project} />
-      <RisksPanel risks={risks} />
+      <RisksPanel risks={risks} project={project} />
     </div>
   }
 
@@ -624,11 +624,11 @@ function MessagePlanner({project}) {
   </div>
 }
 
-function RisksPanel({risks}) {
+function RisksPanel({risks, project}) {
   return <div>
     <Panel id="Risks" header="What are your biggest risks / doubts / problems?" />
     <div className="Container">
-      <RiskList risks={risks} />
+      <RiskList risks={risks} project={project} />
     </div>
   </div>
 }
