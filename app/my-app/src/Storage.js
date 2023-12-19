@@ -762,6 +762,7 @@ Dispatcher.register((p) => {
 
     case RISK_ADD:
       var obj = {name: p.name, solutions: []}
+      console.log('RISK_ADD', project, obj)
       push(project.risks, obj)
 
       saveProjectChanges()
