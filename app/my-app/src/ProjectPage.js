@@ -254,10 +254,10 @@ export class ProjectPage extends Component {
       profileLinkResult = profileLink
 
     return <div className="menu">
-      <div className="menu-grid">
+      {/*<div className="menu-grid">*/}
         {menus}
         {profileLinkResult}
-      </div>
+      {/*</div>*/}
     </div>
   }
 

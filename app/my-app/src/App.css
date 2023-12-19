@@ -18,11 +18,10 @@ body {
 }
 
 .menu-grid {
-  display: grid;
-  /*grid-template-columns: auto auto auto auto auto auto auto auto;*/
-  grid-template-columns: auto auto auto auto auto auto auto;
 }
 .menu {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto;
   background-color: orange;
 
   position: fixed;
@@ -444,23 +443,22 @@ details > summary::-webkit-details-marker /* Safari */ {
     min-height: 150px;
   }
 
-  .menu-grid {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-  }
+  /*.menu-grid {*/
+  /*}*/
   .menu {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     position: fixed;
-    /*height: 5vh;*/
+    /*!*height: 5vh;*!*/
+    /*!*width: 100%;*!*/
+    /*!*top: 0;*!*/
+    /*left: 0;*/
+    /*right: 0;*/
+
+    /*!*bottom: 0;*!*/
+
     /*width: 100%;*/
-    /*top: 0;*/
-    left: 0;
-    right: 0;
-
-    /*bottom: 0;*/
-
-    width: 100%;
-    bottom: 0;
-    height: 45px;
-    top: calc(100dvh - 45px);
+    /*height: 45px;*/
+    /*top: calc(100dvh - 45px);*/
   }
 
   .item {
