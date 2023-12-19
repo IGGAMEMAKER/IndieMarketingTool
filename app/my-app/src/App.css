@@ -440,17 +440,15 @@ details > summary::-webkit-details-marker /* Safari */ {
     min-height: 150px;
   }
 
-  .menu {
-    /*grid-template-columns: repeat(3, minmax(0, 1fr));*/
-    /*height: 75px;*/
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    height: 45px;
-    bottom: 0;
-    top: calc(100vh - 45px);
-    position: fixed;
-  }
+  /*.menu {*/
+  /*  grid-template-columns: repeat(7, minmax(0, 1fr));*/
+  /*  height: 45px;*/
+  /*  bottom: 0;*/
+  /*  top: calc(100vh - 45px);*/
+  /*  position: fixed;*/
+  /*}*/
 
-  /*.menu*/ .item {
+  .item {
     font-size: 12px;
   }
 
