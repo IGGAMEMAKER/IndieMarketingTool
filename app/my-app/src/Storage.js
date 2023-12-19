@@ -158,6 +158,7 @@ class Storage extends EventEmitter {
       // canShowNamePicker,
       // canShowSubmitProjectButton,
 
+      hasPaidPlans,
       filledOutDreamPanel,
       filledOutVisionPanel,
       filledOutRiskPanel,
