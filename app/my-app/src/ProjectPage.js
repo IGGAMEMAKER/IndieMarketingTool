@@ -156,6 +156,11 @@ export class ProjectPage extends Component {
 
     const canShowNamePicker = project?.description?.length > 0
     const canShowMoneyGoalPlanner = !isDefaultName
+    const needsToSetDesiredIncome = project?.desiredProfit <= 0;
+
+    let moneyError;
+    if (canShowMoneyGoalPlanner && needsToSetDesiredIncome)
+      moneyError = <div className={"error"}>Set your desired income to continue</div>
 
     addPanel(panels, canShowNamePicker, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
     addPanel(panels, canShowMoneyGoalPlanner, 'create an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
@@ -163,6 +168,7 @@ export class ProjectPage extends Component {
     return <div>
       <ProjectDescription project={project} projectId={projectId}/>
       {renderQueuedPanels(panels)}
+      {moneyError}
     </div>
   }
 
@@ -185,6 +191,12 @@ export class ProjectPage extends Component {
   renderResearchPanel = (project, links) => {
     return <div>
       <UsefulLinks links={links} />
+    </div>
+  }
+
+  renderVisionPanel = (project, projectId, monetizationPlans, audiences) => {
+    return <div>
+      <VisionPanel project={project} projectId={projectId} monetizationPlans={monetizationPlans} audiences={audiences} />
     </div>
   }
 
@@ -272,8 +284,8 @@ export class ProjectPage extends Component {
       case PROJECT_MODE_EXECUTION:  return this.renderExecution(project)
       case PROJECT_MODE_RISK:       return this.renderRiskPanel(project, risks)
       case PROJECT_MODE_RESEARCH:   return this.renderResearchPanel(project, links)
+      case PROJECT_MODE_VISION:     return this.renderVisionPanel(project, projectId, monetizationPlans, audiences)
 
-      case PROJECT_MODE_VISION:     return <VisionPanel project={project} projectId={projectId} monetizationPlans={monetizationPlans} audiences={audiences} />
       default:                      return <div>Unknown MODE ${this.state.mode}</div>
     }
   }
