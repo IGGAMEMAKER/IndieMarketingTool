@@ -12,8 +12,7 @@ export function MonetizationPanel({plans, audiences, hasPaidPlans}) {
     <Panel id="Monetization" header={content}/>
     {needOnePaidPlanAtLeast}
     <div className="Audience-Container">
-      {plans.map((p, i) => <MonetizationPlan key={'monetizationPlanX.' + p.id + ' ' + i} plan={p} index={i}
-                                             audiences={audiences}/>)}
+      {plans.map((p, i) => <MonetizationPlan key={'monetizationPlanX.' + p.id + ' ' + i} plan={p} index={i} audiences={audiences}/>)}
       <MonetizationAdder/>
     </div>
   </div>

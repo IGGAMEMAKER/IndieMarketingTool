@@ -12,7 +12,7 @@ export function VisionPanel({project, projectId, monetizationPlans, audiences}) 
   var [visionMode, setVisionMode] = useState(VISION_MODE_ESSENCE)
 
   var {
-    isFilledEssence, isFilledAudiences, isDefaultName
+    isFilledEssence, isFilledAudiences, isDefaultName, hasPaidPlans
   } = storage.getProjectFillingStats(project)
 
   const getSubModes = () => {
@@ -38,7 +38,7 @@ export function VisionPanel({project, projectId, monetizationPlans, audiences}) 
     content = <AudiencesList audiences={audiences} monetizationPlans={monetizationPlans} project={project}/>
 
   if (visionMode === VISION_MODE_MONETIZATION)
-    content = <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>
+    content = <MonetizationPanel plans={monetizationPlans} audiences={audiences} hasPaidPlans={hasPaidPlans} />
 
   return <div>
     {/*<h1>Let's think</h1>*/}
