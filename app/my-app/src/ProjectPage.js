@@ -1,18 +1,17 @@
 import {Component, useState} from "react";
+import {Link} from "react-router-dom";
+
 import storage from "./Storage";
 import actions from "./actions";
 import {FieldPicker} from "./FieldPicker";
 import {IterationPlanner} from "./IterationPlanner";
 import {Audience} from "./Audience";
-import {MonetizationPlan} from "./MonetizationPlan";
 import {FieldAdder} from "./FieldAdder";
 import {RiskList} from "./RiskView";
 import {Panel} from "./Panel";
 import {getByID} from "./utils";
 import {getAudienceUsageCount} from "./utils/getEntityUsageCount";
-import {TimePicker} from "./TimePicker";
-import {Link} from "react-router-dom";
-import {isApp, isGame} from "./utils/projectUtils";
+import {isGame} from "./utils/projectUtils";
 import {BusinessPlanner} from "./BusinessPlanner";
 import {AudienceMessageView} from "./AudienceMessageView";
 import {ProjectDescription} from "./ProjectDescription";
@@ -20,7 +19,10 @@ import {ProjectEssence} from "./ProjectEssence";
 import {NamePicker} from "./NamePicker";
 import {UsefulLinks} from "./UsefulLinks";
 import {ping} from "./PingBrowser";
-import {isAuthenticatedGoogleUser, isGuest} from "./utils/frontendCookieHelper";
+import {isAuthenticatedGoogleUser} from "./utils/frontendCookieHelper";
+import {MonetizationPanel} from "./MonetizationPanel";
+import {getDomain, getUrlWithoutPrefixes} from "./utils/getDomains";
+import {TieredRisks} from "./TieredRisks";
 
 const PROJECT_MODE_VISION = 1
 const PROJECT_MODE_DREAM = 5
@@ -31,14 +33,12 @@ const PROJECT_MODE_RISK = 6
 const PROJECT_MODE_RESEARCH = 7
 
 const addPanel = (panels, canShow, whyItCannotBeShown, c) => {
-  panels.push({
-    canShow, error: whyItCannotBeShown, c
-  })
+  panels.push({canShow, c, error: whyItCannotBeShown})
   
   return panels
 }
 
-const renderCodependentPanels = panels => {
+const renderQueuedPanels = panels => {
   const actualPanels = []
 
   for (var i = 0; i < panels.length; i++) {
@@ -63,22 +63,23 @@ function VisionPanel({project, projectId, monetizationPlans, audiences}) {
   var [visionMode, setVisionMode] = useState(VISION_MODE_ESSENCE)
 
   var {
-    canShowSubmitProjectButton, canShowNamePicker,
-    canShowMonetization, canShowAudiences, canShowEssence,
-
-    isFilledDescription, isFilledEssence, isFilledAudiences, isDefaultName
+    isFilledEssence, isFilledAudiences, isDefaultName
   } = storage.getProjectFillingStats(project)
 
-  var subModes = [VISION_MODE_ESSENCE] //, VISION_MODE_AUDIENCE, VISION_MODE_MONETIZATION]
+  const getSubModes = () => {
+    var subModes = [VISION_MODE_ESSENCE] //, VISION_MODE_AUDIENCE, VISION_MODE_MONETIZATION]
 
-  if (isFilledEssence)
-    subModes.push(VISION_MODE_AUDIENCE)
+    if (isFilledEssence)
+      subModes.push(VISION_MODE_AUDIENCE)
 
-  if (isFilledAudiences)
-    subModes.push(VISION_MODE_MONETIZATION)
+    if (isFilledAudiences)
+      subModes.push(VISION_MODE_MONETIZATION)
 
-  if (subModes.length === 1)
-    subModes = []
+    if (subModes.length === 1)
+      subModes = []
+
+    return subModes
+  }
 
   var content;
   if (visionMode === VISION_MODE_ESSENCE)
@@ -92,24 +93,10 @@ function VisionPanel({project, projectId, monetizationPlans, audiences}) {
 
   return <div>
     {/*<h1>Let's think</h1>*/}
-    {subModes.map(m => <button className={`item ${visionMode === m ? 'chosen' : ''}`} onClick={() => {setVisionMode(m)}}>{m}</button>)}
+    {getSubModes().map(m => <button className={`item ${visionMode === m ? 'chosen' : ''}`} onClick={() => {setVisionMode(m)}}>{m}</button>)}
     <br />
     <br />
     {content}
-  </div>
-
-  let panels = []
-  addPanel(panels, canShowEssence, 'type what are you doing first', <ProjectEssence project={project} projectId={projectId} />)
-  addPanel(panels, canShowAudiences, 'main problem is super important. Type it first', <AudiencesList audiences={audiences} monetizationPlans={monetizationPlans} project={project} />)
-  addPanel(panels, canShowMonetization, 'create at least one audience', <MonetizationPanel plans={monetizationPlans} audiences={audiences}/>)
-  addPanel(panels, canShowNamePicker, 'create at least one PAID plan', '') // <NamePicker project={project} projectId={projectId} name={name} />)
-  // addPanel(panels, canShowSubmitProjectButton, 'Change project name', <div><Button text={"REVIEW"}/></div>)
-
-  return <div>
-    {/*<h2>No filters and limitations</h2>*/}
-    {renderCodependentPanels(panels)}
-
-    {/*<BusinessPlanner project={this.state.project}/>*/}
   </div>
 }
 
@@ -219,16 +206,17 @@ export class ProjectPage extends Component {
 
   renderDreamPanel = (project, projectId) => {
     let panels = []
-    var {
-      isDefaultName
-    } = storage.getProjectFillingStats(project)
+    var {isDefaultName} = storage.getProjectFillingStats(project)
 
-    addPanel(panels, project?.description?.length > 0, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
-    addPanel(panels, !isDefaultName, 'create an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
+    const canShowNamePicker = project?.description?.length > 0
+    const canShowMoneyGoalPlanner = !isDefaultName
+
+    addPanel(panels, canShowNamePicker, 'type your first minds about the project here. Whatever comes to your mind', <NamePicker project={project} projectId={projectId} />)
+    addPanel(panels, canShowMoneyGoalPlanner, 'create an awesome name!', <BusinessPlanner project={this.state.project} showAudiencesToo={false}/>)
 
     return <div>
       <ProjectDescription project={project} projectId={projectId}/>
-      {renderCodependentPanels(panels)}
+      {renderQueuedPanels(panels)}
       {/*/!*<h1>Let's dream</h1>*!/*/}
       {/*/!*<h2>No filters and limitations</h2>*!/*/}
       {/*<ProjectDescription project={project} projectId={projectId}/>*/}
@@ -252,16 +240,9 @@ export class ProjectPage extends Component {
   }
 
   renderExecution = (project) => {
-    const ExecutionPanel = <div>
-      {/*<RisksPanel risks={risks} />*/}
-      {/*<br />*/}
-      {/*<br />*/}
-      {/*<BusinessPlanner project={this.state.project} />*/}
-
+    return <div>
       <IterationPlanner project={this.state.project}/>
     </div>
-
-    return ExecutionPanel
   }
 
   renderResearchPanel = (project, links) => {
@@ -271,7 +252,7 @@ export class ProjectPage extends Component {
   }
   renderRiskPanel = (project, risks) => {
     return <div>
-      <Validator project={project} />
+      <TieredRisks project={project} />
       <BusinessPlanner project={project} />
       <RisksPanel risks={risks} />
     </div>
@@ -394,72 +375,8 @@ export class ProjectPage extends Component {
 
 
 
-const getUrlWithoutPrefixes = link => {
-  try {
-    return link.replace('https://', '').replace('www.', '')
-  }
-  catch (e) {
-
-  }
-
-  return link
-}
-const getDomain = link => {
-  try {
-    var w = getUrlWithoutPrefixes(link)
-    var index = w.indexOf('.') // w.findIndex('.')
-
-    return w.substr(0, index)
-  } catch (e) {
-    return link
-  }
-}
 
 
-function AudienceAdder({placeholder}) {
-  const [audienceName, onChangeName] = useState("");
-
-  return (
-    <div className="Audience-item">
-      <textarea
-        value={audienceName}
-        placeholder={placeholder}
-        onChange={event => {
-          var v = event.target.value
-          console.log({v})
-          onChangeName(v)
-        }}
-      />
-      <br />
-      <button onClick={() => {actions.addAudience(audienceName); onChangeName("")}}>ADD</button>
-    </div>
-  )
-}
-
-function MonetizationAdder({}) {
-  const [planName, onChangeName] = useState("");
-
-  return (
-    <div className="Audience-item">
-      <textarea
-        className={"monetisation"}
-        value={planName}
-        placeholder={"monetization name f.e: starter, demo, pro"}
-        onChange={event => {
-          onChangeName(event.target.value)
-        }}
-      />
-      <br />
-      <button onClick={() => {actions.addMonetizationPlan(planName); onChangeName("")}}>ADD</button>
-    </div>
-  )
-
-  return <FieldAdder
-    onAdd={val => {actions.addMonetizationPlan(val)}}
-    defaultValue={""}
-    placeholder={"Monetization plan"}
-  />
-}
 
 
 function Channel({channel}) {
@@ -480,19 +397,14 @@ function Channel({channel}) {
     placeholder={"Add short name"}
     onAction={val => {actions.editChannelName(channel.id, val)}}
   />
-  const LLLLLL = <a href={link} target={"_blank"}>{l}</a>
 
   return (
     // <div className="Channel-item">
     <tr style={{textAlign: 'left', backgroundColor: isDangerous ? 'red': 'white'}}>
-      {/*<td>{users}</td>*/}
       <td style={{width: '250px'}}>
-        {LLLLLL}
-        {/*<br />*/}
-        {/*{namePicker}*/}
+        <a href={link} target={"_blank"}>{l}</a>
       </td>
       <td style={{width: '250px'}}>
-        {/*{LLLLLL}*/}
         {namePicker}
       </td>
       <td>
@@ -626,9 +538,6 @@ function NotesList({project}) {
   var notes = project.notes || []
 
   return <div>
-    {/*<Panel id={"Notes"} header={"Notes"} noHelp />*/}
-    {/*<h3>Save notes here</h3>*/}
-
     <FieldAdder placeholder={"type your mind"} onAdd={val => actions.addNote(val)} defaultState={true} autoFocus={false} />
     <br />
     <br />
@@ -651,20 +560,6 @@ function NotesList({project}) {
     </ul>
   </div>
 }
-
-function TimeTest({}) {
-  var [value, setValue] = useState({})
-
-  return <div>
-    <div>
-      TimePicker Test
-    </div>
-    <div>
-      <TimePicker f={value} onClick={v => {setValue({timeCost: v})}} />
-    </div>
-  </div>
-}
-
 
 
 function GlobalStrategyPlanner({project}) {
@@ -742,22 +637,25 @@ function RisksPanel({risks}) {
 }
 
 
-function MonetizationPanel({plans, audiences}) {
-  // var content = <div>How will you make money? <MonetizationAdder /></div>
-  // var content = <div>How will you make money?</div>
-  var content = <div>Who will pay and for what?</div>
-  return <div>
-    <Panel id="Monetization" header={content} />
-    {/*<h6>WHO WILL PAY & FOR WHAT?</h6>*/}
-    {/*<br />*/}
-    {/*<br />*/}
-    <div className="Audience-Container">
-      {plans.map((p, i) => <MonetizationPlan key={'monetizationPlanX.' + p.id + ' ' + i} plan={p} index={i} audiences={audiences} />)}
-      <MonetizationAdder />
-    </div>
-  </div>
-}
+function AudienceAdder({placeholder}) {
+  const [audienceName, onChangeName] = useState("");
 
+  return (
+    <div className="Audience-item">
+      <textarea
+        value={audienceName}
+        placeholder={placeholder}
+        onChange={event => {
+          var v = event.target.value
+          console.log({v})
+          onChangeName(v)
+        }}
+      />
+      <br />
+      <button onClick={() => {actions.addAudience(audienceName); onChangeName("")}}>ADD</button>
+    </div>
+  )
+}
 function AudiencesList({audiences, monetizationPlans, project}) {
   const [isFullAudienceInfo, setIsFullInfo] = useState(false);
 
@@ -792,60 +690,6 @@ function AudiencesList({audiences, monetizationPlans, project}) {
       )}
       <AudienceAdder placeholder={audiencePhrase} />
     </div>
-  </div>
-}
-
-function Validator({project}) {
-  var essenceCheck;
-
-  const saasThing = <div>
-    <center>
-      <table>
-        <tr><td className="left">hours</td><td></td><td></td><td>1) Who has that problem? Google forms + Search (SEO + Gum)</td></tr>
-        <tr><td className="left">days</td><td></td><td></td><td>2) Who has that problem? Landing page</td></tr>
-        <tr><td className="left">week?</td><td></td><td></td><td>If enough people subbed, split em (half for free testing / half for paid)</td></tr>
-        {/*<tr><td className="left">days</td><td></td><td></td><td>Screenshots</td></tr>*/}
-        {/*<tr><td className="left">week</td><td></td><td></td><td>Fake Gameplay Trailer</td></tr>*/}
-        {/*<tr><td className="left">day/week</td><td></td><td></td><td>Prototype</td></tr>*/}
-      </table>
-    </center>
-  </div>
-
-  const gameplayThing = <div>
-    <center>
-      <table>
-        <tr><td className="left">hour</td><td></td><td></td><td>1 sentence</td></tr>
-        <tr><td className="left">hours</td><td></td><td></td><td>Intro post (I want to make game like X, but Y; genre & main features)</td></tr>
-        <tr><td className="left">hours</td><td></td><td></td><td>Intro WITH screenshot</td></tr>
-        <tr><td className="left">days</td><td></td><td></td><td>Screenshots</td></tr>
-        <tr><td className="left">week</td><td></td><td></td><td>Fake Gameplay Trailer</td></tr>
-        <tr><td className="left">day/week</td><td></td><td></td><td>Prototype</td></tr>
-      </table>
-    </center>
-  </div>
-
-  if (isGame(project)) {
-    essenceCheck = <div>
-      <div>
-        Do people want to play that?
-      </div>
-
-      <br />
-      {gameplayThing}
-    </div>
-  }
-
-  if (isApp(project)) {
-    essenceCheck = <p>
-      <h2>Does the problem exist?</h2>
-      {saasThing}
-      {/*<br />*/}
-      {/*{gameplayThing}*/}
-    </p>
-  }
-
-  return <div>
-    <div>{essenceCheck}</div>
   </div>
 }
 

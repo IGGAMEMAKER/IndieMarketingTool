@@ -153,9 +153,9 @@ class Storage extends EventEmitter {
       isFilledAudiences,
       isDefaultName,
 
-      canShowEssence,
-      canShowAudiences,
-      canShowMonetization,
+      // canShowAudiences,
+      // canShowMonetization,
+
       canShowNamePicker,
       canShowSubmitProjectButton,
 
@@ -167,9 +167,6 @@ class Storage extends EventEmitter {
       justStarted
     }
   }
-
-  // isApp = () => this.getProject().type === 1
-  // isGame = () => this.getProject().type === 2
 }
 
 const store = new Storage();
