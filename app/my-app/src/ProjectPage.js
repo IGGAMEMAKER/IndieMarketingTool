@@ -261,11 +261,8 @@ export class ProjectPage extends Component {
   renderMenus = (project) => {
     var menus = []
 
-    // const menus = ["Notes", "Audiences", "Monetization",  "Message", /*"Risks",*/ "GROWTH", "Goals", "ITERATIONS", "Links"]
-    // const menus = ["Notes", "Vision", "Execution",  "Profile"]
-
     var {
-      canShowSubmitProjectButton, justStarted,
+      justStarted,
       filledOutDreamPanel, filledOutVisionPanel, filledOutResearchPanel, filledOutRiskPanel
     } = storage.getProjectFillingStats(project)
 
