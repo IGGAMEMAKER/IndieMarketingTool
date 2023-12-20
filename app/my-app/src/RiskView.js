@@ -21,6 +21,7 @@ function RiskSolutionAdder({riskIndex}) {
       onAdd={v => {actions.addRiskSolution(riskIndex, v)}}
       defaultValue={""}
       placeholder="add solution"
+      defaultState={true}
     />
   </li>
 }

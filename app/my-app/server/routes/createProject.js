@@ -87,7 +87,6 @@ const createProject = async (req, res) => {
 
   if (isGame) {
     risks = [
-      {name: "Won't be interested"},
       {name: "Won't get enough players (wishlists, community)"},
       {name: "Won't buy it"},
       {name: "Won't like it"},
@@ -96,8 +95,7 @@ const createProject = async (req, res) => {
     ]
   } else {
     risks = [
-      {name: "Won't be interested"},
-      {name: "Won't get enough paid users"},
+      {name: "Won't get enough PAID users"},
       {name: "Won't buy it"},
       {name: "Won't like it"},
       {name: "Dev will take too long", solutions: ['MAKE SMALL APP', 'SMALLER', 'TINY']},
