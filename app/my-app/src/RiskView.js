@@ -22,6 +22,7 @@ function RiskSolutionAdder({riskIndex}) {
       defaultValue={""}
       placeholder="add solution"
       defaultState={true}
+      autoFocus={false}
     />
   </li>
 }
