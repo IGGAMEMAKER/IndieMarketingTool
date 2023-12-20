@@ -4,11 +4,15 @@ import actions from "./actions";
 import {FieldAdder} from "./FieldAdder";
 import {Panel} from "./Panel";
 import {AudienceChannelsList} from "./AudienceChannelsList";
+import {isGame} from "./utils/projectUtils";
+import store from "./Storage";
 
 export function AudienceSourcesPanel({channels, audiences}) {
   const renderAudienceStrats = ({description, id, name, strategy, messages = []}) => {
     if (!Array.isArray(strategy))
       strategy = [strategy]
+
+    let growthWays = isGame(store.getProject()) ? 'Tiktok, Twitter(X), Youtube, Meta, Instagram, Influencers' : 'Blogs, forums, Meta, TechCrunch, e.t.c'
 
     var strategyPicker = <ol>
       {strategy.map(s => {
@@ -44,7 +48,7 @@ export function AudienceSourcesPanel({channels, audiences}) {
         </li>
       })}
       <li>
-        <FieldAdder onAdd={val => actions.addAudienceStrategy(val, id)} placeholder={"add more ways"}/>
+        <FieldAdder onAdd={val => actions.addAudienceStrategy(val, id)} defaultState={true} autoFocus={false} placeholder={growthWays}/>
       </li>
     </ol>
 
