@@ -143,7 +143,7 @@ export class ProjectPage extends Component {
 
     return <div>
       <NotesList project={project}/>
-      {/*<UsefulLinks links={this.state.links}/>*/}
+      <UsefulLinks links={this.state.links}/>
 
       {removeProject}
     </div>
@@ -173,7 +173,7 @@ export class ProjectPage extends Component {
       <MessagePlanner project={this.state}/>
       {/*<GlobalStrategyPlanner project={this.state.project}/>*/}
       {/*<BusinessPlanner project={this.state.project} />*/}
-      <UsefulLinks links={links}/>
+      {/*<UsefulLinks links={links}/>*/}
     </div>;
   }
 
@@ -223,7 +223,7 @@ export class ProjectPage extends Component {
 
     if (filledOutRiskPanel && filledOutVisionPanel && filledOutDreamPanel) {
       // addMenu(PROJECT_MODE_RESEARCH, "Research")
-      addMenu(PROJECT_MODE_STRATEGY, "Research")
+      addMenu(PROJECT_MODE_STRATEGY, "Growth")
       addMenu(PROJECT_MODE_NOTES, "Notes")
     }
 
