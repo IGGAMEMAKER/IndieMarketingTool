@@ -7,8 +7,8 @@ import {NotesList} from "./NotesList";
 import {UsefulLinks} from "./UsefulLinks";
 
 export function NotesPanel({project, links}) {
-  const MODE_NOTES = "How";
-  const MODE_LINKS = "Where";
+  const MODE_NOTES = "Notes";
+  const MODE_LINKS = "Links";
 
   var [mode, setMode] = useState(MODE_NOTES)
 
