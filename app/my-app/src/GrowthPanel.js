@@ -5,6 +5,7 @@ import {AudiencesList} from "./AudiencesList";
 import {MonetizationPanel} from "./MonetizationPanel";
 import {AudienceSourcesPanel} from "./AudienceSourcesPanel";
 import {MessagePlanner} from "./MessagePlanner";
+import {AudienceChannelsList} from "./AudienceChannelsList";
 
 export function GrowthPanel({project, channels, audiences}) {
   const GROWTH_MODE_HOW_TO_REACH = "How";
@@ -35,6 +36,9 @@ export function GrowthPanel({project, channels, audiences}) {
   var content;
   if (mode === GROWTH_MODE_HOW_TO_REACH)
     content = <AudienceSourcesPanel channels={channels} audiences={audiences}/>
+
+  if (mode === GROWTH_MODE_WHERE)
+    content = <AudienceChannelsList channels={channels}/>
 
   if (mode === GROWTH_MODE_MESSAGE)
     content = <MessagePlanner project={project}/>
