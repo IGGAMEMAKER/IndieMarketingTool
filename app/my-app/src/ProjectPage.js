@@ -16,6 +16,7 @@ import {MessagePlanner} from "./MessagePlanner";
 import {AudienceSourcesPanel} from "./AudienceSourcesPanel";
 import {VisionPanel} from "./VisionPanel";
 import {NotesList} from "./NotesList";
+import {GrowthPanel} from "./GrowthPanel";
 
 const PROJECT_MODE_VISION = 1
 const PROJECT_MODE_DREAM = 5
@@ -167,17 +168,18 @@ export class ProjectPage extends Component {
     </div>
   }
 
-  renderStrategyMode = (project, channels, links)=> {
+  renderGrowthPanel = (project, channels, links)=> {
     return <div>
-      <AudienceSourcesPanel channels={channels} audiences={project.audiences}/>
-      <MessagePlanner project={this.state}/>
+      <GrowthPanel project={project} channels={channels} audiences={project.audiences} />
+      {/*<AudienceSourcesPanel channels={channels} audiences={project.audiences}/>*/}
+      {/*<MessagePlanner project={this.state}/>*/}
       {/*<GlobalStrategyPlanner project={this.state.project}/>*/}
       {/*<BusinessPlanner project={this.state.project} />*/}
       {/*<UsefulLinks links={links}/>*/}
     </div>;
   }
 
-  renderExecution = (project) => {
+  renderExecutionPanel = (project) => {
     return <div>
       <IterationPlanner project={this.state.project}/>
     </div>
@@ -275,8 +277,8 @@ export class ProjectPage extends Component {
     switch (this.state.mode) {
       case PROJECT_MODE_NOTES:      return this.renderNotesPanel(project, projectId);
       case PROJECT_MODE_DREAM:      return this.renderDreamPanel(project, projectId);
-      case PROJECT_MODE_STRATEGY:   return this.renderStrategyMode(project, channels, links);
-      case PROJECT_MODE_EXECUTION:  return this.renderExecution(project)
+      case PROJECT_MODE_STRATEGY:   return this.renderGrowthPanel(project, channels, links);
+      case PROJECT_MODE_EXECUTION:  return this.renderExecutionPanel(project)
       case PROJECT_MODE_RISK:       return this.renderRiskPanel(project, risks)
       case PROJECT_MODE_RESEARCH:   return this.renderResearchPanel(project, links)
       case PROJECT_MODE_VISION:     return this.renderVisionPanel(project, projectId, monetizationPlans, audiences)
