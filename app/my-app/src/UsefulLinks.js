@@ -32,7 +32,7 @@ export function UsefulLinks({links}) {
   })
 
   return <div>
-    <Panel id="Links" header="Save useful links here" noHelp/>
+    {/*<Panel id="Links" header="Save useful links here" noHelp/>*/}
     <div><LinkAdder/></div>
     <br/>
     <div className="Container links list">

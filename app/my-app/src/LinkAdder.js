@@ -6,7 +6,7 @@ export function LinkAdder({}) {
     <div>
       <FieldAdder onAdd={val => {
         actions.addLink(val)
-      }} placeholder="Add link" defaultState={true} autoFocus={false}/>
+      }} placeholder="Save useful link" defaultState={true} autoFocus={false}/>
     </div>
   </div>
 }
