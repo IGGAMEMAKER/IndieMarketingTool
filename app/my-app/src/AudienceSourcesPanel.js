@@ -69,5 +69,6 @@ export function AudienceSourcesPanel({channels, audiences}) {
     <div className="Audience-Container">
       {audiences.map(a => renderAudienceStrats(a))}
     </div>
+    {/*<AudienceChannelsList channels={channels}/>*/}
   </div>
 }

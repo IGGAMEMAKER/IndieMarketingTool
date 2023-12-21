@@ -1,8 +1,5 @@
 import {useState} from "react";
 import storage from "./Storage";
-import {ProjectEssence} from "./ProjectEssence";
-import {AudiencesList} from "./AudiencesList";
-import {MonetizationPanel} from "./MonetizationPanel";
 import {AudienceSourcesPanel} from "./AudienceSourcesPanel";
 import {MessagePlanner} from "./MessagePlanner";
 import {AudienceChannelsList} from "./AudienceChannelsList";
@@ -44,7 +41,6 @@ export function GrowthPanel({project, channels, audiences}) {
     content = <MessagePlanner project={project}/>
 
   return <div>
-    {/*<h1>Let's think</h1>*/}
     {getSubModes().map(m => <button className={`item ${mode === m ? 'chosen' : ''}`} onClick={() => {
       setMode(m)
     }}>{m}</button>)}

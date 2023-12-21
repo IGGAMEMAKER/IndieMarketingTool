@@ -17,6 +17,7 @@ import {AudienceSourcesPanel} from "./AudienceSourcesPanel";
 import {VisionPanel} from "./VisionPanel";
 import {NotesList} from "./NotesList";
 import {GrowthPanel} from "./GrowthPanel";
+import {NotesPanel} from "./NotesPanel";
 
 const PROJECT_MODE_VISION = 1
 const PROJECT_MODE_DREAM = 5
@@ -143,8 +144,9 @@ export class ProjectPage extends Component {
     }
 
     return <div>
-      <NotesList project={project}/>
-      <UsefulLinks links={this.state.links}/>
+      <NotesPanel project={project} links={this.state.links} />
+      {/*<NotesList project={project}/>*/}
+      {/*<UsefulLinks links={this.state.links}/>*/}
 
       {removeProject}
     </div>
