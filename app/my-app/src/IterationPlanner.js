@@ -670,7 +670,7 @@ export function IterationPlanner({project}) {
     {/*<br/>*/}
 
     <div className={"Iteration-Grid"}>
-      {iterations.length ? '' : <button onClick={onAutoGenerate}>Autogenerate Iterations</button>}
+      {iterations.length ? '' : <button onClick={onAutoGenerate}>Generate Tasks</button>}
       {mappedIterations}
     </div>
     <br/>
