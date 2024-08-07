@@ -9,9 +9,9 @@ const pathToConfigs = gitPath + '/app/my-app/CD'
 const frontendURL = 'http://releasefaster.com'
 const goToFrontendRoot = 'cd app/my-app/ ;'
 
-const uploadCertificates = false
+const uploadCertificates = true
 const uploadDefaultFiles = false
-const uploadNginxConfig  = false
+const uploadNginxConfig  = true
 
 const sslFiles = [
   "releasefaster_com.crt",
